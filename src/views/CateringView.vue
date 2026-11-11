@@ -2,6 +2,7 @@
 import menu from '@/data/menu.json'
 import { links, occasions, site } from '@/data/site'
 import BaseButton from '@/components/ui/BaseButton.vue'
+import CateringForm from '@/components/sections/CateringForm.vue'
 import MenuItemCard from '@/components/ui/MenuItemCard.vue'
 
 const kits = menu.familyKits
@@ -11,15 +12,14 @@ const kits = menu.familyKits
   <section id="catering" class="cater-page">
     <div class="wrap"><div class="cater cater__in">
       <div class="cater__copy">
-        <span class="eyebrow">Catering</span>
-        <h1 class="display">Let us cater your next event</h1>
+        <span class="eyebrow">Bring the flavor to your gathering</span>
+        <h1 class="display">Let's make it a meal to remember.</h1>
         <p>
-          Every event is built around your tastes and your guest list, from a birthday at home to a company lunch.
-          Tell us the date and headcount and we'll plan the spread.
+          Feeding a few friends or a whole team? From birthdays at home to company lunches, we'll help plan a Mexican food spread around your guests. Tell us the date and headcount, and we'll take it from there.
         </p>
         <div class="cater__actions">
-          <BaseButton :href="links.cateringPackages" variant="lime" size="lg">Catering packages</BaseButton>
-          <BaseButton :href="`mailto:${site.email}?subject=Catering%20enquiry`" variant="light" size="lg">Email us</BaseButton>
+          <BaseButton :href="links.cateringPackages" variant="lime" size="lg">See catering packages</BaseButton>
+          <BaseButton href="#enquiry" variant="light" size="lg">Send an enquiry</BaseButton>
         </div>
       </div>
       <ul class="occ" aria-label="Occasions we cater">
@@ -28,10 +28,12 @@ const kits = menu.familyKits
     </div></div>
   </section>
 
+  <CateringForm />
+
   <section id="kits" class="band band--alt">
     <div class="wrap">
-      <span class="eyebrow">Smaller group? Order a kit today</span>
-      <h2 class="display sec">Family Kits <small>{{ kits.serves }}</small></h2>
+      <span class="eyebrow">Feeding a smaller group?</span>
+      <h2 class="display sec">Bring home a family kit. <small>Two proteins, tortillas or chips, and all the fixings. A great spread for 4–6.</small></h2>
       <div class="grid">
         <MenuItemCard
           v-for="k in kits.items"

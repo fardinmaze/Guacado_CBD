@@ -36,7 +36,7 @@ defineProps({
             <b class="display">{{ money(p.price) }}</b>
           </li>
         </ul>
-        <a :href="site.orderUrl" class="item__order">Order <span class="sr-only">{{ name }}</span></a>
+        <a :href="site.orderUrl" class="item__order">Order<span class="sr-only"> {{ name }} for pickup</span></a>
       </div>
     </div>
   </article>

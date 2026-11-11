@@ -103,3 +103,7 @@ section { position: relative; }
   html { scroll-behavior: auto; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
+
+/* Marketing pages: square-cornered buttons (the /order flow keeps its own pill buttons). */
+.mk a.btn, .mk button.btn { border-radius: var(--r-btn); }
+.mk .band--alt { border-top: 0; }

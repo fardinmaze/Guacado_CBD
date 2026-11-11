@@ -1,27 +1,22 @@
 <script setup>
-import locations from '@/data/locations.json'
 import { site } from '@/data/site'
-import { locationStats } from '@/utils/locations'
-
-const { open } = locationStats(locations)
 </script>
 
 <template>
-  <div class="promo">
-    <div class="wrap promo__in">
-      <span>{{ site.hoursOpen }}</span>
-      <span class="dot" aria-hidden="true" />
-      <span class="hide-sm">Order ahead for pickup at {{ open }} locations</span>
-      <a :href="site.orderUrl" class="promo__cta">Order now <span aria-hidden="true">→</span></a>
+  <!-- Thin utility strip above the header (accessibility link on the right). -->
+  <div class="util">
+    <div class="util__in">
+      <span class="util__hours">{{ site.hoursBar }}</span>
+      <a :href="site.accessibility" class="util__a11y">Accessibility</a>
     </div>
   </div>
 </template>
 
 <style scoped>
-.promo { background: var(--guac); color: var(--on-green); font-size: 13.5px; font-weight: 600; }
-.promo__in { min-height: 38px; display: flex; align-items: center; justify-content: center; gap: 12px; text-align: center; }
-.dot { width: 4px; height: 4px; border-radius: 50%; background: var(--lime); flex: none; }
-.promo__cta { font-weight: 800; color: var(--lime); text-decoration: none; white-space: nowrap; }
-.promo__cta:hover { text-decoration: underline; }
-@media (max-width: 639px) { .hide-sm { display: none; } }
+.util { background: #f0efec; color: var(--ink); font: 800 10px/1 var(--f-display); font-stretch: 80%; text-transform: uppercase; letter-spacing: 0.1em; }
+.util__in { min-height: var(--util-h); display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 0 clamp(16px, 2.2vw, 36px); }
+.util__hours { color: var(--ink-muted); }
+.util__a11y { text-decoration: none; }
+.util__a11y:hover { text-decoration: underline; }
+@media (max-width: 520px) { .util__hours { display: none; } .util__in { justify-content: flex-end; } }
 </style>

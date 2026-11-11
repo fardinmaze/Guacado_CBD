@@ -48,7 +48,9 @@
   --r-pill: 999px;
 
   /* Layout */
-  --header-h: 68px;
+  --header-h: 70px;
+  --util-h: 28px;
+  --r-btn: 4px; /* marketing buttons are square-cornered, Chipotle-style */
   --gut-l: max(16px, env(safe-area-inset-left, 0px));
   --gut-r: max(16px, env(safe-area-inset-right, 0px));
 

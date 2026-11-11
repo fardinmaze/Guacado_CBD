@@ -14,11 +14,11 @@ defineProps({
       <span>{{ cityLine(location) }}</span>
     </div>
     <span v-if="location.soon" class="soon">Coming soon</span>
-    <span v-else class="open">Open daily · {{ site.hoursShort }}</span>
+    <span v-else class="open">Open daily, 10:30am to 3am</span>
     <div class="loc__actions">
       <a v-if="!location.soon" :href="site.orderUrl" class="order">Order pickup</a>
       <a :href="mapsUrl(location)" target="_blank" rel="noopener" class="dir">
-        Directions<span class="sr-only"> to {{ location.address }} (opens Google Maps in a new tab)</span>
+        Get directions<span class="sr-only"> to {{ location.address }}, opens Google Maps in a new tab</span>
       </a>
     </div>
   </article>

@@ -8,19 +8,19 @@ import BaseButton from '@/components/ui/BaseButton.vue'
     <div class="wrap duo">
       <article id="jobs" class="card">
         <div>
-          <span class="eyebrow">We are hiring</span>
-          <h2 class="display">Join the line</h2>
-          <p>Grill, build and serve with us. See current openings and apply in a few clicks.</p>
+          <span class="eyebrow">Come join the crew</span>
+          <h2 class="display">Good food takes a good team.</h2>
+          <p>Grill, build and serve with us. Find an opening and bring your energy to Guacado.</p>
         </div>
         <BaseButton :href="links.jobs" variant="outline">See open jobs</BaseButton>
       </article>
       <article id="franchise" class="card">
         <div>
           <span class="eyebrow">Franchise opportunities</span>
-          <h2 class="display">Open a Guacado</h2>
-          <p>Bring build-your-own Mexican to your neighborhood.</p>
+          <h2 class="display">Bring Guacado to your neighborhood.</h2>
+          <p>Interested in bringing build-your-own Mexican favorites to your community? Explore franchise opportunities with Guacado.</p>
         </div>
-        <BaseButton :href="links.franchise" variant="outline">Franchise info</BaseButton>
+        <BaseButton :href="links.franchise" variant="outline">Explore franchising</BaseButton>
       </article>
     </div>
   </section>

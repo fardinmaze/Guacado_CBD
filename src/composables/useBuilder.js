@@ -5,7 +5,7 @@ import { shortSauce } from '@/utils/format'
 
 export const DEFAULTS = {
   base: 'Bowl',
-  protein: 'Grill Chicken',
+  protein: 'Grilled Chicken',
   toppings: ['Rice', 'Beans', 'Pico de Gallo'],
   sauce: 'Chipotle',
 }

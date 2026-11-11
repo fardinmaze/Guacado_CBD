@@ -12,10 +12,10 @@ const inOrder = computed(() => !!route.meta.order)
 </script>
 
 <template>
-  <a class="skip-link" href="#main">Skip to content</a>
+  <a class="skip-link" href="#main">Skip to main content</a>
   <!-- The ordering flow brings its own slim header, so the marketing chrome steps aside. -->
   <RouterView v-if="inOrder" />
-  <template v-else>
+  <div v-else class="mk">
     <PromoBar />
     <SiteHeader />
     <main id="main">
@@ -23,6 +23,6 @@ const inOrder = computed(() => !!route.meta.order)
     </main>
     <SiteFooter />
     <MobileOrderBar />
-  </template>
+  </div>
   <ToastNotice />
 </template>

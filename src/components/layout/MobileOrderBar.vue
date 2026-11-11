@@ -16,7 +16,7 @@ const { current } = useOrderBar()
       <strong class="display">{{ money(current.total) }}</strong>
     </div>
     <BaseButton v-else to="/menu" variant="outline">Menu</BaseButton>
-    <BaseButton :href="site.orderUrl" class="bar__cta">{{ current ? 'Order this' : 'Order now' }}</BaseButton>
+    <BaseButton :href="site.orderUrl" class="bar__cta">{{ current ? 'Order this bowl' : 'Order pickup' }}</BaseButton>
   </div>
 </template>
 

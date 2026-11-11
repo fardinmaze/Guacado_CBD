@@ -15,18 +15,18 @@ const asPrices = (item) => item.prices ?? [{ label: '', price: item.price }]
 const shake = (b) => b.flavors ?? []
 
 const signature = [
-  { ...featured['Birria Tacos'], description: `${featured['Birria Tacos'].options}. Slow-braised and griddled, served for dipping.`, image: photos.birria, badge: 'Signature' },
-  { ...featured.Tacos, description: featured.Tacos.options, image: photos.tacos },
-  { ...featured.Tostada, image: tostadaImg, imageFit: 'contain', badge: featured.Tostada.section },
+  { ...featured['Birria Tacos'], description: `${featured['Birria Tacos'].options}, slow-braised and griddled, served for dipping.`, image: photos.birria, badge: 'Signature' },
+  { ...featured.Tacos, description: 'Choose soft or crispy and make every bite your own.', image: photos.tacos },
+  { ...featured.Tostada, description: 'A crunchy favorite for your next Mexican food craving.', image: tostadaImg, imageFit: 'contain', badge: featured.Tostada.section },
 ]
 </script>
 
 <template>
   <div class="page-head">
     <div class="wrap">
-      <span class="eyebrow">Order for pickup</span>
-      <h1 class="display">Menu</h1>
-      <p class="lead">Prices are from our menu board. Tap Order to check out online with your nearest location.</p>
+      <span class="eyebrow">Find your next favorite</span>
+      <h1 class="display">Something delicious is waiting.</h1>
+      <p class="lead">Explore bowls, tacos, burritos, sides and more. Found your favorite? Choose Order to select a location and place your pickup order.</p>
     </div>
   </div>
 

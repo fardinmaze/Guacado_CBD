@@ -9,6 +9,7 @@ export const site = {
   email: 'guacadomexicangrill@gmail.com',
   hours: 'Mon – Sun · 10:30am – 3am',
   hoursShort: '10:30am – 3am',
+  hoursBar: 'Open every day, 10:30am to 3am',
   hoursOpen: 'Open every day · 10:30am – 3am',
   hoursLong: 'Open every day, 10:30am – 3am',
   hoursProse: 'Open every day from 10:30am to 3am',
@@ -54,7 +55,7 @@ export const footerColumns = [
 ]
 
 export const occasions = [
-  'Birthdays', 'Holiday Parties', 'Corporate', 'Weddings', 'Rehearsal Dinners', 'Game Day',
+  'Birthdays', 'Holiday parties', 'Corporate lunches', 'Weddings', 'Rehearsal dinners', 'Game day',
 ]
 
 // Header shows these as text links; Order is the button, Jobs/Franchise live in the drawer + footer.

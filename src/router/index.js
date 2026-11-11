@@ -2,16 +2,19 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import { findStore, isOrderable } from '@/order/lib/catalog'
 import { useOrder } from '@/order/useOrder'
+import locationList from '@/data/locations.json'
+import { locationStats } from '@/utils/locations'
 
 const BRAND = 'Guacado Mexican Grill'
+const stats = locationStats(locationList)
 
 // Menu, Catering and Locations get their own routes; Order, Jobs and Franchise stay
 // external (see src/data/site.js).
 export const routes = [
-  { path: '/', name: 'home', component: HomeView, meta: { title: BRAND } },
-  { path: '/menu', name: 'menu', component: () => import('@/views/MenuView.vue'), meta: { title: `Menu · Order Online · ${BRAND}` } },
-  { path: '/catering', name: 'catering', component: () => import('@/views/CateringView.vue'), meta: { title: `Catering · ${BRAND}` } },
-  { path: '/locations', name: 'locations', component: () => import('@/views/LocationsView.vue'), meta: { title: `Locations · ${BRAND}` } },
+  { path: '/', name: 'home', component: HomeView, meta: { title: `${BRAND} · Bowls, Tacos & Mexican Favorites`, description: `Build your own bowls, enjoy birria tacos, burritos and family kits. Order pickup at ${stats.open} Guacado locations across ${stats.states} states.` } },
+  { path: '/menu', name: 'menu', component: () => import('@/views/MenuView.vue'), meta: { title: 'Guacado Menu · Bowls, Tacos, Burritos & More', description: `Explore Guacado's menu of bowls, tacos, burritos, family kits, sides and drinks. Build your own and order pickup.` } },
+  { path: '/catering', name: 'catering', component: () => import('@/views/CateringView.vue'), meta: { title: 'Guacado Catering · Mexican Food for Every Gathering', description: 'Bring Guacado to birthdays, office lunches, weddings and game days. Explore catering packages and plan your food spread.' } },
+  { path: '/locations', name: 'locations', component: () => import('@/views/LocationsView.vue'), meta: { title: 'Find a Guacado Near You · Order Mexican Food for Pickup', description: `Find a Guacado location near you. Explore the menu and order pickup. Open daily from 10:30am to 3am across ${stats.states} states.` } },
   {
     // Mobile-first pickup ordering. Own shell (no marketing header/footer): meta.order hides them in App.vue.
     path: '/order',
@@ -35,7 +38,7 @@ export const routes = [
       { path: ':store/item/:slug', name: 'order-item', component: () => import('@/order/views/OrderItemView.vue'), props: true, meta: { title: `Order · ${BRAND}` } },
     ],
   },
-  { path: '/:pathMatch(.*)*', redirect: '/' },
+  { path: '/:pathMatch(.*)*', name: 'not-found', component: () => import('@/views/NotFoundView.vue'), meta: { title: `Page not found · ${BRAND}` } },
 ]
 
 export function createAppRouter(history = createWebHistory()) {
@@ -57,6 +60,9 @@ export function createAppRouter(history = createWebHistory()) {
   })
   router.afterEach((to) => {
     document.title = to.meta.title ?? BRAND
+    const desc = to.meta.description
+    const tag = document.querySelector('meta[name="description"]')
+    if (desc && tag) tag.setAttribute('content', desc)
   })
   return router
 }

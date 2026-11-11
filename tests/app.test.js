@@ -32,28 +32,30 @@ describe('App smoke test', () => {
   it('home runs the sales funnel in order', async () => {
     const { wrapper } = await mountAt('/')
     const ids = [...wrapper.element.querySelectorAll('section[id]')].map((s) => s.id)
-    expect(ids).toEqual(['menu', 'build', 'locations', 'join'])
-    expect(wrapper.find('h1').text()).toContain('Your bowl')
-    expect(wrapper.find('.birria').text()).toContain('Birria tacos')
-    // Bowl clip: hero loop, Burrito Bowl tile, guac upsell, builder preview
-    expect(wrapper.findAll('video')).toHaveLength(4)
+    expect(ids).toEqual(['menu', 'join'])
+    expect(wrapper.find('h1').text()).toContain('Big Mexican Flavors')
+    expect(wrapper.findAll('.cat')).toHaveLength(9)
+    expect(wrapper.find('.feat').text()).toContain('Birria Tacos')
+    // Bowl clips: hero loop and the two story cards
+    expect(wrapper.findAll('video')).toHaveLength(3)
     expect(wrapper.find('#kits').exists()).toBe(true)
     expect(wrapper.find('#catering').exists()).toBe(true)
     wrapper.unmount()
   })
 
-  it('puts an order button in the promo bar, header, hero, mobile bar and every menu tile', async () => {
+  it('puts an order button in the order strip, header, hero, mobile bar and footer', async () => {
     const { wrapper } = await mountAt('/')
-    expect(wrapper.find('.promo a').attributes('href')).toBe(ORDER_URL)
-    expect(wrapper.find('.hdr__order').attributes('href')).toBe(ORDER_URL)
+    expect(wrapper.find('.strip__btn').attributes('href')).toBe(ORDER_URL)
+    expect(wrapper.find('.act--order').attributes('href')).toBe(ORDER_URL)
     expect(wrapper.find('.bar__cta').attributes('href')).toBe(ORDER_URL)
-    expect(wrapper.findAll('.tile .tile__order')).toHaveLength(3)
+    expect(wrapper.find('.ftr__order').attributes('href')).toBe(ORDER_URL)
+    expect(wrapper.find('.hero a.btn').attributes('href')).toBe(ORDER_URL)
     expect(orderLinks(wrapper).length).toBeGreaterThan(10)
     wrapper.unmount()
   })
 
   it('order ticket updates live: default $12.95, steak + guac = $15.90', async () => {
-    const { wrapper } = await mountAt('/')
+    const { wrapper } = await mountAt('/menu')
     expect(wrapper.find('.ticket__total strong').text()).toBe('$12.95')
     const click = async (label) => {
       await wrapper.findAll('button').find((b) => b.text().startsWith(label)).trigger('click')
@@ -62,16 +64,15 @@ describe('App smoke test', () => {
     await click('Add fresh guac')
     expect(wrapper.find('.ticket__total strong').text()).toBe('$15.90')
     expect(wrapper.find('.ticket').text()).toContain('Guac')
-    await click('Start over')
+    await click('Start a new bowl')
     expect(wrapper.find('.ticket__total strong').text()).toBe('$12.95')
     wrapper.unmount()
   })
 
-  it('home shows 6 locations until the guest searches', async () => {
+  it('home has no location list or prices (finder lives on /locations)', async () => {
     const { wrapper } = await mountAt('/')
-    expect(wrapper.findAll('[data-loc]')).toHaveLength(6)
-    await wrapper.find('input[type=search]').setValue('brooklyn')
-    expect(wrapper.findAll('[data-loc]')).toHaveLength(3)
+    expect(wrapper.findAll('[data-loc]')).toHaveLength(0)
+    expect(wrapper.text()).not.toMatch(/\$\d/)
     wrapper.unmount()
   })
 
@@ -96,9 +97,9 @@ describe('App smoke test', () => {
 
   it('sets the document title per route', async () => {
     const { wrapper, router } = await mountAt('/catering')
-    expect(document.title).toBe('Catering · Guacado Mexican Grill')
+    expect(document.title).toBe('Guacado Catering · Mexican Food for Every Gathering')
     await router.push('/')
-    expect(document.title).toBe('Guacado Mexican Grill')
+    expect(document.title).toBe('Guacado Mexican Grill · Bowls, Tacos & Mexican Favorites')
     wrapper.unmount()
   })
 })

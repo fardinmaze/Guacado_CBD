@@ -1,20 +1,23 @@
 <script setup>
 import HeroPromo from '@/components/sections/HeroPromo.vue'
+import OrderStrip from '@/components/sections/OrderStrip.vue'
 import CategoryGrid from '@/components/sections/CategoryGrid.vue'
-import BuildYourOwn from '@/components/sections/BuildYourOwn.vue'
+import FeatureDuo from '@/components/sections/FeatureDuo.vue'
+import FeaturedStrip from '@/components/sections/FeaturedStrip.vue'
 import UpsellBand from '@/components/sections/UpsellBand.vue'
 import CrowdPleasers from '@/components/sections/CrowdPleasers.vue'
-import LocationsSection from '@/components/sections/LocationsSection.vue'
 import JoinFranchise from '@/components/sections/JoinFranchise.vue'
 </script>
 
 <template>
-  <!-- Sales funnel: offer > choose a category > customise > add-ons > group orders > where to pick up. -->
+  <!-- chipotle.com home order: hero > order strip > 3x3 categories > two story cards > Featured >
+       Crowd pleasers > footer. Guacado's own sections (meal add-ons, finder, jobs) slot in between. -->
   <HeroPromo />
+  <OrderStrip />
   <CategoryGrid />
-  <BuildYourOwn />
+  <FeatureDuo />
+  <FeaturedStrip />
   <UpsellBand />
   <CrowdPleasers />
-  <LocationsSection :limit="6" />
   <JoinFranchise />
 </template>

@@ -58,20 +58,20 @@ onBeforeUnmount(() => {
   <section id="build" ref="root" class="band band--alt">
     <div class="wrap">
       <SectionHead
-        :eyebrow="`Build your own · From $${cheapest.toFixed(2)}`"
-        title="Make it exactly how you like it"
-        lead="Four quick picks. Your protein sets the price; base, toppings and sauce are on us."
+        eyebrow="Your bowl. Your way."
+        title="Four picks. Endless possibilities."
+        lead="Choose your base, pick your protein, load up on toppings, and finish with your favorite sauce. Your protein sets the price."
       />
 
       <div class="byo">
         <div class="steps">
-          <BuilderStep :number="1" title="Choose your base" :note="menu.buildYourOwn.calories" :active="state.step === 1">
+          <BuilderStep :number="1" title="Start with a base" :note="menu.buildYourOwn.calories" :active="state.step === 1">
             <div class="chips" role="group" aria-label="Base">
               <OptionChip v-for="v in options.bases" :key="v" :pressed="state.base === v" @click="b.setBase(v)">{{ v }}</OptionChip>
             </div>
           </BuilderStep>
 
-          <BuilderStep :number="2" title="Choose your protein" note="Sets your price" :active="state.step === 2">
+          <BuilderStep :number="2" title="Choose your protein" note="This sets your price" :active="state.step === 2">
             <div class="chips" role="group" aria-label="Protein">
               <OptionChip v-for="p in options.proteins" :key="p.name" :pressed="state.protein === p.name" @click="b.setProtein(p.name)">
                 {{ p.name }} <small>{{ price(p.price) }}</small>
@@ -79,7 +79,7 @@ onBeforeUnmount(() => {
             </div>
           </BuilderStep>
 
-          <BuilderStep :number="3" title="Choose your toppings" :note="menu.buildYourOwn.toppingsNote" :active="state.step === 3">
+          <BuilderStep :number="3" title="Load up on toppings" :note="menu.buildYourOwn.toppingsNote" :active="state.step === 3">
             <div class="chips" role="group" aria-label="Toppings">
               <OptionChip v-for="t in options.toppings" :key="t" :pressed="state.toppings.includes(t)" @click="b.toggleTopping(t)">{{ t }}</OptionChip>
             </div>
@@ -87,13 +87,13 @@ onBeforeUnmount(() => {
               <ExtraToggle label="Add fresh guac" :price="GUAC_PRICE" :pressed="state.guac" @click="b.toggleGuac()">
                 <img :src="guacImg" alt="" width="44" height="44" />
               </ExtraToggle>
-              <ExtraToggle label="Extra protein" :price="EXTRA_PROTEIN_PRICE" :pressed="state.extraProtein" @click="b.toggleExtraProtein()">
+              <ExtraToggle label="Double the protein" :price="EXTRA_PROTEIN_PRICE" :pressed="state.extraProtein" @click="b.toggleExtraProtein()">
                 <span class="x2" aria-hidden="true">2X</span>
               </ExtraToggle>
             </div>
           </BuilderStep>
 
-          <BuilderStep :number="4" title="Choose a homemade sauce" note="Chili icons show heat" :active="state.step === 4">
+          <BuilderStep :number="4" title="Finish with a homemade sauce" note="Chili icons show the heat" :active="state.step === 4">
             <div class="chips" role="group" aria-label="Sauce">
               <OptionChip v-for="s in options.sauces" :key="s.name" :pressed="state.sauce === s.label" @click="b.setSauce(s.label)">
                 {{ s.label }} <HeatIcons :level="s.heat" />

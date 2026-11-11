@@ -18,7 +18,7 @@ describe('useBuilder', () => {
     expect(b.total.value).toBe(12.95)
     expect(b.summary.value).toEqual({
       base: 'Bowl',
-      protein: 'Grill Chicken',
+      protein: 'Grilled Chicken',
       toppings: 'Rice, Beans, Pico de Gallo',
       sauce: 'Chipotle',
     })
@@ -53,7 +53,7 @@ describe('useBuilder', () => {
     ;['Rice', 'Beans', 'Pico de Gallo'].forEach((t) => b.toggleTopping(t))
     b.toggleExtraProtein()
     expect(b.summary.value.toppings).toBe('None')
-    expect(b.summary.value.protein).toBe('Grill Chicken (double)')
+    expect(b.summary.value.protein).toBe('Grilled Chicken (double)')
   })
 
   it('clicking the active sauce clears it', () => {

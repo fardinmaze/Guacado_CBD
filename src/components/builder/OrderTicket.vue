@@ -37,7 +37,7 @@ const announcement = computed(() => `Your order: ${orderText.value}.`)
 
 // The online ordering site cannot receive a pre-built order, so let guests copy it.
 const { copy } = useCopyToClipboard()
-const copyOrder = () => copy(orderText.value, { success: 'Order copied' })
+const copyOrder = () => copy(orderText.value, { success: 'Order copied. Paste it at checkout.' })
 
 onBeforeUnmount(() => tween?.kill())
 </script>
@@ -46,8 +46,8 @@ onBeforeUnmount(() => tween?.kill())
   <aside class="ticket" aria-label="Your order">
     <slot name="media" />
     <div class="ticket__head">
-      <h3 class="display">Your order</h3>
-      <button type="button" class="reset" @click="$emit('reset')">Start over</button>
+      <h3 class="display">Your bowl</h3>
+      <button type="button" class="reset" @click="$emit('reset')">Start a new bowl</button>
     </div>
     <div class="ticket__bar" aria-hidden="true"><i :style="{ transform: `scaleX(${progress / 100})` }" /></div>
     <dl>
@@ -59,9 +59,9 @@ onBeforeUnmount(() => tween?.kill())
     <div class="ticket__total" aria-hidden="true">
       <span>Total</span><strong ref="totalEl" class="display">{{ money(shown) }}</strong>
     </div>
-    <BaseButton :href="site.orderUrl" size="lg" block>Order this online</BaseButton>
-    <button type="button" class="copy" @click="copyOrder">Copy my order</button>
-    <small>Menu-board prices before tax. Final price and availability are set by your location at checkout.</small>
+    <BaseButton :href="site.orderUrl" size="lg" block>Order this for pickup</BaseButton>
+    <button type="button" class="copy" @click="copyOrder">Copy my bowl</button>
+    <small>Prices are before tax. Your location confirms the final total at checkout.</small>
     <p class="sr-only" aria-live="polite">{{ announcement }}</p>
   </aside>
 </template>
