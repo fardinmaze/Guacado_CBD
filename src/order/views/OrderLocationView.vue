@@ -1,16 +1,18 @@
 <script setup>
 import { computed, onBeforeUnmount, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { stateNames } from '@/data/site'
 import { cityLine } from '@/utils/format'
 import { filterLocations } from '@/utils/locations'
 import { stores } from '@/order/lib/catalog'
 import { storeStatus } from '@/order/lib/hours'
 import { useOrder } from '@/order/useOrder'
+import { goPath } from '@/order/lib/go'
 
 // LOC-01/03/04: pick the restaurant first. Search matches street, city and ZIP; "Coming soon" stores
 // are listed but cannot be chosen. Open/closed is computed in each store's own time zone.
 const router = useRouter()
+const route = useRoute()
 const order = useOrder()
 const query = ref('')
 const now = ref(new Date())
@@ -27,7 +29,7 @@ const rowsCount = computed(() => groups.value.reduce((n, g) => n + g.rows.length
 
 function choose(s) {
   if (!order.chooseStore(s.slug)) return
-  router.push(`/order/${s.slug}`)
+  router.push(goPath(s.slug, route.query.go)) // keeps the dish the guest clicked on the website
 }
 </script>
 

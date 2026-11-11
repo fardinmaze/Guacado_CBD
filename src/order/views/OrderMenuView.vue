@@ -1,10 +1,8 @@
 <script setup>
-import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { site } from '@/data/site'
 import { tacos, birria, tostada, guac } from '@/assets/illustrations'
-import { calLabel, categories, categoryFrom, isQuickAdd } from '@/order/lib/catalog'
-import { cents, fromCents } from '@/order/lib/pricing'
+import { calLabel, categories, isQuickAdd } from '@/order/lib/catalog'
 import { useOrder } from '@/order/useOrder'
 import { useBagSheet } from '@/order/useBagSheet'
 import { useToast } from '@/composables/useToast'
@@ -19,8 +17,6 @@ const { show: showBag } = useBagSheet()
 const toast = useToast()
 
 const art = { 'build-your-own': guac, tacos, specials: tostada, kids: tacos, sides: guac, dips: guac, beverages: tostada, desserts: birria, 'family-kits': birria }
-const byo = categories[0].items[0]
-const from = computed(() => cents(fromCents(byo)))
 const base = (slug) => `/order/${props.store}${slug}`
 
 function quick(item) {
@@ -39,7 +35,7 @@ function jump(slug) {
       <span class="hero__txt">
         <span class="eyebrow">Our signature</span>
         <span class="hero__t">Build your own!</span>
-        <span class="hero__s">Base, protein, toppings, sauce · from {{ from }}</span>
+        <span class="hero__s">Base, protein, toppings, sauce</span>
       </span>
       <span class="hero__go" aria-hidden="true">→</span>
     </RouterLink>
@@ -49,7 +45,6 @@ function jump(slug) {
       <a v-for="c in categories" :key="c.slug" :href="`#cat-${c.slug}`" class="cat" @click.prevent="jump(c.slug)">
         <img :src="art[c.slug]" alt="" width="56" height="56" loading="lazy" />
         <span class="cat__n">{{ c.name }}</span>
-        <span class="cat__f">From {{ cents(categoryFrom(c)) }}</span>
       </a>
     </nav>
 
@@ -62,7 +57,6 @@ function jump(slug) {
             <span v-if="i.description" class="item__d">{{ i.description }}</span>
             <span v-else-if="i.includes" class="item__d">{{ i.includes.join(' · ') }}</span>
             <span class="item__meta">
-              <span class="item__p">{{ isQuickAdd(i) ? '' : 'From ' }}{{ cents(fromCents(i)) }}</span>
               <span v-if="calLabel(i)" class="item__c">{{ calLabel(i) }}</span>
             </span>
           </component>
@@ -76,7 +70,7 @@ function jump(slug) {
       Want it delivered? Order on DoorDash <span aria-hidden="true">→</span><span class="sr-only"> (opens in a new tab)</span>
     </a>
 
-    <StickyBar v-if="order.count.value" :total="cents(order.subtotal.value)" :caption="`${order.count.value} in your bag`">
+    <StickyBar v-if="order.count.value" :caption="`${order.count.value} in your bag`">
       <BaseButton variant="lime" @click="showBag">VIEW BAG</BaseButton>
     </StickyBar>
   </div>

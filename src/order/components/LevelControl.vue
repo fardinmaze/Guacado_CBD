@@ -1,5 +1,5 @@
 <script setup>
-import { EXTRA_PROTEIN_CENTS, LEVELS, LEVEL_LABEL, cents } from '@/order/lib/pricing'
+import { LEVELS, LEVEL_LABEL } from '@/order/lib/pricing'
 
 // Light · Regular · Extra · On the side. A radio group, so screen readers and arrow keys work.
 const props = defineProps({
@@ -31,7 +31,6 @@ function onKey(e) {
       @click="emit('update:modelValue', l)"
     >
       {{ LEVEL_LABEL[l] }}
-      <small v-if="extraPrice && l === 'extra'">+{{ cents(EXTRA_PROTEIN_CENTS) }}</small>
     </button>
   </div>
 </template>

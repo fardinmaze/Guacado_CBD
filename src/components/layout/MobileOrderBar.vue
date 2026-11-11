@@ -1,11 +1,10 @@
 <script setup>
 import { site } from '@/data/site'
-import { money } from '@/utils/format'
 import { useOrderBar } from '@/composables/useOrderBar'
 import BaseButton from '@/components/ui/BaseButton.vue'
 
 // Phones only: an order button that never leaves the thumb zone. While the builder
-// is on screen it shows the running order and total instead of the menu link.
+// is on screen it shows the running order (no price for now) instead of the menu link.
 const { current } = useOrderBar()
 </script>
 
@@ -13,7 +12,6 @@ const { current } = useOrderBar()
   <div class="bar" role="region" aria-label="Quick order">
     <div v-if="current" class="bar__order">
       <span class="bar__label">{{ current.label }}</span>
-      <strong class="display">{{ money(current.total) }}</strong>
     </div>
     <BaseButton v-else to="/menu" variant="outline">Menu</BaseButton>
     <BaseButton :href="site.orderUrl" class="bar__cta">{{ current ? 'Order this bowl' : 'Order pickup' }}</BaseButton>

@@ -111,7 +111,7 @@ function add() {
       <p v-if="errors.length" class="rev__err" role="alert">{{ errors[0].message }}</p>
     </div>
 
-    <StickyBar :total="cents(unit)" :caption="caption">
+    <StickyBar :caption="caption">
       <BaseButton v-if="step.key !== 'review'" variant="lime" :disabled="!stepOk" @click="next">NEXT</BaseButton>
       <BaseButton v-else variant="lime" :disabled="errors.length > 0" @click="add">{{ draft.editId ? 'UPDATE' : 'ADD TO BAG' }}</BaseButton>
     </StickyBar>

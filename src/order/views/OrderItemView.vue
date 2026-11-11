@@ -77,7 +77,7 @@ function add() {
 
     <MealExtras class="mx" :label="draft.label" :qty="draft.qty" @update:label="order.setLabel" @update:qty="order.setQty" />
 
-    <StickyBar :total="total" :caption="summaryParts(item, sel).slice(0, 2).join(' · ')">
+    <StickyBar :caption="summaryParts(item, sel).slice(0, 2).join(' · ')">
       <BaseButton variant="lime" @click="add">{{ draft.editId ? 'UPDATE' : 'ADD TO BAG' }}</BaseButton>
     </StickyBar>
   </div>

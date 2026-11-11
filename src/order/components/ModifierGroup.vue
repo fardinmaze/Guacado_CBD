@@ -1,6 +1,5 @@
 <script setup>
 import { computed } from 'vue'
-import { cents } from '@/order/lib/pricing'
 import HeatIcons from '@/components/ui/HeatIcons.vue'
 import LevelControl from './LevelControl.vue'
 
@@ -27,7 +26,7 @@ const rule = computed(() => {
   return min ? `Pick ${min}–${max}` : `Up to ${max} · optional`
 })
 const atCap = computed(() => props.group.maxSelect > 1 && props.picks.length >= props.group.maxSelect)
-const priceText = (o) => (o.priceCents ? (props.group.setsPrice ? cents(o.priceCents) : `+${cents(o.priceCents)}`) : '')
+// Prices are hidden until the last stage (checkout shows the full breakdown).
 </script>
 
 <template>
@@ -51,7 +50,6 @@ const priceText = (o) => (o.priceCents ? (props.group.setsPrice ? cents(o.priceC
           </span>
           <span class="opt__name">{{ o.name }}</span>
           <HeatIcons v-if="o.heat" :level="o.heat" />
-          <span v-if="priceText(o)" class="opt__price">{{ priceText(o) }}</span>
         </button>
         <LevelControl
           v-if="group.allowLevels && isPicked(o.name)"

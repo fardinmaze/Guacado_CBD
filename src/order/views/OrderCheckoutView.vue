@@ -104,7 +104,7 @@ const eta = computed(() => asapMinutes(12, 0))
     </section>
 
     <section class="card" aria-labelledby="c-sum">
-      <h2 id="c-sum" class="card__h">Order summary</h2>
+      <h2 id="c-sum" class="card__h">Order summary and price breakdown</h2>
       <ul class="sum">
         <li v-for="x in lines" :key="x.l.id">
           <div>
@@ -130,7 +130,7 @@ const eta = computed(() => asapMinutes(12, 0))
       <a :href="site.orderUrl" target="_blank" rel="noopener">Order on DoorDash<span class="sr-only"> (opens in a new tab)</span></a>
     </aside>
 
-    <StickyBar :total="cents(t.total)" :caption="valid ? 'Ready when payment is' : 'Fill in your details'">
+    <StickyBar :caption="valid ? 'Ready when payment is' : 'Fill in your details'">
       <BaseButton variant="lime" disabled>PLACE ORDER</BaseButton>
     </StickyBar>
   </form>

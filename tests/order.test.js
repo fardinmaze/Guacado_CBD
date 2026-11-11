@@ -213,7 +213,7 @@ describe('ordering flow in the app', () => {
     await vi.waitFor(() => expect(router.currentRoute.value.path).toBe('/order/brooklyn-5119-a-avenue-u'))
     await flushPromises()
     expect(wrapper.text()).toContain('Build your own!')
-    expect(wrapper.text()).toContain('From $11.95')
+    expect(wrapper.text()).not.toMatch(/\$\d/) // no prices until checkout
     wrapper.unmount()
   })
 
@@ -230,17 +230,15 @@ describe('ordering flow in the app', () => {
     wrapper.unmount()
   })
 
-  it('builder: default bowl $12.95, steak + guac $15.90, add to bag, URL carries the step', async () => {
+  it('builder: no price on the bottom bar, steak + guac adds up to $15.90 in the bag, URL carries the step', async () => {
     const { wrapper, router } = await mountAt('/order/brooklyn-5119-a-avenue-u/build')
-    const total = () => wrapper.find('.bar__total').text().replace('Total', '').trim()
-    expect(total()).toBe('$12.95')
+    expect(wrapper.find('.bar').exists()).toBe(true)
+    expect(wrapper.find('.bar__total').exists()).toBe(false) // prices are hidden for now
     await click(wrapper, 'NEXT')
     expect(router.currentRoute.value.query.step).toBe('protein')
     await click(wrapper, 'Grilled Steak')
-    expect(total()).toBe('$13.95')
     await click(wrapper, 'NEXT')
     await click(wrapper, 'Add Fresh Guac')
-    expect(total()).toBe('$15.90')
     await click(wrapper, 'NEXT')
     await click(wrapper, 'NEXT')
     expect(router.currentRoute.value.query.step).toBe('review')
@@ -258,7 +256,7 @@ describe('ordering flow in the app', () => {
     const again = await mountAt('/order/brooklyn-5119-a-avenue-u/build?step=protein')
     expect(again.wrapper.find('.b__h').text()).toBe('Pick your protein')
     expect(again.wrapper.find('[aria-pressed=true]').text()).toContain('Grilled Shrimp')
-    expect(again.wrapper.find('.bar__total').text()).toContain('$13.95')
+    expect(again.wrapper.find('.bar__total').exists()).toBe(false)
     again.wrapper.unmount()
   })
 
@@ -288,11 +286,13 @@ describe('ordering flow in the app', () => {
   it('quick add, bag sheet and checkout (payment stays off)', async () => {
     const { wrapper, router } = await mountAt('/order/brooklyn-5119-a-avenue-u')
     await wrapper.find('[aria-label="Add Chips to bag"]').trigger('click')
-    expect(wrapper.find('.bar__total').text()).toContain('$2.95')
+    expect(wrapper.find('.bar__total').exists()).toBe(false)
+    expect(wrapper.find('.bar__cap').text()).toContain('1 in your bag')
     await click(wrapper, 'VIEW BAG')
     const sheet = document.querySelector('[role=dialog]')
     expect(sheet.textContent).toContain('Chips')
-    expect(sheet.textContent).toContain('$2.95')
+    expect(sheet.textContent).not.toMatch(/\$\d/)
+    expect(sheet.textContent).toContain('Chips')
     sheet.querySelector('[aria-label="Close bag"]').click()
     await flushPromises()
     expect(document.querySelector('[role=dialog]')).toBeNull()

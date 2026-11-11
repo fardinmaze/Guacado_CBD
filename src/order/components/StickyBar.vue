@@ -1,8 +1,8 @@
 <script setup>
-// Thumb-zone action bar pinned to the bottom of the screen. The total sits in a polite live
-// region so a screen reader hears "Total $15.90" after each change (not on every frame).
+// Thumb-zone action bar pinned to the bottom of the screen. Prices are hidden for now (pass
+// `total` to show one again; it sits in a polite live region so screen readers hear changes).
 defineProps({
-  total: { type: String, required: true },
+  total: { type: String, default: '' },
   caption: { type: String, default: '' },
 })
 </script>
@@ -12,7 +12,7 @@ defineProps({
     <div class="bar__in">
       <div class="bar__sum">
         <span class="bar__cap">{{ caption }}</span>
-        <strong class="bar__total" aria-live="polite" aria-atomic="true"><span class="sr-only">Total </span>{{ total }}</strong>
+        <strong v-if="total" class="bar__total" aria-live="polite" aria-atomic="true"><span class="sr-only">Total </span>{{ total }}</strong>
       </div>
       <div class="bar__act"><slot /></div>
     </div>
@@ -32,7 +32,7 @@ defineProps({
 }
 .bar__in { display: flex; align-items: center; gap: 16px; max-width: 720px; margin: 0 auto; padding: 12px var(--gut-r) 12px var(--gut-l); }
 .bar__sum { display: grid; min-width: 0; }
-.bar__cap { font-size: 13px; color: var(--ink-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar__cap { font-size: 14px; font-weight: 700; color: var(--on-night); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .bar__total { font: 400 32px/1 var(--f-cond); letter-spacing: 1px; color: var(--lime); }
 .bar__act { margin-left: auto; display: flex; gap: 8px; }
 .bar__act :deep(.btn) { min-height: 52px; padding-inline: 24px; }

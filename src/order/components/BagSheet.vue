@@ -2,7 +2,7 @@
 import { nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { findItem } from '@/order/lib/catalog'
-import { cents, lineCents, summaryParts } from '@/order/lib/pricing'
+import { summaryParts } from '@/order/lib/pricing'
 import { useOrder } from '@/order/useOrder'
 import { useBagSheet } from '@/order/useBagSheet'
 import BaseButton from '@/components/ui/BaseButton.vue'
@@ -17,7 +17,7 @@ let opener = null
 
 const view = (line) => {
   const item = findItem(line.itemSlug)
-  return { line, item, parts: summaryParts(item, line.selections), price: lineCents(item, line) }
+  return { line, item, parts: summaryParts(item, line.selections) }
 }
 
 function onKey(e) {
@@ -88,7 +88,6 @@ function checkout() {
                 </p>
                 <p v-if="v.line.label" class="line__for">For {{ v.line.label }}</p>
               </div>
-              <span class="line__price">{{ cents(v.price) }}</span>
             </div>
             <p v-if="v.parts.length" class="line__sum">{{ v.parts.join(' · ') }}</p>
             <div class="line__act">
@@ -105,7 +104,7 @@ function checkout() {
         </ul>
 
         <footer v-if="order.state.lines.length" class="sheet__foot">
-          <div class="sub"><span>Subtotal</span><strong>{{ cents(order.subtotal.value) }}</strong></div>
+          <p class="sub">Prices and your total are shown at checkout.</p>
           <BaseButton variant="lime" class="go" @click="checkout">CHECKOUT</BaseButton>
         </footer>
       </div>
@@ -144,7 +143,6 @@ function checkout() {
 .lnk { min-height: 44px; padding: 0 12px; border: 0; background: none; color: var(--ink); font: 700 14px/1 var(--f-body); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .lnk--bad { color: var(--chili); }
 .sheet__foot { padding: 14px var(--gut-r) calc(14px + env(safe-area-inset-bottom, 0px)) var(--gut-l); border-top: 1px solid var(--line); background: var(--surface); display: grid; gap: 12px; }
-.sub { display: flex; justify-content: space-between; align-items: baseline; }
-.sub strong { font: 400 30px/1 var(--f-cond); letter-spacing: 1px; color: var(--lime); }
+.sub { font-size: 14px; color: var(--ink-muted); margin: 0; }
 .go { width: 100%; }
 </style>

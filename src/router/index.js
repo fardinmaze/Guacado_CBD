@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
 import { findStore, isOrderable } from '@/order/lib/catalog'
+import { goPath } from '@/order/lib/go'
 import { useOrder } from '@/order/useOrder'
 import locationList from '@/data/locations.json'
 import { locationStats } from '@/utils/locations'
@@ -29,7 +30,7 @@ export const routes = [
         // A remembered, orderable store skips the picker (LOC-03). "?change" forces it.
         beforeEnter: (to) => {
           const slug = useOrder().state.storeSlug
-          if (slug && !to.query.change) return { path: `/order/${slug}`, replace: true }
+          if (slug && !to.query.change) return { ...goPath(slug, to.query.go), replace: true }
         },
       },
       { path: 'checkout', name: 'order-checkout', component: () => import('@/order/views/OrderCheckoutView.vue'), meta: { title: `Checkout · ${BRAND}` } },
