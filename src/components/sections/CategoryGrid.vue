@@ -7,6 +7,13 @@ import badge from '@/assets/logos/guacado-badge.png'
 // picks a restaurant (skipped if one is remembered) and lands on that dish. `go` is read by
 // src/order/lib/go.js: build | item:<slug> | cat:<slug>. Hover (or focus) lifts the tile and
 // swaps the description for an "Order now" button; touch screens always show the button.
+const props = defineProps({
+  as: { type: String, default: 'h2' }, // use 'h1' when this grid is the page's main heading
+  eyebrow: { type: String, default: '' },
+  title: { type: String, default: 'Find your flavor.' },
+  intro: { type: String, default: '' },
+})
+
 const cats = [
   { id: 'kits', name: 'Family Kits', sub: 'A spread for 4–6', img: tacos, flat: true, badge: 'Feeds a crowd', go: 'cat:family-kits' },
   { id: 'byo', name: 'Burrito & More', sub: 'Burritos, nachos and quesadillas', go: 'build' },
@@ -22,7 +29,11 @@ const cats = [
 
 <template>
   <section id="menu" class="cats" aria-labelledby="cats-title">
-    <h2 id="cats-title" class="cats__title">Find your flavor.</h2>
+    <header class="cats__head">
+      <span v-if="props.eyebrow" class="cats__eyebrow">{{ props.eyebrow }}</span>
+      <component :is="props.as" id="cats-title" class="cats__title">{{ props.title }}</component>
+      <p v-if="props.intro" class="cats__intro">{{ props.intro }}</p>
+    </header>
     <ul class="cats__grid">
       <li v-for="c in cats" :key="c.id">
         <RouterLink :to="{ path: '/order', query: { go: c.go } }" class="cat" :aria-label="`Order ${c.name}. ${c.sub}`">
@@ -42,7 +53,10 @@ const cats = [
 </template>
 
 <style scoped>
-.cats__title { text-align: center; font: 900 clamp(34px, 4vw, 48px)/1 var(--f-display); font-stretch: 72%; text-transform: uppercase; margin-bottom: clamp(24px, 3vw, 40px); }
+.cats__head { display: grid; justify-items: center; gap: 12px; margin-bottom: clamp(28px, 3.5vw, 48px); text-align: center; }
+.cats__eyebrow { font: 800 14px/1 var(--f-display); font-stretch: 80%; text-transform: uppercase; letter-spacing: 0.14em; color: var(--accent-text); }
+.cats__intro { max-width: 58ch; color: var(--ink-muted); font-size: 15px; line-height: 1.5; }
+.cats__title { margin: 0; text-align: center; font: 900 clamp(34px, 4vw, 48px)/1 var(--f-display); font-stretch: 72%; text-transform: uppercase; }
 .cats { padding: clamp(28px, 4vw, 56px) 16px clamp(24px, 4vw, 48px); }
 .cats__grid { list-style: none; margin: 0 auto; padding: 0; max-width: 1100px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 44px 24px; }
 @media (min-width: 720px) { .cats__grid { grid-template-columns: repeat(3, 1fr); gap: 72px 88px; } }

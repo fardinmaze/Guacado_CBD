@@ -13,7 +13,7 @@ const cards = [
     poster: photos.bowl,
     label: 'A burrito bowl being built layer by layer',
     cta: 'Start building',
-    to: '/menu#build',
+    to: { path: '/order', query: { go: 'build' } },
   },
   {
     id: 'guac',

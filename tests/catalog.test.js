@@ -16,10 +16,11 @@ describe('sales catalog', () => {
     })
   })
 
-  it('every tile has a price and a menu-page link', () => {
-    ;[...featuredTiles, ...moreTiles].forEach((t) => {
-      expect(t.from).toBeGreaterThan(0)
-      expect(t.to).toMatch(/^\/menu#/)
+  it('every tile has a price; featured tiles open the order flow', () => {
+    ;[...featuredTiles, ...moreTiles].forEach((t) => expect(t.from).toBeGreaterThan(0))
+    featuredTiles.forEach((t) => {
+      expect(t.to.path).toBe('/order')
+      expect(t.to.query.go).toBeTruthy()
     })
   })
 

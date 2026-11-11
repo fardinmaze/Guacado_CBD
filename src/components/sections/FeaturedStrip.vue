@@ -1,15 +1,21 @@
 <script setup>
 import { featuredTiles } from '@/data/catalog'
 
+defineProps({
+  eyebrow: { type: String, default: 'Worth a craving' },
+  cta: { type: String, default: 'Explore the menu' },
+  ctaTo: { type: [String, Object], default: '/menu' },
+})
+
 // "Featured": patterned band, centred title and button, three photo cards with a caption bar.
 </script>
 
 <template>
   <section class="feat" aria-labelledby="feat-title">
-    <span class="feat__eyebrow">Worth a craving</span>
+    <span class="feat__eyebrow">{{ eyebrow }}</span>
     <h2 id="feat-title">The Guacado favorites.</h2>
     <p class="feat__body">From loaded bowls to birria tacos, find something you'll want to come back for.</p>
-    <RouterLink to="/menu" class="feat__btn">Explore the menu</RouterLink>
+    <RouterLink :to="ctaTo" class="feat__btn">{{ cta }}</RouterLink>
     <ul class="feat__row">
       <li v-for="t in featuredTiles" :key="t.id">
         <RouterLink :to="t.to" class="fc">

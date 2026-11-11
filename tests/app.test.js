@@ -2,9 +2,9 @@ import { beforeAll, describe, expect, it } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import { createMemoryHistory } from 'vue-router'
 import App from '@/App.vue'
+import BuildYourOwn from '@/components/sections/BuildYourOwn.vue'
 import { createAppRouter } from '@/router'
 import { ORDER_URL } from '@/data/site'
-import { menuSections } from '@/data/catalog'
 
 beforeAll(() => {
   // jsdom has no matchMedia: report reduced motion so GSAP tweens are skipped.
@@ -55,7 +55,11 @@ describe('App smoke test', () => {
   })
 
   it('order ticket updates live: default $12.95, steak + guac = $15.90', async () => {
-    const { wrapper } = await mountAt('/menu')
+    // The builder is a component (not on a marketing page right now); mount it on its own.
+    const router = createAppRouter(createMemoryHistory())
+    await router.push('/')
+    const wrapper = mount(BuildYourOwn, { global: { plugins: [router] }, attachTo: document.body })
+    await flushPromises()
     expect(wrapper.find('.ticket__total strong').text()).toBe('$12.95')
     const click = async (label) => {
       await wrapper.findAll('button').find((b) => b.text().startsWith(label)).trigger('click')
@@ -86,11 +90,13 @@ describe('App smoke test', () => {
     wrapper.unmount()
   })
 
-  it('menu page has a section per tab, an order button per item and the food advisory', async () => {
+  it('menu page is the Chipotle-style grid: 9 tiles into the order flow, no prices, food advisory', async () => {
     const { wrapper } = await mountAt('/menu')
-    menuSections.forEach((s) => expect(wrapper.find(`section#${s.id}`).exists()).toBe(true))
-    // 3 signature + 3 kits + 2 kids
-    expect(wrapper.findAll('.item .item__order')).toHaveLength(8)
+    expect(wrapper.find('h1').text()).toContain('Something delicious')
+    const tiles = wrapper.findAll('.cat')
+    expect(tiles).toHaveLength(9)
+    tiles.forEach((t) => expect(t.attributes('href')).toMatch(/^\/order\?go=/))
+    expect(wrapper.text()).not.toMatch(/\$\d/)
     expect(wrapper.text()).toContain('Consuming raw or undercooked meats')
     wrapper.unmount()
   })

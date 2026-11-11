@@ -51,7 +51,7 @@ export const featuredTiles = [
     from: fromPrices.birria,
     image: photos.birria,
     badge: 'Signature',
-    to: '/menu#signature',
+    to: { path: '/order', query: { go: 'item:birria-tacos' } },
   },
   {
     id: 'bowl',
@@ -62,7 +62,7 @@ export const featuredTiles = [
     image: photos.bowl,
     video: videos.tile,
     badge: 'Build your own',
-    to: '/menu#build',
+    to: { path: '/order', query: { go: 'build' } },
   },
   {
     id: 'tacos',
@@ -71,7 +71,7 @@ export const featuredTiles = [
     calories: tacos.calories,
     from: fromPrices.tacos,
     image: photos.tacos,
-    to: '/menu#signature',
+    to: { path: '/order', query: { go: 'item:tacos' } },
   },
 ]
 
