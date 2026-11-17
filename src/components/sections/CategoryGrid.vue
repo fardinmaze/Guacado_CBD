@@ -1,6 +1,4 @@
 <script setup>
-import { photos } from '@/data/catalog'
-import { guac, tacos, tostada } from '@/assets/illustrations'
 import badge from '@/assets/logos/guacado-badge.png'
 
 // 3 x 3 flavor grid. Every tile goes straight into the ordering flow (/order): the guest
@@ -14,16 +12,19 @@ const props = defineProps({
   intro: { type: String, default: '' },
 })
 
+// Owner food photos (transparent cut-outs, trimmed + resized into public/media/menu).
+// Tiles without `img` are placeholders and show the Guacado badge until a photo arrives.
+const img = (name) => `/media/menu/${name}.png`
 const cats = [
-  { id: 'kits', name: 'Family Kits', sub: 'A spread for 4–6', img: tacos, flat: true, badge: 'Feeds a crowd', go: 'cat:family-kits' },
-  { id: 'byo', name: 'Burrito & More', sub: 'Burritos, nachos and quesadillas', go: 'build' },
-  { id: 'bowl', name: 'Burrito Bowl', sub: 'Your favorite flavors, all in one bowl', img: photos.bowl, badge: 'Fan favorite', go: 'build' },
-  { id: 'birria', name: 'Birria Tacos', sub: 'Chicken or beef', img: photos.birria, badge: 'Signature', go: 'item:birria-tacos' },
-  { id: 'tostada', name: 'Tostada', sub: 'Crunch into something good', img: tostada, flat: true, go: 'item:tostada' },
-  { id: 'tacos', name: 'Tacos', sub: 'Soft or crispy', img: photos.tacos, go: 'item:tacos' },
-  { id: 'kids', name: "Kid's Meal", sub: 'Little appetites, big flavor', go: 'cat:kids' },
-  { id: 'sides', name: 'Chips & Sides', sub: 'Guac, queso and fries', img: guac, flat: true, go: 'cat:sides' },
-  { id: 'drinks', name: 'Drinks & Desserts', sub: 'Shakes, lemonade and churros', go: 'cat:beverages' },
+  { id: 'kids', name: "Kids Meal", sub: 'Little appetites, big flavor', img: img('kids-meal'), go: 'cat:kids' },
+  { id: 'bowl', name: 'Burrito Bowl', sub: 'Your favorite flavors, all in one bowl', img: img('burrito-bowl'), badge: 'Fan favorite', go: 'build' },
+  { id: 'birria', name: 'Birria Tacos', sub: 'Chicken or beef', img: img('birria-tacos'), badge: 'Signature', go: 'item:birria-tacos' },
+  { id: 'burrito', name: 'Burrito', sub: 'Wrapped your way', img: img('burrito'), go: 'build' },
+  { id: 'tostada', name: 'Tostada Special', sub: 'Crunch into something good', img: img('tostada-special'), go: 'item:tostada' },
+  { id: 'plates', name: 'Loaded Plates', sub: 'Piled high with your favorites', img: img('loaded-nachos'), go: 'build' },
+  { id: 'salad', name: 'Salad Bowl', sub: 'Fresh greens, bold toppings', img: img('salad-bowl'), go: 'build' },
+  { id: 'quesadilla', name: 'Quesadilla', sub: 'Golden, grilled and melty', img: img('quesadilla'), go: 'build' },
+  { id: 'crunchwrap', name: 'Crunchwrap', sub: 'Crispy, folded and loaded', img: img('crunchwrap'), go: 'build' },
 ]
 </script>
 
@@ -37,10 +38,12 @@ const cats = [
     <ul class="cats__grid">
       <li v-for="c in cats" :key="c.id">
         <RouterLink :to="{ path: '/order', query: { go: c.go } }" class="cat" :aria-label="`Order ${c.name}. ${c.sub}`">
-          <span class="cat__img" :class="{ 'is-flat': c.flat, 'is-empty': !c.img }">
-            <img :src="c.img || badge" alt="" loading="lazy" />
+          <span class="cat__img" :class="{ 'is-empty': !c.img }">
+            <img :src="c.img || badge" alt="" loading="lazy" decoding="async" />
+            <small v-if="!c.img" class="cat__soon">Photo coming soon</small>
           </span>
-          <span v-if="c.badge" class="cat__badge">{{ c.badge }}</span>
+          <!-- Badge slot is always there so every name lines up across the row -->
+          <span class="cat__badge-slot"><span v-if="c.badge" class="cat__badge">{{ c.badge }}</span></span>
           <span class="cat__name">{{ c.name }}</span>
           <span class="cat__foot">
             <span class="cat__sub">{{ c.sub }}</span>
@@ -58,8 +61,15 @@ const cats = [
 .cats__intro { max-width: 58ch; color: var(--ink-muted); font-size: 15px; line-height: 1.5; }
 .cats__title { margin: 0; text-align: center; font: 900 clamp(34px, 4vw, 48px)/1 var(--f-display); font-stretch: 72%; text-transform: uppercase; }
 .cats { padding: clamp(28px, 4vw, 56px) 16px clamp(24px, 4vw, 48px); }
-.cats__grid { list-style: none; margin: 0 auto; padding: 0; max-width: 1100px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 44px 24px; }
-@media (min-width: 720px) { .cats__grid { grid-template-columns: repeat(3, 1fr); gap: 72px 88px; } }
+.cats__grid { list-style: none; margin: 0 auto; padding: 0; max-width: 1100px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 8px; }
+@media (min-width: 720px) { .cats__grid { gap: 64px 56px; } }
+@media (max-width: 519px) {
+  .cat { padding: 8px 2px 10px; }
+  .cat__img { width: 100%; }
+  .cat__name { font-size: 18px; }
+  .cat__badge { font-size: 8px; }
+  .cat__cta { padding: 8px 12px; font-size: 12px; }
+}
 
 .cat {
   display: grid;
@@ -72,12 +82,14 @@ const cats = [
   border-radius: 14px;
   transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.28s, background-color 0.28s;
 }
-.cat__img { width: clamp(112px, 17vw, 168px); aspect-ratio: 1; border-radius: 50%; overflow: hidden; background: #000; display: grid; place-items: center; transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); }
-.cat__img.is-flat { background: transparent; border-radius: 0; width: clamp(132px, 22vw, 230px); aspect-ratio: 4 / 3; }
-.cat__img.is-flat img { object-fit: contain; }
-.cat__img.is-empty { background: var(--surface); }
-.cat__img.is-empty img { width: 46%; height: auto; opacity: 0.55; }
-.cat__img img { width: 100%; height: 100%; object-fit: cover; }
+/* Every tile shares one 4:3 box; the cut-out photos sit inside it uncropped. */
+.cat__img { position: relative; width: clamp(140px, 24vw, 270px); aspect-ratio: 4 / 3; display: grid; place-items: center; transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.cat__img:not(.is-empty) img { position: absolute; inset: 0; }
+.cat__badge-slot { display: grid; place-items: center; min-height: 17px; }
+.cat__img img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 14px 18px rgba(20, 35, 27, 0.18)); }
+.cat__img.is-empty { background: var(--surface); border-radius: 14px; gap: 6px; align-content: center; }
+.cat__img.is-empty img { width: 34%; height: auto; opacity: 0.55; filter: none; }
+.cat__soon { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-muted); }
 .cat__badge { background: var(--ink); color: #fff; font: 800 9px/1 var(--f-display); font-stretch: 80%; text-transform: uppercase; letter-spacing: 0.08em; padding: 4px 8px; border-radius: 999px; }
 .cat__name { font: 900 clamp(22px, 3.2vw, 38px)/1 var(--f-display); font-stretch: 72%; text-transform: uppercase; color: var(--ink); transition: color 0.2s; }
 

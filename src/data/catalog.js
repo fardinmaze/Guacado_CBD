@@ -15,6 +15,7 @@ export const photos = {
 // steps: every frame a keyframe so the builder preview can seek instantly.
 // guac: 3.6 s cut (10.8–14.4 s) of the guac scoop landing, for the upsell band.
 export const videos = {
+  hero: '/media/hero-display.mp4', // owner's "Main display video 1 (menu)", home hero
   loop: '/media/2.mp4',
   steps: '/media/4.mp4',
   guac: '/media/3.mp4',

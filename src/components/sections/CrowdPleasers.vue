@@ -1,7 +1,7 @@
 <script setup>
 import menu from '@/data/menu.json'
 import { links, occasions, site } from '@/data/site'
-import { tacos as tacosImg } from '@/assets/illustrations'
+const tacosImg = '/media/menu/tacos.png' // owner photo (cut-out)
 
 // "Crowd pleasers": two cards, centred title, wide action buttons (Chipotle layout).
 // Colours are Guacado's: off-white kits card, green catering card. No prices here.
@@ -13,7 +13,7 @@ const kits = menu.familyKits
     <h2 id="crowd-title">Good food brings everyone together.</h2>
     <div class="crowd__grid">
       <article id="kits" class="cc cc--kits">
-        <img class="cc__art" :src="tacosImg" alt="" width="420" height="275" loading="lazy" />
+        <img class="cc__art" :src="tacosImg" alt="" width="538" height="720" loading="lazy" decoding="async" />
         <h3>Family kits</h3>
         <p>Feeding 4–6? Bring home two proteins, tortillas or chips, and all the fixings.</p>
         <ul class="cc__list">
@@ -41,7 +41,7 @@ const kits = menu.familyKits
 .crowd__grid { width: 100%; max-width: 940px; display: grid; gap: 18px; }
 @media (min-width: 800px) { .crowd__grid { grid-template-columns: 1fr 1fr; gap: 24px; } }
 .cc { padding: clamp(22px, 3vw, 34px); display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
-.cc__art { width: 200px; height: auto; }
+.cc__art { width: auto; height: 210px; max-width: 100%; object-fit: contain; filter: drop-shadow(0 14px 18px rgba(20, 35, 27, 0.18)); }
 .cc h3 { font: 900 clamp(26px, 3vw, 34px)/1 var(--f-display); font-stretch: 72%; text-transform: uppercase; }
 .cc p { font-size: 14px; line-height: 1.5; max-width: 40ch; }
 .cc__btn { margin-top: auto; width: 100%; max-width: 300px; display: block; padding: 16px 10px; border-radius: 3px; text-decoration: none; font: 900 16px/1 var(--f-display); font-stretch: 80%; text-transform: uppercase; letter-spacing: 0.06em; }
