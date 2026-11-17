@@ -10,7 +10,7 @@ import BaseButton from '@/components/ui/BaseButton.vue'
 <template>
   <section class="hero" aria-labelledby="hero-title">
     <div class="hero__media">
-      <LoopVideo :src="videos.hero" label="Guacado menu favorites: bowls, tacos and more" />
+      <LoopVideo :src="videos.hero" label="Fresh Guacado menu favorites: bowls, tacos and more" />
     </div>
     <div class="hero__copy">
       <span class="hero__badge">Mexican favorites, made your way</span>

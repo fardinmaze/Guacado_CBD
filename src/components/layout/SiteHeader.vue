@@ -36,8 +36,8 @@ watch(() => route.fullPath, () => (open.value = false))
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
       </button>
 
-      <RouterLink class="hdr__logo" to="/" aria-label="Guacado Mexican Grill home">
-        <img :src="logo" alt="Guacado Mexican Grill" width="168" height="40" />
+      <RouterLink class="hdr__logo" to="/" aria-label="Fresh Guacado Mexican Grill home">
+        <img :src="logo" alt="Fresh Guacado Mexican Grill" width="168" height="40" />
       </RouterLink>
 
       <nav class="nav" aria-label="Main">

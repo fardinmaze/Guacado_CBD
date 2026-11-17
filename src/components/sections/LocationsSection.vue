@@ -1,4 +1,5 @@
 <script setup>
+import Brand from '@/components/ui/Brand.vue'
 import { computed } from 'vue'
 import { stateNames, site } from '@/data/site'
 import { useLocationFilter } from '@/composables/useLocationFilter'
@@ -11,7 +12,7 @@ import LocationCard from '@/components/ui/LocationCard.vue'
 const props = defineProps({
   limit: { type: Number, default: 0 },
   headingTag: { type: String, default: 'h2' },
-  eyebrow: { type: String, default: 'Your next Guacado stop' },
+  eyebrow: { type: String, default: 'Your next Fresh Guacado stop' },
   title: { type: String, default: 'Find your flavor nearby.' },
   intro: { type: String, default: '' }, // replaces the default lead
   instruction: { type: String, default: '' }, // line under the heading
@@ -39,7 +40,7 @@ const visible = computed(() =>
       <div class="tools">
         <label class="search">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
-          <span class="sr-only">Search Guacado locations by city, street or ZIP code</span>
+          <span class="sr-only">Search Fresh Guacado locations by city, street or ZIP code</span>
           <input v-model="query" type="search" placeholder="Enter a city, street or ZIP code" autocomplete="postal-code" />
         </label>
         <div class="filters" role="group" aria-label="Filter by state">
@@ -52,7 +53,7 @@ const visible = computed(() =>
       <div v-if="visible.length" class="locs">
         <LocationCard v-for="l in visible" :key="l.address + l.zip" :location="l" />
       </div>
-      <p v-else class="empty" role="status">No Guacado locations match "{{ query }}". Check the spelling or try a nearby ZIP.</p>
+      <p v-else class="empty" role="status">No <Brand /> locations match "{{ query }}". Check the spelling or try a nearby ZIP.</p>
 
       <div v-if="limit && !searching" class="more">
         <BaseButton to="/locations" variant="outline">See all {{ filtered.length }} locations</BaseButton>

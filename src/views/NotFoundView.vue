@@ -1,11 +1,12 @@
 <script setup>
+import Brand from '@/components/ui/Brand.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 </script>
 
 <template>
   <section class="nf">
     <h1 class="display">That page isn't on the menu.</h1>
-    <p>Looks like this page went missing. Head back home or find your nearest Guacado.</p>
+    <p>Looks like this page went missing. Head back home or find your nearest <Brand />.</p>
     <div class="nf__btns">
       <BaseButton to="/" size="lg">Home</BaseButton>
       <BaseButton to="/locations" size="lg" variant="outline">Find a location</BaseButton>

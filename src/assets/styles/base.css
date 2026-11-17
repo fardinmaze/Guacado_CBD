@@ -107,3 +107,8 @@ section { position: relative; }
 /* Marketing pages: square-cornered buttons (the /order flow keeps its own pill buttons). */
 .mk a.btn, .mk button.btn { border-radius: var(--r-btn); }
 .mk .band--alt { border-top: 0; }
+
+/* Brand name "Fresh Guacado" (src/components/ui/Brand.vue). "Fresh" takes the accent colour;
+   sections on green or dark backgrounds set --brand-fresh: var(--lime). */
+.brand { white-space: nowrap; }
+.brand__fresh { color: var(--brand-fresh, var(--guac)); font-weight: bolder; }

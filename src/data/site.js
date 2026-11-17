@@ -5,7 +5,7 @@ export const ORDER_URL = 'https://order.online/business/gaucado-14231153' // sic
 const MAIN = 'https://guacadomexican.com'
 
 export const site = {
-  name: 'Guacado Mexican Grill',
+  name: 'Fresh Guacado Mexican Grill',
   email: 'guacadomexicangrill@gmail.com',
   hours: 'Mon – Sun · 10:30am – 3am',
   hoursShort: '10:30am – 3am',

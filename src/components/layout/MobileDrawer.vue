@@ -50,7 +50,7 @@ onBeforeUnmount(() => {
       <div v-if="open" class="scrim" @click.self="emit('close')">
         <div id="drawer" ref="root" class="drawer" role="dialog" aria-modal="true" aria-label="Site menu">
           <div class="drawer__top">
-            <img :src="logo" alt="Guacado Mexican Grill" width="140" height="33" />
+            <img :src="logo" alt="Fresh Guacado Mexican Grill" width="140" height="33" />
             <button ref="closeBtn" class="x" type="button" aria-label="Close menu" @click="emit('close')">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
             </button>

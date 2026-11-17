@@ -1,4 +1,5 @@
 <script setup>
+import Brand from '@/components/ui/Brand.vue'
 import { links, nav, site } from '@/data/site'
 import badge from '@/assets/logos/guacado-badge.png'
 import AppLink from '@/components/ui/AppLink.vue'
@@ -30,7 +31,7 @@ const small = [
         <img :src="badge" alt="" width="84" height="86" loading="lazy" />
         <span class="ftr__kicker">Hungry yet?</span>
         <b>Your next favorite is waiting.</b>
-        <span class="ftr__lead">Explore the menu and order pickup from your nearest Guacado. Open every day, 10:30am to 3am.</span>
+        <span class="ftr__lead">Explore the menu and order pickup from your nearest <Brand />. Open every day, 10:30am to 3am.</span>
         <a :href="site.orderUrl" class="ftr__order">Order pickup</a>
         <RouterLink to="/locations" class="ftr__learn">Find a location</RouterLink>
       </aside>
@@ -44,13 +45,13 @@ const small = [
       <div>
         <h3>Connect with us</h3>
         <div class="social">
-          <a :href="site.instagram" aria-label="Guacado on Instagram"><svg viewBox="0 0 24 24"><path d="M12 7.2A4.8 4.8 0 1 0 12 16.8 4.8 4.8 0 0 0 12 7.2zm0 7.9a3.1 3.1 0 1 1 0-6.2 3.1 3.1 0 0 1 0 6.2zM17 5.9a1.1 1.1 0 1 0 0 2.3 1.1 1.1 0 0 0 0-2.3zM21.9 7.9c-.1-1.6-.4-3-1.6-4.2S17.7 2.2 16.1 2.1C14.5 2 9.5 2 7.9 2.1 6.3 2.2 4.9 2.5 3.7 3.7S2.2 6.3 2.1 7.9C2 9.5 2 14.5 2.1 16.1c.1 1.6.4 3 1.6 4.2s2.6 1.5 4.2 1.6c1.6.1 6.6.1 8.2 0 1.6-.1 3-.4 4.2-1.6s1.5-2.6 1.6-4.2c.1-1.6.1-6.6 0-8.2zm-2.1 9.9a3.3 3.3 0 0 1-1.9 1.9c-1.3.5-4.4.4-5.9.4s-4.6.1-5.9-.4a3.3 3.3 0 0 1-1.9-1.9c-.5-1.3-.4-4.4-.4-5.8s-.1-4.6.4-5.8a3.3 3.3 0 0 1 1.9-1.9C7.4 3.8 10.5 3.9 12 3.9s4.6-.1 5.9.4a3.3 3.3 0 0 1 1.9 1.9c.5 1.3.4 4.4.4 5.8s.1 4.6-.4 5.8z" /></svg></a>
-          <a :href="site.facebook" aria-label="Guacado on Facebook"><svg viewBox="0 0 24 24"><path d="M14 8.5V6.8c0-.8.5-1 .9-1H17V2.1L14.1 2C10.9 2 10.2 4.4 10.2 6v2.5H8v3.8h2.2V22H14v-9.7h2.9l.4-3.8H14z" /></svg></a>
+          <a :href="site.instagram" aria-label="Fresh Guacado on Instagram"><svg viewBox="0 0 24 24"><path d="M12 7.2A4.8 4.8 0 1 0 12 16.8 4.8 4.8 0 0 0 12 7.2zm0 7.9a3.1 3.1 0 1 1 0-6.2 3.1 3.1 0 0 1 0 6.2zM17 5.9a1.1 1.1 0 1 0 0 2.3 1.1 1.1 0 0 0 0-2.3zM21.9 7.9c-.1-1.6-.4-3-1.6-4.2S17.7 2.2 16.1 2.1C14.5 2 9.5 2 7.9 2.1 6.3 2.2 4.9 2.5 3.7 3.7S2.2 6.3 2.1 7.9C2 9.5 2 14.5 2.1 16.1c.1 1.6.4 3 1.6 4.2s2.6 1.5 4.2 1.6c1.6.1 6.6.1 8.2 0 1.6-.1 3-.4 4.2-1.6s1.5-2.6 1.6-4.2c.1-1.6.1-6.6 0-8.2zm-2.1 9.9a3.3 3.3 0 0 1-1.9 1.9c-1.3.5-4.4.4-5.9.4s-4.6.1-5.9-.4a3.3 3.3 0 0 1-1.9-1.9c-.5-1.3-.4-4.4-.4-5.8s-.1-4.6.4-5.8a3.3 3.3 0 0 1 1.9-1.9C7.4 3.8 10.5 3.9 12 3.9s4.6-.1 5.9.4a3.3 3.3 0 0 1 1.9 1.9c.5 1.3.4 4.4.4 5.8s.1 4.6-.4 5.8z" /></svg></a>
+          <a :href="site.facebook" aria-label="Fresh Guacado on Facebook"><svg viewBox="0 0 24 24"><path d="M14 8.5V6.8c0-.8.5-1 .9-1H17V2.1L14.1 2C10.9 2 10.2 4.4 10.2 6v2.5H8v3.8h2.2V22H14v-9.7h2.9l.4-3.8H14z" /></svg></a>
         </div>
       </div>
     </div>
 
-    <div class="ftr__copy">© 2026 Guacado Mexican Grill · <a href="#top">Back to top ↑</a></div>
+    <div class="ftr__copy">© 2026 <Brand /> Mexican Grill · <a href="#top">Back to top ↑</a></div>
     <div class="ftr__legal">
       <a :href="site.accessibility">Accessibility Statement</a>
       <span>Consuming raw or undercooked meats, poultry, seafood, shellfish or eggs may increase your risk of foodborne illness.</span>

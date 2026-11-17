@@ -14,7 +14,7 @@ const status = computed(() => (order.store.value ? storeStatus(order.store.value
 <template>
   <header class="oh">
     <div class="oh__in">
-      <RouterLink to="/" class="oh__logo" aria-label="Guacado Mexican Grill, back to the main site">
+      <RouterLink to="/" class="oh__logo" aria-label="Fresh Guacado Mexican Grill, back to the main site">
         <img :src="logo" alt="" width="120" height="29" />
       </RouterLink>
 

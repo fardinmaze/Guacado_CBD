@@ -103,9 +103,9 @@ describe('App smoke test', () => {
 
   it('sets the document title per route', async () => {
     const { wrapper, router } = await mountAt('/catering')
-    expect(document.title).toBe('Guacado Catering · Mexican Food for Every Gathering')
+    expect(document.title).toBe('Fresh Guacado Catering · Mexican Food for Every Gathering')
     await router.push('/')
-    expect(document.title).toBe('Guacado Mexican Grill · Bowls, Tacos & Mexican Favorites')
+    expect(document.title).toBe('Fresh Guacado Mexican Grill · Bowls, Tacos & Mexican Favorites')
     wrapper.unmount()
   })
 })

@@ -1,4 +1,5 @@
 <script setup>
+import Brand from '@/components/ui/Brand.vue'
 // Eyebrow + uppercase headline + optional lead. Slot = actions on the right.
 defineProps({
   eyebrow: { type: String, default: '' },
@@ -11,9 +12,9 @@ defineProps({
 <template>
   <div class="head">
     <div class="head__text">
-      <span v-if="eyebrow" class="eyebrow">{{ eyebrow }}</span>
-      <component :is="tag" class="display h-sec">{{ title }}</component>
-      <p v-if="lead" class="lead">{{ lead }}</p>
+      <span v-if="eyebrow" class="eyebrow"><Brand :text="eyebrow" /></span>
+      <component :is="tag" class="display h-sec"><Brand :text="title" /></component>
+      <p v-if="lead" class="lead"><Brand :text="lead" /></p>
     </div>
     <div v-if="$slots.default" class="head__aside"><slot /></div>
   </div>
