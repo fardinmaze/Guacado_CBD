@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { storeStatus } from '@/order/lib/hours'
 import { useOrder } from '@/order/useOrder'
 import { useBagSheet } from '@/order/useBagSheet'
-import logo from '@/assets/logos/guacado-wordmark-reverse.png'
+import logo from '@/assets/logos/guacado-wordmark-reverse.webp'
 
 // Order-flow header: logo, store chip (tap to change), bag button with a count.
 const order = useOrder()

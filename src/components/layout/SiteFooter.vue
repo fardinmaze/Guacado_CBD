@@ -1,7 +1,7 @@
 <script setup>
 import Brand from '@/components/ui/Brand.vue'
 import { links, nav, site } from '@/data/site'
-import badge from '@/assets/logos/guacado-badge.png'
+import badge from '@/assets/logos/guacado-badge.webp'
 import AppLink from '@/components/ui/AppLink.vue'
 
 // Big links (left column), small links (middle column), order promo (right): the chipotle.com footer layout.

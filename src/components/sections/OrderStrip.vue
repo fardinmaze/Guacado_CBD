@@ -1,7 +1,7 @@
 <script setup>
 import Brand from '@/components/ui/Brand.vue'
 import { site } from '@/data/site'
-import badge from '@/assets/logos/guacado-badge.png'
+import badge from '@/assets/logos/guacado-badge.webp'
 
 // Slim strip under the hero (the "join rewards" strip's slot on chipotle.com): two CTAs.
 // Guacado has no account system of its own, so "Create an account" goes to the online

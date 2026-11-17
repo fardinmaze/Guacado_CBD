@@ -1,7 +1,7 @@
 <script setup>
 import { nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { nav, site } from '@/data/site'
-import logo from '@/assets/logos/guacado-wordmark.png'
+import logo from '@/assets/logos/guacado-wordmark.webp'
 import AppLink from '@/components/ui/AppLink.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 

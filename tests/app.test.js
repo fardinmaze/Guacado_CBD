@@ -36,8 +36,10 @@ describe('App smoke test', () => {
     expect(wrapper.find('h1').text()).toContain('Big Mexican Flavors')
     expect(wrapper.findAll('.cat')).toHaveLength(9)
     expect(wrapper.find('.feat').text()).toContain('Birria Tacos')
-    // Bowl clips: hero loop and the two story cards
-    expect(wrapper.findAll('video')).toHaveLength(3)
+    // Hero clip and the three story cards (guac, queso, birria)
+    expect(wrapper.findAll('video')).toHaveLength(4)
+    expect(wrapper.findAll('.trio .fcard')).toHaveLength(3)
+    expect(wrapper.find('.fcard.is-hi').text()).toContain('Birria')
     expect(wrapper.find('#kits').exists()).toBe(true)
     expect(wrapper.find('#catering').exists()).toBe(true)
     wrapper.unmount()
@@ -50,7 +52,9 @@ describe('App smoke test', () => {
     expect(wrapper.find('.bar__cta').attributes('href')).toBe(ORDER_URL)
     expect(wrapper.find('.ftr__order').attributes('href')).toBe(ORDER_URL)
     expect(wrapper.find('.hero a.btn').attributes('href')).toBe(ORDER_URL)
-    expect(orderLinks(wrapper).length).toBeGreaterThan(10)
+    // External order links plus links into the in-site ordering flow (/order)
+    const inSite = wrapper.findAll('a[href^="/order"]').length
+    expect(orderLinks(wrapper).length + inSite).toBeGreaterThan(10)
     wrapper.unmount()
   })
 

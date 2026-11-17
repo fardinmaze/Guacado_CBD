@@ -5,12 +5,15 @@ import LoopVideo from '@/components/ui/LoopVideo.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 
 // Full-width media hero with a centred offer (Chipotle layout, Guacado content).
+// Phones and small screens get the 720p cut, wider screens 1080p. The poster shows instantly.
+const small = typeof matchMedia === 'function' && matchMedia('(max-width: 900px)').matches
+const heroSrc = small ? videos.hero.sd : videos.hero.hd
 </script>
 
 <template>
   <section class="hero" aria-labelledby="hero-title">
     <div class="hero__media">
-      <LoopVideo :src="videos.hero" label="Fresh Guacado menu favorites: bowls, tacos and more" />
+      <LoopVideo :src="heroSrc" :poster="videos.hero.poster" label="Fresh Guacado menu favorites: bowls, tacos and more" />
     </div>
     <div class="hero__copy">
       <span class="hero__badge">Mexican favorites, made your way</span>

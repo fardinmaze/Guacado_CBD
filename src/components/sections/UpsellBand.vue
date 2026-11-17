@@ -4,7 +4,7 @@ import { addOns } from '@/data/catalog'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import AddOnArt from '@/components/ui/AddOnArt.vue'
 
-const friesImg = '/media/menu/loaded-fries.png' // owner photo (cut-out)
+const friesImg = '/media/menu/loaded-fries.webp' // owner photo (cut-out)
 
 // "A little something on the side?": image cards, no prices. (Guac promo lives in FeatureDuo.)
 const kindOf = (name) => (/chips/i.test(name) ? 'chips' : /churro/i.test(name) ? 'churros' : /lemonade/i.test(name) ? 'lemonade' : 'shake')

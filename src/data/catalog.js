@@ -15,7 +15,9 @@ export const photos = {
 // steps: every frame a keyframe so the builder preview can seek instantly.
 // guac: 3.6 s cut (10.8–14.4 s) of the guac scoop landing, for the upsell band.
 export const videos = {
-  hero: '/media/hero-display.mp4', // owner's "Main display video 1 (menu)", home hero
+  // Owner's "Main display video 1 (menu)" (4K, 39.6 MB) re-encoded for the web: H.264, no audio,
+  // faststart. 1080p ~3.1 MB for wide screens, 720p ~1.3 MB for phones, poster = first frame.
+  hero: { hd: '/media/hero-1080.mp4', sd: '/media/hero-720.mp4', poster: '/media/hero-poster.jpg' },
   loop: '/media/2.mp4',
   steps: '/media/4.mp4',
   guac: '/media/3.mp4',

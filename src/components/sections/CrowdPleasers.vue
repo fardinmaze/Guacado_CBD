@@ -1,7 +1,7 @@
 <script setup>
 import menu from '@/data/menu.json'
 import { links, occasions, site } from '@/data/site'
-const tacosImg = '/media/menu/tacos.png' // owner photo (cut-out)
+const tacosImg = '/media/menu/tacos.webp' // owner photo (cut-out)
 
 // "Crowd pleasers": two cards, centred title, wide action buttons (Chipotle layout).
 // Colours are Guacado's: off-white kits card, green catering card. No prices here.

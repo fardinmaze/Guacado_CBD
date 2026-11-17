@@ -1,5 +1,5 @@
 <script setup>
-import badge from '@/assets/logos/guacado-badge.png'
+import badge from '@/assets/logos/guacado-badge.webp'
 
 // 3 x 3 flavor grid. Every tile goes straight into the ordering flow (/order): the guest
 // picks a restaurant (skipped if one is remembered) and lands on that dish. `go` is read by
@@ -14,7 +14,7 @@ const props = defineProps({
 
 // Owner food photos (transparent cut-outs, trimmed + resized into public/media/menu).
 // Tiles without `img` are placeholders and show the Guacado badge until a photo arrives.
-const img = (name) => `/media/menu/${name}.png`
+const img = (name) => `/media/menu/${name}.webp`
 const cats = [
   { id: 'kids', name: "Kids Meal", sub: 'Little appetites, big flavor', img: img('kids-meal'), go: 'cat:kids' },
   { id: 'bowl', name: 'Burrito Bowl', sub: 'Your favorite flavors, all in one bowl', img: img('burrito-bowl'), badge: 'Fan favorite', go: 'build' },
