@@ -6,6 +6,7 @@ import SiteHeader from '@/components/layout/SiteHeader.vue'
 import SiteFooter from '@/components/layout/SiteFooter.vue'
 import MobileOrderBar from '@/components/layout/MobileOrderBar.vue'
 import ToastNotice from '@/components/layout/ToastNotice.vue'
+import LocationPicker from '@/components/layout/LocationPicker.vue'
 
 const route = useRoute()
 const inOrder = computed(() => !!route.meta.order)
@@ -23,6 +24,7 @@ const inOrder = computed(() => !!route.meta.order)
     </main>
     <SiteFooter />
     <MobileOrderBar />
+    <LocationPicker />
   </div>
   <ToastNotice />
 </template>

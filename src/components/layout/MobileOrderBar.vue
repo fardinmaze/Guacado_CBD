@@ -2,6 +2,8 @@
 import { site } from '@/data/site'
 import { useOrderBar } from '@/composables/useOrderBar'
 import BaseButton from '@/components/ui/BaseButton.vue'
+import { useLocationPicker } from '@/composables/useLocationPicker'
+const picker = useLocationPicker()
 
 // Phones only: an order button that never leaves the thumb zone. While the builder
 // is on screen it shows the running order (no price for now) instead of the menu link.
@@ -14,7 +16,7 @@ const { current } = useOrderBar()
       <span class="bar__label">{{ current.label }}</span>
     </div>
     <BaseButton v-else to="/menu" variant="outline">Menu</BaseButton>
-    <BaseButton :href="site.orderUrl" class="bar__cta">{{ current ? 'Order this bowl' : 'Order pickup' }}</BaseButton>
+    <BaseButton class="bar__cta" @click="picker.show()">{{ current ? 'Order this bowl' : 'Order pickup' }}</BaseButton>
   </div>
 </template>
 

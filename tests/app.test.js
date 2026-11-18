@@ -1,4 +1,4 @@
-import { beforeAll, describe, expect, it } from 'vitest'
+import { beforeAll, describe, expect, it, vi } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import { createMemoryHistory } from 'vue-router'
 import App from '@/App.vue'
@@ -68,13 +68,38 @@ describe('App smoke test', () => {
   it('puts an order button in the order strip, header, hero, mobile bar and footer', async () => {
     const { wrapper } = await mountAt('/')
     expect(wrapper.find('.strip__btn').attributes('href')).toBe(ORDER_URL)
-    expect(wrapper.find('.act--order').attributes('href')).toBe(ORDER_URL)
-    expect(wrapper.find('.bar__cta').attributes('href')).toBe(ORDER_URL)
     expect(wrapper.findAll('.ftr__big a').some((a) => a.text() === 'Order' && a.attributes('href') === ORDER_URL)).toBe(true)
-    expect(wrapper.find('.hero a.btn').attributes('href')).toBe(ORDER_URL)
     // External order links plus links into the in-site ordering flow (/order)
     const inSite = wrapper.findAll('a[href^="/order"]').length
     expect(orderLinks(wrapper).length + inSite).toBeGreaterThan(10)
+    // Order pickup (header, hero, phone bar) opens the location picker first
+    for (const sel of ['.act--order', '.hero__order', '.bar__cta']) {
+      expect(wrapper.find(sel).element.tagName).toBe('BUTTON')
+    }
+    wrapper.unmount()
+  })
+
+  it('location picker: Pickup from opens it; searching by city or ZIP lists restaurants; choosing starts the order', async () => {
+    const { wrapper, router } = await mountAt('/')
+    expect(wrapper.find('.act--find').text()).toContain('Choose a location')
+    await wrapper.find('.act--order').trigger('click')
+    await flushPromises()
+    const box = () => document.querySelector('.lp__box')
+    expect(box().querySelector('.lp__tab[aria-selected=true]').textContent).toContain('Pickup')
+    expect(box().querySelector('iframe').getAttribute('src')).toContain('maps.google.com')
+    const input = box().querySelector('input')
+    input.value = 'bronx'
+    input.dispatchEvent(new Event('input'))
+    await flushPromises()
+    expect([...box().querySelectorAll('.lp__addr span')].every((s) => s.textContent.includes('Bronx'))).toBe(true)
+    input.value = '11234'
+    input.dispatchEvent(new Event('input'))
+    await flushPromises()
+    expect(box().querySelector('.lp__addr b').textContent).toBe('5119-A Avenue U') // nearest ZIP first
+    box().querySelector('.lp__go').click()
+    await flushPromises()
+    await vi.waitFor(() => expect(router.currentRoute.value.path).toBe('/order/brooklyn-5119-a-avenue-u'))
+    expect(document.querySelector('.lp__box')).toBeNull()
     wrapper.unmount()
   })
 
@@ -110,6 +135,19 @@ describe('App smoke test', () => {
     expect(v.wrapper.findAll('.v-facts li').length).toBe(4)
     expect(v.wrapper.find('.v-facts li b').text()).toBe('6') // homemade sauces, from the menu data
     v.wrapper.unmount()
+  })
+
+  it('group order: feeding a crew? numbers appear only after choosing people and hunger', async () => {
+    const { wrapper } = await mountAt('/')
+    const crew = wrapper.find('.crew')
+    expect(crew.find('.crew__list').exists()).toBe(false)
+    expect(crew.find('output').text()).toBe('08')
+    await crew.findAll('.crew__step button')[1].trigger('click')
+    expect(crew.find('output').text()).toBe('09')
+    await crew.findAll('.crew__seg button')[1].trigger('click') // Hungry
+    const items = crew.findAll('.crew__list li').map((l) => l.text())
+    expect(items).toEqual(['5 bowls & burritos', '10 tacos', '3 chips & dips', '9 drinks'])
+    wrapper.unmount()
   })
 
   it('home has no location list, and prices only on the Featured cards (finder lives on /locations)', async () => {

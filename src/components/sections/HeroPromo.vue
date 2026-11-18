@@ -1,4 +1,6 @@
 <script setup>
+import { useLocationPicker } from '@/composables/useLocationPicker'
+const picker = useLocationPicker()
 import { site } from '@/data/site'
 import { videos } from '@/data/catalog'
 import LoopVideo from '@/components/ui/LoopVideo.vue'
@@ -23,7 +25,7 @@ const heroSrc = small ? videos.hero.sd : videos.hero.hd
       </h1>
       <p class="hero__lead">Start with a base, choose your protein, pile on the toppings, and finish with a homemade sauce. Your bowl, your rules.</p>
       <div class="hero__btns">
-        <BaseButton :href="site.orderUrl" size="md">Order pickup</BaseButton>
+        <BaseButton size="md" class="hero__order" @click="picker.show()">Order pickup</BaseButton>
         <BaseButton to="/menu" size="md" variant="light">Explore the menu</BaseButton>
       </div>
       <p class="hero__fine">Pickup only. Your location confirms the final total at checkout.</p>

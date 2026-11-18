@@ -1,4 +1,5 @@
 <script setup>
+import CrewPlanner from '@/components/sections/CrewPlanner.vue'
 import { links, occasions, site } from '@/data/site'
 // Owner photos: family kit spread (Contents/family kit guac.avif) and the group spread
 // (Contents/group.jpeg, same file as the Sides banner, so it reuses that WebP).
@@ -18,13 +19,7 @@ const groupImg = '/media/sides/sides-main-900.webp'
       <article id="group" class="cc cc--kits">
         <span class="cc__media"><img :src="groupOrderImg" alt="Friends sharing burritos, bowls and chips from a Fresh Guacado bag" width="1200" height="509" loading="lazy" decoding="async" /></span>
         <h3>Group order</h3>
-        <p>Ordering for the team or the whole crew? Everyone picks their own meal, and it all comes together in one pickup.</p>
-        <ul class="cc__list">
-          <li>Everyone builds their own meal</li>
-          <li>Regular menu prices</li>
-          <li>One order, one pickup</li>
-        </ul>
-        <RouterLink :to="{ path: '/order' }" class="cc__btn">Start a group order</RouterLink>
+        <CrewPlanner />
       </article>
 
       <article id="catering" class="cc cc--cater">

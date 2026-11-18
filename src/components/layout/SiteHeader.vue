@@ -5,6 +5,8 @@ import { headerNav, nav, site } from '@/data/site'
 import logo from '@/assets/logos/guacado-wordmark.webp'
 import AppLink from '@/components/ui/AppLink.vue'
 import MobileDrawer from './MobileDrawer.vue'
+import { useLocationPicker } from '@/composables/useLocationPicker'
+import { useOrder } from '@/order/useOrder'
 
 // Chipotle-style bar: logo and text nav on the left; location, order and bag on the right.
 const open = ref(false)
@@ -12,6 +14,9 @@ const burger = ref(null)
 const route = useRoute()
 
 const links = headerNav.map((label) => nav.find((n) => n.label === label))
+// Every order starts by choosing a restaurant (chipotle.com's "Pickup from").
+const picker = useLocationPicker()
+const order = useOrder()
 
 function close() {
   open.value = false
@@ -46,14 +51,17 @@ watch(() => route.fullPath, () => (open.value = false))
       </nav>
 
       <div class="hdr__actions">
-        <RouterLink to="/locations" class="act act--find">
+        <button type="button" class="act act--find" @click="picker.show()">
           <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12zm0-9.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z" /></svg>
-          <span>Find a location</span>
-        </RouterLink>
-        <a :href="site.orderUrl" class="act act--order">Order pickup</a>
-        <a :href="site.orderUrl" class="act act--bag" aria-label="Start an order">
+          <span class="pf"><small>Pickup from</small><span>{{ order.store.value ? order.store.value.address : 'Choose a location' }}</span></span>
+        </button>
+        <button type="button" class="act act--order" @click="picker.show()">Order pickup</button>
+        <RouterLink v-if="order.store.value" :to="`/order/${order.store.value.slug}`" class="act act--bag" aria-label="Your order">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M6 8h12l1 12H5L6 8z" /><path d="M9 10V7a3 3 0 0 1 6 0v3" /></svg>
-        </a>
+        </RouterLink>
+        <button v-else type="button" class="act act--bag" aria-label="Start an order" @click="picker.show()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M6 8h12l1 12H5L6 8z" /><path d="M9 10V7a3 3 0 0 1 6 0v3" /></svg>
+        </button>
       </div>
     </div>
     <MobileDrawer :open="open" @close="close" />
@@ -87,7 +95,11 @@ watch(() => route.fullPath, () => (open.value = false))
 .act svg { width: 22px; height: 22px; }
 .act--find { display: none; }
 .act--find svg { color: var(--ink); width: 18px; height: 18px; }
-.act--find:hover span { text-decoration: underline; }
+.act { border: 0; background: none; cursor: pointer; }
+.pf { display: grid; gap: 3px; text-align: left; }
+.pf small { font-size: 11px; letter-spacing: 0.06em; color: var(--ink-muted); }
+.pf span { max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; letter-spacing: 0.04em; }
+.act--find:hover .pf span { text-decoration: underline; }
 .act--order { background: var(--guac); color: var(--on-green); padding: 12px 20px; border-radius: var(--r-btn); }
 .act--order:hover { background: var(--guac-dark); }
 .act--bag { display: none; }

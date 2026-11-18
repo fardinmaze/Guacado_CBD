@@ -1,10 +1,13 @@
 <script setup>
-import { site } from '@/data/site'
+import { stores } from '@/order/lib/catalog'
 import { cityLine, mapsUrl } from '@/utils/format'
 
-defineProps({
+import { computed } from 'vue'
+const props = defineProps({
   location: { type: Object, required: true }, // { address, city, state, zip, soon? }
 })
+// Order pickup here = start ordering at this restaurant (the location is already chosen).
+const slug = computed(() => stores.find((s) => s.address === props.location.address && s.zip === props.location.zip)?.slug)
 </script>
 
 <template>
@@ -16,7 +19,7 @@ defineProps({
     <span v-if="location.soon" class="soon">Coming soon</span>
     <span v-else class="open">Open daily, 10:30am to 3am</span>
     <div class="loc__actions">
-      <a v-if="!location.soon" :href="site.orderUrl" class="order">Order pickup</a>
+      <RouterLink v-if="!location.soon && slug" :to="`/order/${slug}`" class="order">Order pickup</RouterLink>
       <a :href="mapsUrl(location)" target="_blank" rel="noopener" class="dir">
         Get directions<span class="sr-only"> to {{ location.address }}, opens Google Maps in a new tab</span>
       </a>

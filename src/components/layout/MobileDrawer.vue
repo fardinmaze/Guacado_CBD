@@ -1,4 +1,6 @@
 <script setup>
+import { useLocationPicker } from '@/composables/useLocationPicker'
+const picker = useLocationPicker()
 import { nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { nav, site } from '@/data/site'
 import logo from '@/assets/logos/guacado-wordmark.webp'
@@ -55,7 +57,7 @@ onBeforeUnmount(() => {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg>
             </button>
           </div>
-          <BaseButton :href="site.orderUrl" size="lg" block>Order pickup</BaseButton>
+          <BaseButton size="lg" block @click="emit('close'); picker.show()">Order pickup</BaseButton>
           <nav aria-label="Mobile">
             <AppLink v-for="item in links" :key="item.label" :to="item.to" :href="item.href" @click="emit('close')">
               {{ item.label }}

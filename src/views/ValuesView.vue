@@ -3,6 +3,8 @@ import { findItem } from '@/order/lib/catalog'
 import { links, site } from '@/data/site'
 import locationList from '@/data/locations.json'
 import { locationStats } from '@/utils/locations'
+import { useLocationPicker } from '@/composables/useLocationPicker'
+const picker = useLocationPicker()
 
 // Our Values, laid out like chipotle.com/values: warm paper background, big lettered headlines,
 // food cut-outs alternating with copy, a strip of facts, our people, and a closing order button.
@@ -91,7 +93,7 @@ const FACTS = [
         <span class="l-lg">every meal count.</span>
       </h2>
       <p>One bowl might not change the world, but the way we make it might change your day.</p>
-      <a :href="site.orderUrl" class="v-btn">Order now</a>
+      <button type="button" class="v-btn" @click="picker.show()">Order now</button>
     </section>
   </div>
 </template>
@@ -144,7 +146,7 @@ const FACTS = [
 .v-close p { max-width: 46ch; font-size: 18px; }
 .lettered--close .l-lg { color: var(--brown); }
 
-.v-btn { display: inline-flex; align-items: center; min-height: 50px; padding: 0 30px; border-radius: 3px; background: var(--guac); color: #fff; text-decoration: none; font: 900 18px/1 var(--f-display); font-stretch: 80%; text-transform: uppercase; letter-spacing: 0.04em; }
+.v-btn { border: 0; cursor: pointer; display: inline-flex; align-items: center; min-height: 50px; padding: 0 30px; border-radius: 3px; background: var(--guac); color: #fff; text-decoration: none; font: 900 18px/1 var(--f-display); font-stretch: 80%; text-transform: uppercase; letter-spacing: 0.04em; }
 .v-btn:hover { background: var(--guac-dark); }
 .v-btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 </style>
