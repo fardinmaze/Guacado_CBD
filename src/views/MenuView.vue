@@ -17,7 +17,7 @@ import FeaturedStrip from '@/components/sections/FeaturedStrip.vue'
     intro="Explore bowls, tacos, burritos, sides and more. Found your favorite? Choose Order now to pick a location and place your pickup order."
   />
   <FeatureDuo />
-  <FeaturedStrip eyebrow="Worth a craving" cta="Order pickup" :cta-to="{ path: '/order' }" />
+  <FeaturedStrip />
   <SidesTicker />
 </template>
 

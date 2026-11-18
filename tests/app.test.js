@@ -34,11 +34,22 @@ describe('App smoke test', () => {
     const ids = [...wrapper.element.querySelectorAll('section[id]')].map((s) => s.id)
     expect(ids).toEqual(['menu', 'join'])
     expect(wrapper.find('h1').text()).toContain('Big Mexican Flavors')
-    expect(wrapper.findAll('.cat')).toHaveLength(9)
-    expect(wrapper.find('.feat').text()).toContain('Birria Tacos')
+    expect(wrapper.findAll('.cat .cat__name').map((n) => n.text())).toEqual([
+      'Burrito', 'Burrito Bowl', 'Birria Tacos', 'Quesadilla', 'Tostada Special', 'Loaded Plates',
+      'Salad Bowl', 'Crunchwrap', 'Family Meal', 'Kids Meal', 'Drinks',
+    ])
+    // Featured: Chipotle-style carousel of tall cards with cal | price and an order button
+    expect(wrapper.find('#feat-title').text()).toBe('Featured')
+    expect(wrapper.findAll('.feat .fc')).toHaveLength(7)
+    const birria = wrapper.findAll('.feat .fc').find((c) => c.find('.fc__name').text() === 'Birria Tacos')
+    expect(birria.find('img').attributes('src')).toBe('/media/favorites/birria-tacos.webp')
+    expect(birria.find('.fc__meta').text()).toMatch(/430–1150 Cal\s*From \$11\.95/)
+    // Sides & dips lives on the Menu page only
+    expect(wrapper.find('.sides').exists()).toBe(false)
     // Hero clip and the three story cards (guac, queso, birria)
     expect(wrapper.findAll('video')).toHaveLength(4)
     expect(wrapper.findAll('.trio .fcard')).toHaveLength(3)
+    expect(wrapper.findAll('.trio .fcard')[1].classes()).toContain('is-hi') // highlighted card in the middle
     expect(wrapper.find('.fcard.is-hi').text()).toContain('Birria')
     expect(wrapper.find('#kits').exists()).toBe(true)
     expect(wrapper.find('#catering').exists()).toBe(true)
@@ -77,10 +88,11 @@ describe('App smoke test', () => {
     wrapper.unmount()
   })
 
-  it('home has no location list or prices (finder lives on /locations)', async () => {
+  it('home has no location list, and prices only on the Featured cards (finder lives on /locations)', async () => {
     const { wrapper } = await mountAt('/')
     expect(wrapper.findAll('[data-loc]')).toHaveLength(0)
-    expect(wrapper.text()).not.toMatch(/\$\d/)
+    expect(wrapper.find('.feat').text()).toMatch(/\$\d/)
+    ;['.cats', '.trio', '.crowd'].forEach((sel) => expect(wrapper.find(sel).text()).not.toMatch(/\$\d/))
     wrapper.unmount()
   })
 
@@ -94,13 +106,14 @@ describe('App smoke test', () => {
     wrapper.unmount()
   })
 
-  it('menu page is the Chipotle-style grid: 9 tiles into the order flow, no prices, no food advisory', async () => {
+  it('menu page is the Chipotle-style grid: 11 tiles into the order flow, no tile prices, no food advisory', async () => {
     const { wrapper } = await mountAt('/menu')
     expect(wrapper.find('h1').text()).toContain('Something delicious')
     const tiles = wrapper.findAll('.cat')
-    expect(tiles).toHaveLength(9)
+    expect(tiles).toHaveLength(11)
     tiles.forEach((t) => expect(t.attributes('href')).toMatch(/^\/order\?go=/))
-    expect(wrapper.text()).not.toMatch(/\$\d/)
+    expect(wrapper.find('.cats').text()).not.toMatch(/\$\d/)
+    expect(wrapper.find('.sides').exists()).toBe(true)
     expect(wrapper.text()).not.toContain('Consuming raw or undercooked meats')
     wrapper.unmount()
   })

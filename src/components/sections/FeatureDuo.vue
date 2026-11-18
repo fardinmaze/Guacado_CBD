@@ -2,7 +2,7 @@
 import LoopVideo from '@/components/ui/LoopVideo.vue'
 
 // Three story cards: video on top, copy underneath. The order button slides in on hover
-// (or keyboard focus); touch screens always show it. The Birria card is the highlighted one.
+// (or keyboard focus); touch screens always show it. The highlighted Birria card sits in the middle.
 // Videos are the owner's vertical 4K menu clips, cropped to 4:5 and re-encoded (~0.6–1.5 MB).
 const cards = [
   {
@@ -16,16 +16,6 @@ const cards = [
     go: 'item:guacamole',
   },
   {
-    id: 'queso',
-    title: 'Say queso',
-    text: 'Warm, creamy queso poured over grilled steak or served with chips for dipping. Add it to any order.',
-    video: '/media/feature-queso.mp4',
-    poster: '/media/feature-queso.jpg',
-    label: 'Creamy queso being ladled over grilled steak',
-    cta: 'Add queso',
-    go: 'item:queso',
-  },
-  {
     id: 'birria',
     title: 'Birria tacos',
     text: 'Slow-braised, griddled with cheese and served with a cup of consommé for dipping. Chicken or beef.',
@@ -36,6 +26,16 @@ const cards = [
     go: 'item:birria-tacos',
     badge: 'Signature',
     highlight: true,
+  },
+  {
+    id: 'queso',
+    title: 'Say queso',
+    text: 'Warm, creamy queso poured over grilled steak or served with chips for dipping. Add it to any order.',
+    video: '/media/feature-queso.mp4',
+    poster: '/media/feature-queso.jpg',
+    label: 'Creamy queso being ladled over grilled steak',
+    cta: 'Add queso',
+    go: 'item:queso',
   },
 ]
 </script>

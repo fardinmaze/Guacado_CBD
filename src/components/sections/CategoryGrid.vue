@@ -15,16 +15,20 @@ const props = defineProps({
 // Owner food photos (transparent cut-outs, trimmed + resized into public/media/menu).
 // Tiles without `img` are placeholders and show the Guacado badge until a photo arrives.
 const img = (name) => `/media/menu/${name}.webp`
+// Order set by the owner: rows of three, then Salad Bowl, Crunchwrap, Family Meal, and a centred
+// last row with only Kids Meal and Drinks.
 const cats = [
-  { id: 'kids', name: "Kids Meal", sub: 'Little appetites, big flavor', img: img('kids-meal'), go: 'cat:kids' },
+  { id: 'burrito', name: 'Burrito', sub: 'Wrapped your way', img: img('burrito'), go: 'build:burrito' },
   { id: 'bowl', name: 'Burrito Bowl', sub: 'Your favorite flavors, all in one bowl', img: img('burrito-bowl'), badge: 'Fan favorite', go: 'build:bowl' },
   { id: 'birria', name: 'Birria Tacos', sub: 'Chicken or beef', img: img('birria-tacos'), badge: 'Signature', go: 'item:birria-tacos' },
-  { id: 'burrito', name: 'Burrito', sub: 'Wrapped your way', img: img('burrito'), go: 'build:burrito' },
+  { id: 'quesadilla', name: 'Quesadilla', sub: 'Golden, grilled and melty', img: img('quesadilla'), go: 'build:quesadilla' },
   { id: 'tostada', name: 'Tostada Special', sub: 'Crunch into something good', img: img('tostada-special'), go: 'item:tostada' },
   { id: 'plates', name: 'Loaded Plates', sub: 'Piled high with your favorites', img: img('loaded-nachos'), go: 'build:nachos' },
   { id: 'salad', name: 'Salad Bowl', sub: 'Fresh greens, bold toppings', img: img('salad-bowl'), go: 'build:salad' },
-  { id: 'quesadilla', name: 'Quesadilla', sub: 'Golden, grilled and melty', img: img('quesadilla'), go: 'build:quesadilla' },
   { id: 'crunchwrap', name: 'Crunchwrap', sub: 'Crispy, folded and loaded', img: img('crunchwrap'), go: 'build:crunch-wrap' },
+  { id: 'family', name: 'Family Meal', sub: 'Tacos, nachos or fajitas for the whole table', img: '/media/family-kit.webp', photo: true, badge: 'Feeds 4–6', go: 'cat:family-kits' },
+  { id: 'kids', name: 'Kids Meal', sub: 'Little appetites, big flavor', img: img('kids-meal'), go: 'cat:kids' },
+  { id: 'drinks', name: 'Drinks', sub: 'Jarritos, Tractor organics and more', img: '/media/build/drink-jarritos.webp', go: 'cat:beverages' },
 ]
 </script>
 
@@ -38,7 +42,7 @@ const cats = [
     <ul class="cats__grid">
       <li v-for="c in cats" :key="c.id">
         <RouterLink :to="{ path: '/order', query: { go: c.go } }" class="cat" :aria-label="`Order ${c.name}. ${c.sub}`">
-          <span class="cat__img" :class="{ 'is-empty': !c.img }">
+          <span class="cat__img" :class="{ 'is-empty': !c.img, 'is-photo': c.photo }">
             <img :src="c.img || badge" alt="" loading="lazy" decoding="async" />
             <small v-if="!c.img" class="cat__soon">Photo coming soon</small>
           </span>
@@ -61,7 +65,10 @@ const cats = [
 .cats__intro { max-width: 58ch; color: var(--ink-muted); font-size: 15px; line-height: 1.5; }
 .cats__title { margin: 0; text-align: center; font: 900 clamp(34px, 4vw, 48px)/1 var(--f-display); font-stretch: 72%; text-transform: uppercase; }
 .cats { padding: clamp(28px, 4vw, 56px) 16px clamp(24px, 4vw, 48px); }
-.cats__grid { list-style: none; margin: 0 auto; padding: 0; max-width: 1100px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px 8px; }
+/* Three per row on a 6-column track (each tile spans 2), so the last two-tile row can be centred. */
+.cats__grid { list-style: none; margin: 0 auto; padding: 0; max-width: 1100px; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 28px 8px; }
+.cats__grid > li { grid-column: span 2; }
+.cats__grid > li:nth-child(10) { grid-column: 2 / span 2; }
 @media (min-width: 720px) { .cats__grid { gap: 64px 56px; } }
 @media (max-width: 519px) {
   .cat { padding: 8px 2px 10px; }
@@ -87,6 +94,8 @@ const cats = [
 .cat__img:not(.is-empty) img { position: absolute; inset: 0; }
 .cat__badge-slot { display: grid; place-items: center; min-height: 17px; }
 .cat__img img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 14px 18px rgba(20, 35, 27, 0.18)); }
+/* Family Meal is a full photo, not a cut-out: rounded and cropped to the box. */
+.cat__img.is-photo img { object-fit: cover; border-radius: 12px; filter: none; box-shadow: 0 14px 24px -14px rgba(20, 35, 27, 0.45); }
 .cat__img.is-empty { background: var(--surface); border-radius: 14px; gap: 6px; align-content: center; }
 .cat__img.is-empty img { width: 34%; height: auto; opacity: 0.55; filter: none; }
 .cat__soon { font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-muted); }
