@@ -33,13 +33,19 @@ const SECTIONS = [
   { key: 'toppings', label: 'Toppings', groups: ['addons', 'toppings'], title: 'Top things off', sub: '' },
   { key: 'sauce', label: 'Sauce', groups: ['sauce'], title: 'Homemade sauce', sub: 'Choose up to two.' },
   { key: 'sides', label: 'Side cups', groups: [], extras: ['side-cup-chicken', 'side-cup-beef'], title: 'Cups of chicken or beef', sub: 'Added to your bag on their own.' },
-  { key: 'drinks', label: 'Drinks', groups: [], extras: ['bottle-drink', 'water', 'organic-tractor-tea', 'organic-lemonade'], title: 'Drinks', sub: '' },
+  { key: 'drinks', label: 'Drinks', groups: [], extras: ['bottle-drink', 'organic-tractor-tea', 'organic-lemonade', 'organic-tractor-mango-peach', 'water'], title: 'Drinks', sub: '' },
   { key: 'desserts', label: 'Desserts', groups: [], extras: ['churros', 'tres-leches-cake', 'plantains'], title: 'Desserts', sub: '' },
 ]
 const PORTIONS = SECTIONS.filter((s) => s.groups.length)
 const EXTRAS = SECTIONS.filter((s) => s.extras)
 const extraItems = (s) => s.extras.map(findItem).filter((i) => i?.image)
-const extraPicked = (slug) => (draft.value?.extras ?? []).includes(slug)
+const extraOf = (slug) => (draft.value?.extras ?? []).find((x) => (x.slug ?? x) === slug)
+const extraPicked = (slug) => !!extraOf(slug)
+// Extras with a choice (Jarritos flavor): the choice shows as chips under the picked card.
+const choiceGroup = (x) => x.groups?.[0] ?? null
+const choiceOf = (x) => extraOf(x.slug)?.selections?.[choiceGroup(x)?.key]?.[0]?.name ?? ''
+const needsChoice = (x) => !!choiceGroup(x) && extraPicked(x.slug) && !choiceOf(x)
+const extraNote = (x) => (choiceGroup(x) ? (extraPicked(x.slug) ? choiceOf(x) || 'Choose a flavor' : `${choiceGroup(x).options.length} flavors`) : '')
 
 const editLine = computed(() => order.state.lines.find((l) => l.id === route.query.edit) ?? null)
 watch(
@@ -120,7 +126,8 @@ function badgeOf(key, name) {
 const errors = computed(() => validate(item, sel.value))
 const showErrors = ref(false)
 const errorFor = (key) => errors.value.find((e) => e.group === key)?.message ?? ''
-const sectionError = (s) => s.groups.map(errorFor).find(Boolean) ?? ''
+const sectionError = (s) =>
+  s.extras ? (extraItems(s).some(needsChoice) ? 'Choose a flavor for your drink.' : '') : (s.groups.map(errorFor).find(Boolean) ?? '')
 const done = (s) => (s.extras ? s.extras.some(extraPicked) : !sectionError(s) && s.groups.some((k) => picksOf(k).length))
 const ready = computed(() => picksOf('protein').length > 0)
 const mealName = computed(() => draft.value?.label?.trim() || [proteinNames.value.join(' & '), base.value.name].filter(Boolean).join(' '))
@@ -181,7 +188,7 @@ const nameErr = ref('')
 const nameInput = ref(null)
 const bag = useBagSheet()
 async function add() {
-  if (errors.value.length) {
+  if (errors.value.length || SECTIONS.some((s) => s.extras && sectionError(s))) {
     showErrors.value = true
     const first = SECTIONS.find((s) => sectionError(s))
     if (first) jump(first.key)
@@ -211,7 +218,7 @@ async function confirmName() {
 
 <template>
   <div v-if="draft" class="bd">
-    <RouterLink :to="`/order/${store}`" class="back"><span aria-hidden="true">‹</span> Return to menu</RouterLink>
+    <RouterLink to="/menu" class="back"><span aria-hidden="true">‹</span> Return to menu</RouterLink>
 
     <!-- Step 1: choose the base. Hidden for good once one is chosen. -->
     <template v-if="!baseChosen">
@@ -325,17 +332,34 @@ async function confirmName() {
           <h2 :id="`h-${s.key}`" class="sec__t">{{ s.title }}</h2>
           <p v-if="s.sub" class="sec__sub">{{ s.sub }}</p>
         </div>
+        <p v-if="showErrors && sectionError(s)" class="sec__err" role="alert">{{ sectionError(s) }}</p>
         <ul class="grid">
           <BuildCard
             v-for="x in extraItems(s)"
             :key="x.slug"
             :name="x.name"
             :image="x.image"
+            :tag="x.tag"
+            :note="extraNote(x)"
             :cal="x.calMin ?? null"
             :price="cents(x.basePriceCents)"
             :picked="extraPicked(x.slug)"
             @pick="order.toggleExtra(x.slug)"
-          />
+          >
+            <div v-if="choiceGroup(x) && extraPicked(x.slug)" class="chips" role="radiogroup" :aria-label="`${x.name} flavor`">
+              <button
+                v-for="o in choiceGroup(x).options"
+                :key="o.name"
+                type="button"
+                role="radio"
+                class="chip"
+                :aria-checked="choiceOf(x) === o.name"
+                @click="order.setExtraChoice(x.slug, choiceGroup(x).key, o.name)"
+              >
+                {{ o.name }}
+              </button>
+            </div>
+          </BuildCard>
         </ul>
       </section>
 
@@ -423,6 +447,13 @@ async function confirmName() {
 .mbar__add:hover { background: var(--guac); }
 .mbar__add:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 @media (max-width: 520px) { .mbar__k { display: none; } .mbar__add { padding: 0 18px; font-size: 16px; } }
+/* Flavor chips under a picked drink card */
+.chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 0 2px; }
+.chip { min-height: 36px; padding: 0 12px; border: 1.5px solid #c8bfb0; border-radius: 999px; background: #fff; color: var(--ink); font: 700 13px/1 var(--f-body); cursor: pointer; }
+.chip:hover { border-color: var(--ink); }
+.chip[aria-checked='true'] { background: var(--guac); border-color: var(--guac); color: #fff; }
+.chip:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
 /* "Who's this meal for?" dialog */
 .nm { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 16px; background: rgba(0, 0, 0, 0.55); }
 .nm__box { width: min(100%, 440px); padding: 28px 24px 22px; background: #fff; border-radius: 6px; box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.5); }

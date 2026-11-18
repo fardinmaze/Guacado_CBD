@@ -16,6 +16,7 @@ const props = defineProps({
   picked: { type: Boolean, default: false },
   badge: { type: String, default: '' }, // text in the badge instead of a tick
   radio: { type: Boolean, default: false },
+  tag: { type: String, default: '' }, // small pill above the name, e.g. "Only at Guacado"
   disabled: { type: Boolean, default: false },
   none: { type: Boolean, default: false },
   levels: { type: Array, default: () => [] }, // [{ value, label }]; empty = no ⋮ button
@@ -64,6 +65,7 @@ function onKey(e) {
         </span>
       </span>
       <span class="bc__txt">
+        <span v-if="tag" class="bc__tag">{{ tag }}</span>
         <span class="bc__name">{{ name }}<span v-if="badge" class="sr-only"> ({{ badge === '1/2' ? 'half portion' : badge === '2x' ? 'double portion' : 'full portion' }})</span></span>
         <span v-if="note" class="bc__note">{{ note }}</span>
         <span v-if="price || calText" class="bc__meta">
@@ -102,6 +104,7 @@ function onKey(e) {
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /></svg>
       </button>
     </div>
+    <slot />
   </li>
 </template>
 
@@ -142,6 +145,7 @@ function onKey(e) {
 .bc__txt { display: grid; gap: 3px; min-width: 0; padding: 12px 0; }
 .bc__name { font: 900 19px/1.05 var(--f-display); font-stretch: 78%; text-transform: uppercase; letter-spacing: 0.01em; }
 .bc__note { font-size: 13px; color: var(--ink-muted); }
+.bc__tag { justify-self: start; padding: 3px 8px; border-radius: 999px; background: var(--guac); color: #fff; font: 800 11px/1 var(--f-display); font-stretch: 85%; text-transform: uppercase; letter-spacing: 0.06em; }
 .bc__meta { display: flex; flex-wrap: wrap; gap: 2px 18px; margin-top: 2px; font-size: 14px; font-weight: 700; color: var(--ink-muted); }
 
 /* ⋮ button, right edge */

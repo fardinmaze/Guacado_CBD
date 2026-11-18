@@ -19,7 +19,8 @@
       "calories per ingredient: builder cards show SAMPLE values (only item ranges are on the boards)",
       "per-store tax rates",
       "Add Queso Blanco price (sample $1.95)",
-      "Side Cup of Chicken / Beef: price (sample $2.95) and calories"
+      "Side Cup of Chicken / Beef: price (sample $2.95) and calories",
+      "Organic Tractor Mango Peach price (sample $4.95)"
     ]
   },
   "categories": [
@@ -1330,12 +1331,61 @@
       "items": [
         {
           "slug": "bottle-drink",
-          "name": "Bottle Drink",
+          "name": "Jarritos",
           "kind": "FIXED",
           "basePriceCents": 295,
-          "groups": [],
+          "groups": [
+            {
+              "key": "flavor",
+              "name": "Choose your flavor",
+              "minSelect": 1,
+              "maxSelect": 1,
+              "allowLevels": false,
+              "setsPrice": false,
+              "sort": 0,
+              "options": [
+                {
+                  "name": "Pineapple",
+                  "priceCents": 0,
+                  "sort": 0
+                },
+                {
+                  "name": "Guava",
+                  "priceCents": 0,
+                  "sort": 1
+                },
+                {
+                  "name": "Mango",
+                  "priceCents": 0,
+                  "sort": 2
+                },
+                {
+                  "name": "Tamarind",
+                  "priceCents": 0,
+                  "sort": 3
+                },
+                {
+                  "name": "Fruit Punch",
+                  "priceCents": 0,
+                  "sort": 4
+                },
+                {
+                  "name": "Orange",
+                  "priceCents": 0,
+                  "sort": 5
+                },
+                {
+                  "name": "Watermelon",
+                  "priceCents": 0,
+                  "sort": 6
+                }
+              ]
+            }
+          ],
           "sort": 0,
-          "image": "/media/build/drink-bottle.webp"
+          "image": "/media/build/drink-jarritos.webp",
+          "description": "Mexican soda in a glass bottle.",
+          "note": "Board item 'Bottle Drink' ($2.95); flavors from the owner"
         },
         {
           "slug": "water",
@@ -1353,7 +1403,8 @@
           "basePriceCents": 495,
           "groups": [],
           "sort": 2,
-          "image": "/media/build/drink-tea.webp"
+          "image": "/media/build/drink-tea.webp",
+          "tag": "Only at Guacado"
         },
         {
           "slug": "organic-lemonade",
@@ -1362,7 +1413,19 @@
           "basePriceCents": 495,
           "groups": [],
           "sort": 3,
-          "image": "/media/build/drink-lemonade.webp"
+          "image": "/media/build/drink-lemonade.webp",
+          "tag": "Only at Guacado"
+        },
+        {
+          "slug": "organic-tractor-mango-peach",
+          "name": "Organic Tractor Mango Peach",
+          "kind": "FIXED",
+          "basePriceCents": 495,
+          "image": "/media/build/drink-tractor-mango.webp",
+          "tag": "Only at Guacado",
+          "groups": [],
+          "sort": 4,
+          "note": "SAMPLE price: not on the boards; priced like the other Tractor drinks ($4.95)"
         },
         {
           "slug": "shake",
@@ -1406,7 +1469,7 @@
               "setsPrice": false
             }
           ],
-          "sort": 4
+          "sort": 5
         }
       ],
       "sort": 6

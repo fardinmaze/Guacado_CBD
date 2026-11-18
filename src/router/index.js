@@ -50,6 +50,8 @@ export function createAppRouter(history = createWebHistory()) {
       if (saved) return saved
       // Same page, only the query changed (e.g. the builder's ?step / ?base): stay where we are.
       if (from.matched.length && to.path === from.path && to.hash === from.hash) return false
+      // The builder scrolls itself to ?step (e.g. after a refresh); don't jump back to the top.
+      if (to.name === 'order-build' && to.query.step) return false
       // Header is 68px; the menu page adds a 56px sticky tab bar.
       if (to.hash) return { el: to.hash, top: to.path === '/menu' ? 132 : 76, behavior: 'smooth' }
       return { top: 0, behavior: 'instant' }

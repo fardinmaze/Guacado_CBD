@@ -401,6 +401,36 @@ describe('ordering flow in the app', () => {
     wrapper.unmount()
   })
 
+  it('Return to menu goes straight to the menu page', async () => {
+    const { wrapper } = await mountAt(`${B}?base=bowl`)
+    expect(wrapper.find('a.back').attributes('href')).toBe('/menu')
+    wrapper.unmount()
+  })
+
+  it('Jarritos needs a flavor; Tractor drinks carry the "Only at Guacado" tag', async () => {
+    const { wrapper } = await mountAt(`${B}?base=bowl`)
+    const drinks = wrapper.find('#sec-drinks')
+    const tags = drinks.findAll('.bc').filter((c) => c.find('.bc__tag').exists()).map((c) => c.find('.bc__name').text())
+    expect(tags).toEqual(['Organic Tractor Tea', 'Organic Lemonade', 'Organic Tractor Mango Peach'])
+    expect(drinks.find('.bc__tag').text()).toBe('Only at Guacado')
+    await click(wrapper, 'Grill Chicken', '.bc__btn')
+    await click(wrapper, 'Jarritos', '.bc__btn')
+    const chips = () => wrapper.findAll('#sec-drinks .chip')
+    expect(chips().map((c) => c.text())).toEqual(['Pineapple', 'Guava', 'Mango', 'Tamarind', 'Fruit Punch', 'Orange', 'Watermelon'])
+    // no flavor yet: ADD TO BAG points at the drinks instead of asking for a name
+    await click(wrapper, 'Add to bag', '.mbar__add')
+    expect(document.querySelector('.nm__box')).toBeNull()
+    expect(wrapper.find('#sec-drinks .sec__err').text()).toBe('Choose a flavor for your drink.')
+    await chips()[4].trigger('click')
+    expect(wrapper.findAll('.bc').find((c) => c.text().includes('Jarritos')).find('.bc__note').text()).toBe('Fruit Punch')
+    useOrder().setLabel('Ali')
+    useOrder().commitDraft()
+    const soda = useOrder().state.lines.find((l) => l.itemSlug === 'bottle-drink')
+    expect(soda.selections.flavor).toEqual([{ name: 'Fruit Punch', level: 'regular' }])
+    expect(useOrder().subtotal.value).toBe(1295 + 295)
+    wrapper.unmount()
+  })
+
   it('refresh mid-build keeps the base, the choices and the portion', async () => {
     const first = await mountAt(`${B}?base=burrito&step=protein`)
     await click(first.wrapper, 'Grilled Shrimp', '.bc__btn')

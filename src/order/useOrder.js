@@ -70,11 +70,17 @@ export function useOrder() {
     state.draft.selections[groupKey] = setLevel(state.draft.selections[groupKey] ?? [], name, lvl)
   }
   // Sides, drinks and desserts picked on the builder: added to the bag as their own lines.
+  // Each is { slug, selections } (selections hold a choice such as the Jarritos flavor).
+  const extrasOf = () => (state.draft.extras ?? (state.draft.extras = []))
   function toggleExtra(slug) {
-    const list = state.draft.extras ?? (state.draft.extras = [])
-    const at = list.indexOf(slug)
+    const list = extrasOf()
+    const at = list.findIndex((x) => (x.slug ?? x) === slug)
     if (at >= 0) list.splice(at, 1)
-    else list.push(slug)
+    else list.push({ slug, selections: {} })
+  }
+  function setExtraChoice(slug, groupKey, name) {
+    const x = extrasOf().find((e) => e.slug === slug)
+    if (x) x.selections = { ...x.selections, [groupKey]: [{ name, level: 'regular' }] }
   }
   const setUtensils = (on) => (state.utensils = !!on)
   const clear = (groupKey) => (state.draft.selections[groupKey] = [])
@@ -88,7 +94,13 @@ export function useOrder() {
     const at = state.lines.findIndex((l) => l.id === line.id)
     if (at >= 0) state.lines.splice(at, 1, line)
     else state.lines.push(line)
-    ;(d.extras ?? []).forEach((slug) => findItem(slug) && quickAdd(slug))
+    for (const x of d.extras ?? []) {
+      const slug = x.slug ?? x
+      const sel = x.selections ?? {}
+      if (!findItem(slug)) continue
+      if (Object.keys(sel).length) state.lines.push({ id: uid(), itemSlug: slug, qty: 1, label: '', selections: sel })
+      else quickAdd(slug)
+    }
     state.draft = null
     return line
   }
@@ -113,7 +125,7 @@ export function useOrder() {
 
   return {
     state, store, count, subtotal, totalsFor, draftItem, draftUnit,
-    chooseStore, openDraft, pick, level, clear, toggleExtra, setUtensils, setQty, setLabel, discardDraft, commitDraft,
+    chooseStore, openDraft, pick, level, clear, toggleExtra, setExtraChoice, setUtensils, setQty, setLabel, discardDraft, commitDraft,
     quickAdd, removeLine, duplicateLine, setLineQty, clearBag,
   }
 }
