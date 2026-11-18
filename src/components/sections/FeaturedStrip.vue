@@ -15,10 +15,10 @@ const order = (go) => ({ path: '/order', query: { go } })
 const img = (slug) => `/media/favorites/${slug}.webp`
 const favorites = [
   { id: 'birria-pie', name: 'Birria Pie', image: img('birria-pie'), alt: 'Birria pie cut into slices, topped with cilantro, onion and lime', to: order('item:birria-tacos') },
-  { id: 'steak-bowl', name: 'Steak Burrito Bowl', image: img('steak-bowl'), alt: 'Grilled steak bowl with rice, corn, guac and a drizzle of sauce', to: order('build') },
-  { id: 'crunchwrap', name: 'Crunchwrap', image: img('crunchwrap'), alt: 'Crunchwrap cut in half with a side of queso', to: order('build') },
+  { id: 'steak-bowl', name: 'Steak Burrito Bowl', image: img('steak-bowl'), alt: 'Grilled steak bowl with rice, corn, guac and a drizzle of sauce', to: order('build:bowl') },
+  { id: 'crunchwrap', name: 'Crunchwrap', image: img('crunchwrap'), alt: 'Crunchwrap cut in half with a side of queso', to: order('build:crunch-wrap') },
   { id: 'tacos', name: 'Tacos', image: img('tacos'), alt: 'Three loaded tacos in a takeout box', to: order('item:tacos') },
-  { id: 'taco-salad', name: 'Taco Salad', image: img('taco-salad'), alt: 'Taco salad in a crispy tortilla bowl', to: order('build') },
+  { id: 'taco-salad', name: 'Taco Salad', image: img('taco-salad'), alt: 'Taco salad in a crispy tortilla bowl', to: order('build:taco-salad') },
   { id: 'birria-cup', name: 'Birria Tacos', image: img('birria-cup'), alt: 'Cup of birria topped with onion and cilantro', to: order('item:birria-tacos') },
   { id: 'churros', name: 'Churros', image: img('churros'), alt: 'Churros dusted with cookie crumbs', to: order('item:churros') },
 ]

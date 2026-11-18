@@ -16,8 +16,9 @@
     "toConfirm": [
       "toppings list",
       "which extras are charged",
-      "calories per ingredient (only item ranges are on the boards)",
-      "per-store tax rates"
+      "calories per ingredient: builder cards show SAMPLE values (only item ranges are on the boards)",
+      "per-store tax rates",
+      "Add Queso Blanco price (sample $1.95)"
     ]
   },
   "categories": [
@@ -46,49 +47,65 @@
                   "name": "Bowl",
                   "priceCents": 0,
                   "isDefault": true,
-                  "sort": 0
+                  "sort": 0,
+                  "image": "/media/build/base-bowl.webp",
+                  "cal": 0
                 },
                 {
                   "name": "Burrito",
                   "priceCents": 0,
                   "isDefault": false,
-                  "sort": 1
+                  "sort": 1,
+                  "image": "/media/build/base-burrito.webp",
+                  "cal": 320
                 },
                 {
                   "name": "Nachos",
                   "priceCents": 0,
                   "isDefault": false,
-                  "sort": 2
+                  "sort": 2,
+                  "image": "/media/build/base-nachos.webp",
+                  "cal": 540
                 },
                 {
                   "name": "Quesadilla",
                   "priceCents": 0,
                   "isDefault": false,
-                  "sort": 3
+                  "sort": 3,
+                  "image": "/media/build/base-quesadilla.webp",
+                  "cal": 470
                 },
                 {
                   "name": "Crunch Wrap",
                   "priceCents": 0,
                   "isDefault": false,
-                  "sort": 4
+                  "sort": 4,
+                  "image": "/media/build/base-crunch-wrap.webp",
+                  "cal": 450
                 },
                 {
                   "name": "Salad",
                   "priceCents": 0,
                   "isDefault": false,
-                  "sort": 5
+                  "sort": 5,
+                  "image": "/media/build/base-salad.webp",
+                  "cal": 15
                 },
                 {
                   "name": "Taco Salad",
                   "priceCents": 0,
                   "isDefault": false,
-                  "sort": 6
+                  "sort": 6,
+                  "image": "/media/build/base-taco-salad.webp",
+                  "cal": 380
                 },
                 {
                   "name": "Fries",
                   "priceCents": 0,
                   "isDefault": false,
-                  "sort": 7
+                  "sort": 7,
+                  "image": "/media/build/base-fries.webp",
+                  "cal": 410
                 }
               ],
               "sort": 0
@@ -97,7 +114,7 @@
               "key": "protein",
               "name": "Choose your protein",
               "minSelect": 1,
-              "maxSelect": 1,
+              "maxSelect": 2,
               "allowLevels": true,
               "setsPrice": true,
               "options": [
@@ -105,116 +122,208 @@
                   "name": "Grill Chicken",
                   "priceCents": 1295,
                   "ingredient": "grill-chicken",
-                  "isDefault": true,
-                  "sort": 0
+                  "isDefault": false,
+                  "sort": 0,
+                  "image": "/media/build/protein-grill-chicken.webp",
+                  "cal": 180
                 },
                 {
                   "name": "Honey Chipotle",
                   "priceCents": 1395,
                   "ingredient": "honey-chipotle",
                   "isDefault": false,
-                  "sort": 1
+                  "sort": 1,
+                  "image": "/media/build/protein-honey-chipotle.webp",
+                  "cal": 210
                 },
                 {
                   "name": "Grilled Steak",
                   "priceCents": 1395,
                   "ingredient": "grilled-steak",
                   "isDefault": false,
-                  "sort": 2
+                  "sort": 2,
+                  "image": "/media/build/protein-grilled-steak.webp",
+                  "cal": 150
                 },
                 {
                   "name": "Ground Beef",
                   "priceCents": 1395,
                   "ingredient": "ground-beef",
                   "isDefault": false,
-                  "sort": 3
+                  "sort": 3,
+                  "image": "/media/build/protein-ground-beef.webp",
+                  "cal": 230
                 },
                 {
                   "name": "Grilled Shrimp",
                   "priceCents": 1395,
                   "ingredient": "grilled-shrimp",
                   "isDefault": false,
-                  "sort": 4
+                  "sort": 4,
+                  "image": "/media/build/protein-grilled-shrimp.webp",
+                  "cal": 120
                 },
                 {
                   "name": "Beef Barbacoa",
                   "priceCents": 1395,
                   "ingredient": "beef-barbacoa",
                   "isDefault": false,
-                  "sort": 5
+                  "sort": 5,
+                  "image": "/media/build/protein-beef-barbacoa.webp",
+                  "cal": 170
                 },
                 {
                   "name": "Veggie Fajita w/ Guac",
                   "priceCents": 1195,
                   "ingredient": "veggie-fajita-guac",
                   "isDefault": false,
-                  "sort": 6
+                  "sort": 6,
+                  "image": "/media/build/protein-veggie-fajita.webp",
+                  "cal": 250,
+                  "note": "Includes guacamole"
                 },
                 {
                   "name": "Tofu",
                   "priceCents": 1195,
                   "ingredient": "tofu",
                   "isDefault": false,
-                  "sort": 7
+                  "sort": 7,
+                  "image": "/media/build/protein-tofu.webp",
+                  "cal": 150,
+                  "note": "Plant-based protein"
                 }
               ],
-              "sort": 1
+              "sort": 1,
+              "halfAndHalf": true
+            },
+            {
+              "key": "rice",
+              "name": "Choose your rice",
+              "minSelect": 0,
+              "maxSelect": 2,
+              "allowLevels": true,
+              "setsPrice": false,
+              "options": [
+                {
+                  "name": "Mexican Rice",
+                  "priceCents": 0,
+                  "ingredient": "mexican-rice",
+                  "image": "/media/build/rice-mexican.webp",
+                  "cal": 210,
+                  "isDefault": false,
+                  "sort": 0
+                },
+                {
+                  "name": "Cilantro Lime White Rice",
+                  "priceCents": 0,
+                  "ingredient": "white-rice",
+                  "image": "/media/build/rice-cilantro-lime.webp",
+                  "cal": 210,
+                  "isDefault": false,
+                  "sort": 1
+                }
+              ],
+              "sort": 2,
+              "halfAndHalf": true
+            },
+            {
+              "key": "beans",
+              "name": "Choose your beans",
+              "minSelect": 0,
+              "maxSelect": 2,
+              "allowLevels": true,
+              "setsPrice": false,
+              "options": [
+                {
+                  "name": "Black Beans",
+                  "priceCents": 0,
+                  "ingredient": "black-beans",
+                  "image": "/media/build/beans-black.webp",
+                  "cal": 130,
+                  "isDefault": false,
+                  "sort": 0
+                },
+                {
+                  "name": "Pinto Beans",
+                  "priceCents": 0,
+                  "ingredient": "pinto-beans",
+                  "image": "/media/build/beans-pinto.webp",
+                  "cal": 130,
+                  "isDefault": false,
+                  "sort": 1
+                }
+              ],
+              "sort": 3
             },
             {
               "key": "toppings",
               "name": "Choose your toppings",
               "minSelect": 0,
-              "maxSelect": 8,
+              "maxSelect": 11,
               "allowLevels": true,
               "setsPrice": false,
-              "note": "OWNER TO CONFIRM list (board says 'From Our Fresh Selection')",
+              "note": "OWNER TO CONFIRM list: taken from the owner's Toppings photo set (rice and beans are their own groups)",
               "options": [
-                {
-                  "name": "Rice",
-                  "priceCents": 0,
-                  "ingredient": "rice",
-                  "isDefault": true,
-                  "sort": 0
-                },
-                {
-                  "name": "Beans",
-                  "priceCents": 0,
-                  "ingredient": "beans",
-                  "isDefault": true,
-                  "sort": 1
-                },
                 {
                   "name": "Pico de Gallo",
                   "priceCents": 0,
                   "ingredient": "pico-de-gallo",
-                  "isDefault": true,
+                  "image": "/media/build/top-pico.webp",
+                  "cal": 25,
+                  "isDefault": false,
+                  "sort": 0
+                },
+                {
+                  "name": "Medium Red Salsa",
+                  "priceCents": 0,
+                  "ingredient": "red-salsa",
+                  "image": "/media/build/top-red-salsa.webp",
+                  "cal": 30,
+                  "isDefault": false,
+                  "sort": 1
+                },
+                {
+                  "name": "Green Salsa Verde",
+                  "priceCents": 0,
+                  "ingredient": "salsa-verde",
+                  "image": "/media/build/top-salsa-verde.webp",
+                  "cal": 15,
+                  "isDefault": false,
                   "sort": 2
                 },
                 {
-                  "name": "Salsa",
+                  "name": "Romaine Lettuce",
                   "priceCents": 0,
-                  "ingredient": "salsa",
+                  "ingredient": "lettuce",
+                  "image": "/media/build/top-lettuce.webp",
+                  "cal": 5,
                   "isDefault": false,
                   "sort": 3
                 },
                 {
-                  "name": "Lettuce",
+                  "name": "Mexican Corn",
                   "priceCents": 0,
-                  "ingredient": "lettuce",
+                  "ingredient": "corn",
+                  "image": "/media/build/top-corn.webp",
+                  "cal": 80,
                   "isDefault": false,
                   "sort": 4
                 },
                 {
-                  "name": "Shredded Cheese",
+                  "name": "Chopped Red Onion",
                   "priceCents": 0,
-                  "ingredient": "shredded-cheese",
+                  "ingredient": "red-onion",
+                  "image": "/media/build/top-red-onion.webp",
+                  "cal": 10,
                   "isDefault": false,
                   "sort": 5
                 },
                 {
-                  "name": "Sour Cream",
+                  "name": "Fresh Cilantro",
                   "priceCents": 0,
-                  "ingredient": "sour-cream",
+                  "ingredient": "cilantro",
+                  "image": "/media/build/top-cilantro.webp",
+                  "cal": 0,
                   "isDefault": false,
                   "sort": 6
                 },
@@ -222,17 +331,46 @@
                   "name": "Jalapeños",
                   "priceCents": 0,
                   "ingredient": "jalapenos",
+                  "image": "/media/build/top-jalapeno.webp",
+                  "cal": 5,
                   "isDefault": false,
                   "sort": 7
+                },
+                {
+                  "name": "Shredded Cheese",
+                  "priceCents": 0,
+                  "ingredient": "shredded-cheese",
+                  "image": "/media/build/top-cheese.webp",
+                  "cal": 110,
+                  "isDefault": false,
+                  "sort": 8
+                },
+                {
+                  "name": "Sour Cream",
+                  "priceCents": 0,
+                  "ingredient": "sour-cream",
+                  "image": "/media/build/top-sour-cream.webp",
+                  "cal": 110,
+                  "isDefault": false,
+                  "sort": 9
+                },
+                {
+                  "name": "Tortilla Strips",
+                  "priceCents": 0,
+                  "ingredient": "tortilla-strips",
+                  "image": "/media/build/top-tortilla-strips.webp",
+                  "cal": 90,
+                  "isDefault": false,
+                  "sort": 10
                 }
               ],
-              "sort": 2
+              "sort": 4
             },
             {
               "key": "addons",
               "name": "Add-ons",
               "minSelect": 0,
-              "maxSelect": 2,
+              "maxSelect": 3,
               "allowLevels": false,
               "setsPrice": false,
               "options": [
@@ -240,15 +378,28 @@
                   "name": "Add Fresh Guac",
                   "priceCents": 195,
                   "ingredient": "guacamole",
+                  "image": "/media/build/add-guac.webp",
+                  "cal": 230,
+                  "isDefault": false,
                   "sort": 0
+                },
+                {
+                  "name": "Add Queso Blanco",
+                  "priceCents": 195,
+                  "ingredient": "queso",
+                  "image": "/media/build/add-queso.webp",
+                  "cal": 120,
+                  "isDefault": false,
+                  "sort": 1
                 },
                 {
                   "name": "Extra Protein",
                   "priceCents": 295,
-                  "sort": 1
+                  "sort": 2
                 }
               ],
-              "sort": 3
+              "sort": 5,
+              "note": "SAMPLE: Add Queso Blanco price ($1.95) is a placeholder; the boards only list guac and extra protein"
             },
             {
               "key": "sauce",
@@ -263,8 +414,11 @@
                   "priceCents": 0,
                   "heat": 1,
                   "ingredient": "chipotle-sauce",
-                  "isDefault": true,
-                  "sort": 0
+                  "isDefault": false,
+                  "sort": 0,
+                  "image": "/media/build/sauce-chipotle.webp",
+                  "cal": 100,
+                  "note": "Mild"
                 },
                 {
                   "name": "Mango Sauce",
@@ -272,7 +426,9 @@
                   "heat": 0,
                   "ingredient": "mango-sauce",
                   "isDefault": false,
-                  "sort": 1
+                  "sort": 1,
+                  "image": "/media/build/sauce-mango.webp",
+                  "cal": 80
                 },
                 {
                   "name": "Limon Sauce",
@@ -280,7 +436,9 @@
                   "heat": 0,
                   "ingredient": "limon-sauce",
                   "isDefault": false,
-                  "sort": 2
+                  "sort": 2,
+                  "image": "/media/build/sauce-limon.webp",
+                  "cal": 70
                 },
                 {
                   "name": "Sour Cream Sauce",
@@ -288,7 +446,9 @@
                   "heat": 0,
                   "ingredient": "sour-cream-sauce",
                   "isDefault": false,
-                  "sort": 3
+                  "sort": 3,
+                  "image": "/media/build/sauce-sour-cream.webp",
+                  "cal": 110
                 },
                 {
                   "name": "Guacado Sauce",
@@ -296,7 +456,9 @@
                   "heat": 0,
                   "ingredient": "guacado-sauce",
                   "isDefault": false,
-                  "sort": 4
+                  "sort": 4,
+                  "image": "/media/build/sauce-guacado.webp",
+                  "cal": 90
                 },
                 {
                   "name": "Smoky Habanero Sauce",
@@ -304,10 +466,13 @@
                   "heat": 3,
                   "ingredient": "smoky-habanero-sauce",
                   "isDefault": false,
-                  "sort": 5
+                  "sort": 5,
+                  "image": "/media/build/sauce-habanero.webp",
+                  "cal": 60,
+                  "note": "Spicy"
                 }
               ],
-              "sort": 4
+              "sort": 6
             }
           ],
           "sort": 0

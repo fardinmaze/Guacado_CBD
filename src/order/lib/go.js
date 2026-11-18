@@ -2,7 +2,8 @@ import { categories, findItem, isQuickAdd } from './catalog'
 
 /**
  * Where to send a guest once a store is known. The marketing site links to `/order?go=<target>`:
- *   build            -> the build-your-own flow
+ *   build            -> the build-your-own flow (base picker first)
+ *   build:<base>     -> the builder with that base already chosen (e.g. build:burrito)
  *   item:<slug>      -> that item's options page (items with no choices fall back to their category)
  *   cat:<slug>       -> the menu, scrolled to that category
  * Anything unknown lands on the store menu. Returns a vue-router location.
@@ -13,6 +14,7 @@ export function goPath(storeSlug, go) {
   if (typeof target !== 'string') return { path: base }
 
   if (target === 'build') return { path: `${base}/build` }
+  if (/^build:[a-z-]+$/.test(target)) return { path: `${base}/build`, query: { base: target.slice(6) } }
 
   if (target.startsWith('item:')) {
     const item = findItem(target.slice(5))

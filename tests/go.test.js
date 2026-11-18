@@ -5,6 +5,7 @@ describe('goPath: where a website flavor tile lands in the order flow', () => {
   const s = 'brooklyn-test'
   it('build goes to the builder', () => {
     expect(goPath(s, 'build')).toEqual({ path: `/order/${s}/build` })
+    expect(goPath(s, 'build:burrito')).toEqual({ path: `/order/${s}/build`, query: { base: 'burrito' } })
   })
   it('items with choices open their options page', () => {
     expect(goPath(s, 'item:birria-tacos')).toEqual({ path: `/order/${s}/item/birria-tacos` })

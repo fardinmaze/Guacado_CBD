@@ -27,7 +27,8 @@ export function unitCents(item, sel) {
     for (const pick of sel[g.key] ?? []) {
       const opt = optionOf(g, pick.name)
       if (!opt) continue
-      if (g.setsPrice) price = opt.priceCents // absolute price (protein, size)
+      // Absolute price (protein, size). Half and half of two proteins costs the dearer one.
+      if (g.setsPrice) price = (sel[g.key] ?? []).length > 1 ? Math.max(price, opt.priceCents) : opt.priceCents
       else if (!isExtraProteinAddon(g, opt)) add += opt.priceCents
     }
   }
@@ -100,7 +101,8 @@ export function summaryParts(item, sel) {
       .map((p) => {
         const opt = optionOf(g, p.name)
         const lvl = g.allowLevels && p.level && p.level !== 'regular' ? ` (${LEVEL_LABEL[p.level].toLowerCase()})` : ''
-        return `${opt ? p.name : p.name}${lvl}`
+        const half = g.halfAndHalf && picks.length === 2 ? '½ ' : ''
+        return `${half}${p.name}${lvl}`
       })
       .join(', ')
     parts.push(text)
@@ -126,3 +128,31 @@ export function totals(subtotal, { rate = null, tipPct = 0 } = {}) {
   const tip = tipCents(subtotal, tipPct)
   return { subtotal, tax, tip, total: subtotal + (tax ?? 0) + tip, taxPending: tax === null }
 }
+
+/** Two picks in a half-and-half group (protein, rice) are half portions each. */
+export const isHalf = (g, sel) => !!g.halfAndHalf && (sel[g.key] ?? []).length === 2
+
+/** Running calories for a meal: each pick's `cal` (sample values on the builder) by level;
+ *  half portions count half, and the Extra Protein add-on doubles the protein. */
+const LEVEL_CAL = { light: 0.5, regular: 1, extra: 2, side: 1 }
+export function calories(item, sel) {
+  const doubled = (sel.addons ?? []).some((p) => p.name === 'Extra Protein')
+  let total = 0
+  for (const g of item.groups ?? []) {
+    for (const p of sel[g.key] ?? []) {
+      const opt = optionOf(g, p.name)
+      if (!opt?.cal) continue
+      let lvl = LEVEL_CAL[p.level] ?? 1
+      if (g.key === 'protein' && doubled && p.level !== 'extra') lvl = 2
+      total += Math.round(opt.cal * lvl * (isHalf(g, sel) ? 0.5 : 1))
+    }
+  }
+  return total
+}
+
+/** A saved meal that names options this menu no longer has (e.g. after a menu change). */
+export const isStale = (item, sel) =>
+  Object.entries(sel ?? {}).some(([key, picks]) => {
+    const g = (item.groups ?? []).find((x) => x.key === key)
+    return !g || picks.some((p) => !optionOf(g, p.name))
+  })

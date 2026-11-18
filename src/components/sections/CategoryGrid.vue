@@ -17,14 +17,14 @@ const props = defineProps({
 const img = (name) => `/media/menu/${name}.webp`
 const cats = [
   { id: 'kids', name: "Kids Meal", sub: 'Little appetites, big flavor', img: img('kids-meal'), go: 'cat:kids' },
-  { id: 'bowl', name: 'Burrito Bowl', sub: 'Your favorite flavors, all in one bowl', img: img('burrito-bowl'), badge: 'Fan favorite', go: 'build' },
+  { id: 'bowl', name: 'Burrito Bowl', sub: 'Your favorite flavors, all in one bowl', img: img('burrito-bowl'), badge: 'Fan favorite', go: 'build:bowl' },
   { id: 'birria', name: 'Birria Tacos', sub: 'Chicken or beef', img: img('birria-tacos'), badge: 'Signature', go: 'item:birria-tacos' },
-  { id: 'burrito', name: 'Burrito', sub: 'Wrapped your way', img: img('burrito'), go: 'build' },
+  { id: 'burrito', name: 'Burrito', sub: 'Wrapped your way', img: img('burrito'), go: 'build:burrito' },
   { id: 'tostada', name: 'Tostada Special', sub: 'Crunch into something good', img: img('tostada-special'), go: 'item:tostada' },
-  { id: 'plates', name: 'Loaded Plates', sub: 'Piled high with your favorites', img: img('loaded-nachos'), go: 'build' },
-  { id: 'salad', name: 'Salad Bowl', sub: 'Fresh greens, bold toppings', img: img('salad-bowl'), go: 'build' },
-  { id: 'quesadilla', name: 'Quesadilla', sub: 'Golden, grilled and melty', img: img('quesadilla'), go: 'build' },
-  { id: 'crunchwrap', name: 'Crunchwrap', sub: 'Crispy, folded and loaded', img: img('crunchwrap'), go: 'build' },
+  { id: 'plates', name: 'Loaded Plates', sub: 'Piled high with your favorites', img: img('loaded-nachos'), go: 'build:nachos' },
+  { id: 'salad', name: 'Salad Bowl', sub: 'Fresh greens, bold toppings', img: img('salad-bowl'), go: 'build:salad' },
+  { id: 'quesadilla', name: 'Quesadilla', sub: 'Golden, grilled and melty', img: img('quesadilla'), go: 'build:quesadilla' },
+  { id: 'crunchwrap', name: 'Crunchwrap', sub: 'Crispy, folded and loaded', img: img('crunchwrap'), go: 'build:crunch-wrap' },
 ]
 </script>
 

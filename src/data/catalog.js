@@ -65,7 +65,7 @@ export const featuredTiles = [
     image: photos.bowl,
     video: videos.tile,
     badge: 'Build your own',
-    to: { path: '/order', query: { go: 'build' } },
+    to: { path: '/order', query: { go: 'build:bowl' } },
   },
   {
     id: 'tacos',

@@ -5,13 +5,14 @@ import App from '@/App.vue'
 import { createAppRouter } from '@/router'
 import { findItem, findStore, stores, categories, categoryFrom } from '@/order/lib/catalog'
 import {
-  cents, defaultSelection, fromCents, setLevel, summaryParts, taxCents, togglePick, totals, unitCents, validate,
+  calories, cents, defaultSelection, fromCents, isStale, setLevel, summaryParts, taxCents, togglePick, totals, unitCents, validate,
 } from '@/order/lib/pricing'
 import { minutesUntilClose, pickupSlots, storeStatus } from '@/order/lib/hours'
 import { __resetOrder, useOrder } from '@/order/useOrder'
 
 const byo = findItem('build-your-own')
-const sel = (over = {}) => ({ ...defaultSelection(byo), ...over })
+// The builder starts empty apart from the base; most cases want the classic chicken bowl.
+const sel = (over = {}) => ({ ...defaultSelection(byo), protein: [{ name: 'Grill Chicken', level: 'regular' }], ...over })
 const pick = (name, level = 'regular') => [{ name, level }]
 
 describe('seed data', () => {
@@ -29,8 +30,20 @@ describe('seed data', () => {
 })
 
 describe('pricing (03-TECH-SPEC §4 required cases)', () => {
-  it('default bowl = $12.95', () => {
+  it('a new meal starts with only the base; chicken bowl = $12.95', () => {
+    const fresh = defaultSelection(byo)
+    expect(fresh.base).toEqual(pick('Bowl'))
+    expect(['protein', 'rice', 'beans', 'toppings', 'sauce'].every((k) => fresh[k].length === 0)).toBe(true)
+    expect(validate(byo, fresh)[0].group).toBe('protein')
     expect(unitCents(byo, sel())).toBe(1295)
+  })
+  it('half and half: two proteins cost the dearer one, two rices are free', () => {
+    const half = sel({ protein: [{ name: 'Tofu', level: 'regular' }, { name: 'Grilled Steak', level: 'regular' }], rice: [{ name: 'Mexican Rice', level: 'regular' }, { name: 'Cilantro Lime White Rice', level: 'regular' }] })
+    expect(validate(byo, half)).toEqual([])
+    expect(unitCents(byo, half)).toBe(1395)
+    expect(summaryParts(byo, half).slice(1, 3)).toEqual(['½ Tofu, ½ Grilled Steak', '½ Mexican Rice, ½ Cilantro Lime White Rice'])
+    const protein = byo.groups.find((g) => g.key === 'protein')
+    expect(togglePick(protein, half.protein, 'Grill Chicken')).toHaveLength(2) // a third is ignored
   })
   it('Honey Chipotle + guac = $15.90', () => {
     expect(unitCents(byo, sel({ protein: pick('Honey Chipotle'), addons: pick('Add Fresh Guac') }))).toBe(1590)
@@ -41,7 +54,7 @@ describe('pricing (03-TECH-SPEC §4 required cases)', () => {
     expect(unitCents(byo, sel({ protein: pick('Grilled Steak', 'extra'), addons: pick('Extra Protein') }))).toBe(1690)
   })
   it('base, toppings, sauces and levels are free', () => {
-    const s = sel({ base: pick('Nachos'), toppings: [{ name: 'Salsa', level: 'extra' }, { name: 'Lettuce', level: 'side' }], sauce: pick('Smoky Habanero Sauce', 'light') })
+    const s = sel({ base: pick('Nachos'), rice: pick('Cilantro Lime White Rice', 'extra'), toppings: [{ name: 'Medium Red Salsa', level: 'extra' }, { name: 'Romaine Lettuce', level: 'side' }], sauce: pick('Smoky Habanero Sauce', 'light') })
     expect(unitCents(byo, s)).toBe(1295)
   })
   it('Birria Pie = $30.95', () => {
@@ -86,16 +99,36 @@ describe('selection rules', () => {
     let p = []
     toppings.options.forEach((o) => (p = togglePick(toppings, p, o.name)))
     expect(p).toHaveLength(toppings.maxSelect)
-    expect(togglePick(toppings, p, 'Rice')).toHaveLength(toppings.maxSelect - 1)
+    expect(togglePick(toppings, p, 'Pico de Gallo')).toHaveLength(toppings.maxSelect - 1)
+    const addons = byo.groups.find((g) => g.key === 'addons')
+    expect(togglePick(addons, pick('Add Fresh Guac'), 'Add Queso Blanco')).toHaveLength(2)
   })
   it('levels only apply where the group allows them', () => {
     expect(validate(byo, sel({ base: [{ name: 'Bowl', level: 'extra' }] }))).toHaveLength(1)
-    expect(validate(byo, sel({ toppings: [{ name: 'Rice', level: 'side' }] }))).toEqual([])
-    expect(setLevel(pick('Rice'), 'Rice', 'light')).toEqual(pick('Rice', 'light'))
+    expect(validate(byo, sel({ rice: [{ name: 'Mexican Rice', level: 'side' }] }))).toEqual([])
+    expect(setLevel(pick('Mexican Rice'), 'Mexican Rice', 'light')).toEqual(pick('Mexican Rice', 'light'))
   })
   it('summarises a meal for the bag', () => {
-    const s = sel({ toppings: [{ name: 'Rice', level: 'light' }, { name: 'Beans', level: 'regular' }] })
-    expect(summaryParts(byo, s)).toEqual(['Bowl', 'Grill Chicken', 'Rice (light), Beans', 'Chipotle Sauce'])
+    const s = sel({ rice: pick('Mexican Rice', 'light'), beans: pick('Pinto Beans'), toppings: pick('Pico de Gallo'), sauce: pick('Chipotle Sauce') })
+    expect(summaryParts(byo, s)).toEqual(['Bowl', 'Grill Chicken', 'Mexican Rice (light)', 'Pinto Beans', 'Pico de Gallo', 'Chipotle Sauce'])
+  })
+  it('every builder card has a photo and sample calories; the meal adds them up by level', () => {
+    byo.groups.flatMap((g) => g.options).filter((o) => o.name !== 'Extra Protein').forEach((o) => {
+      expect(o.image).toMatch(/^\/media\/build\/.+\.webp$/)
+      expect(o.cal).toBeTypeOf('number')
+    })
+    // Bowl 0 + chicken 180 + Mexican rice 210 + black beans 130 + pico 25 + chipotle sauce 100
+    const meal = sel({ rice: pick('Mexican Rice'), beans: pick('Black Beans'), toppings: pick('Pico de Gallo'), sauce: pick('Chipotle Sauce') })
+    expect(calories(byo, meal)).toBe(645)
+    expect(calories(byo, { ...meal, rice: pick('Mexican Rice', 'light') })).toBe(540)
+    // half and half: 90 chicken + 75 steak; doubling the protein doubles both halves
+    const half = { ...meal, protein: [{ name: 'Grill Chicken', level: 'regular' }, { name: 'Grilled Steak', level: 'regular' }] }
+    expect(calories(byo, half)).toBe(645 - 180 + 90 + 75)
+    expect(calories(byo, { ...half, addons: pick('Extra Protein') })).toBe(645 - 180 + 180 + 150)
+  })
+  it('spots a meal saved under an older menu', () => {
+    expect(isStale(byo, sel())).toBe(false)
+    expect(isStale(byo, { ...sel(), toppings: pick('Rice') })).toBe(true)
   })
 })
 
@@ -230,43 +263,107 @@ describe('ordering flow in the app', () => {
     wrapper.unmount()
   })
 
-  it('builder: no price on the bottom bar, steak + guac adds up to $15.90 in the bag, URL carries the step', async () => {
-    const { wrapper, router } = await mountAt('/order/brooklyn-5119-a-avenue-u/build')
-    expect(wrapper.find('.bar').exists()).toBe(true)
-    expect(wrapper.find('.bar__total').exists()).toBe(false) // prices are hidden for now
-    await click(wrapper, 'NEXT')
-    expect(router.currentRoute.value.query.step).toBe('protein')
-    await click(wrapper, 'Grilled Steak')
-    await click(wrapper, 'NEXT')
-    await click(wrapper, 'Add Fresh Guac')
-    await click(wrapper, 'NEXT')
-    await click(wrapper, 'NEXT')
-    expect(router.currentRoute.value.query.step).toBe('review')
-    expect(wrapper.text()).toContain('Grilled Steak')
-    await click(wrapper, 'ADD TO BAG')
+  const B = '/order/brooklyn-5119-a-avenue-u/build'
+
+  it('builder: choose a base first, then it is not shown again ("Change" brings it back)', async () => {
+    const { wrapper, router } = await mountAt(B)
+    expect(wrapper.find('.hero__t').text()).toBe('Choose your meal')
+    expect(wrapper.find('.tags').exists()).toBe(false)
+    await click(wrapper, 'Burrito', '.bc__btn')
+    expect(router.currentRoute.value.query.base).toBe('burrito')
+    expect(wrapper.find('.hero__t').text()).toBe('Burrito')
+    expect(wrapper.find('.hero__pre').text()).toBe('Build your')
+    expect(wrapper.find('#h-base').exists()).toBe(false) // the base list is gone
+    await click(wrapper, 'Change', '.hero__change')
+    expect(wrapper.find('#h-base').exists()).toBe(true)
+    await click(wrapper, 'Quesadilla', '.bc__btn')
+    expect(wrapper.find('.hero__t').text()).toBe('Quesadilla')
+    wrapper.unmount()
+  })
+
+  it('a menu tile can open the builder with its base (go=build:burrito)', async () => {
+    useOrder().chooseStore('brooklyn-5119-a-avenue-u')
+    const { wrapper, router } = await mountAt('/order?go=build:burrito')
+    expect(router.currentRoute.value.path).toBe(B)
+    expect(wrapper.find('.hero__t').text()).toBe('Burrito')
+    wrapper.unmount()
+  })
+
+  it('builder cards: NAME, note, price and cal; steak + guac = $15.90 in the bag', async () => {
+    const { wrapper, router } = await mountAt(`${B}?base=bowl`)
+    expect(wrapper.find('.mbar__name').text()).toBe('Select a protein or veggie to get started')
+    const steak = wrapper.findAll('.bc').find((c) => c.text().includes('Grilled Steak'))
+    expect(steak.find('.bc__meta').text()).toMatch(/\$13\.95\s*150 cal/)
+    expect(wrapper.findAll('.bc').find((c) => c.text().includes('Veggie Fajita')).find('.bc__note').text()).toBe('Includes guacamole')
+    expect(wrapper.findAll('.sec')).toHaveLength(6)
+    await click(wrapper, 'Grilled Steak', '.bc__btn')
+    await click(wrapper, 'Add Fresh Guac', '.bc__btn')
+    expect(wrapper.find('.mbar__name').text()).toBe('Grilled Steak Bowl')
+    expect(wrapper.find('.mbar__price strong').text()).toBe('$15.90')
+    await click(wrapper, 'Add to bag', '.mbar__add')
     expect(router.currentRoute.value.path).toBe('/order/brooklyn-5119-a-avenue-u')
     expect(useOrder().subtotal.value).toBe(1590)
     wrapper.unmount()
   })
 
-  it('refresh mid-build keeps the choices and the step', async () => {
-    const first = await mountAt('/order/brooklyn-5119-a-avenue-u/build?step=protein')
-    await click(first.wrapper, 'Grilled Shrimp')
+  it('two proteins are half and half (1/2 badges); a third waits until one is untapped', async () => {
+    const { wrapper } = await mountAt(`${B}?base=bowl`)
+    await click(wrapper, 'Grill Chicken', '.bc__btn')
+    await click(wrapper, 'Grilled Steak', '.bc__btn')
+    expect(wrapper.findAll('#sec-protein .bc__badge.half')).toHaveLength(2)
+    expect(wrapper.find('.mbar__name').text()).toBe('Grill Chicken & Grilled Steak Bowl')
+    expect(wrapper.findAll('.bc').find((c) => c.text().includes('Tofu')).find('.bc__btn').attributes('disabled')).toBeDefined()
+    expect(wrapper.text()).toContain('Double portion of Grill Chicken and Grilled Steak')
+    await click(wrapper, 'Double your protein', '.bc__btn')
+    expect(wrapper.find('.mbar__price strong').text()).toBe('$16.90')
+    await click(wrapper, 'Mexican Rice', '.bc__btn')
+    await click(wrapper, 'Cilantro Lime White Rice', '.bc__btn')
+    expect(wrapper.findAll('#sec-rice .bc__badge.half')).toHaveLength(2)
+    await click(wrapper, 'No Rice', '.bc__btn')
+    expect(useOrder().state.draft.selections.rice).toEqual([])
+    wrapper.unmount()
+  })
+
+  it('tags scroll to portions, mark the done ones, and the URL keeps the place', async () => {
+    const { wrapper, router } = await mountAt(`${B}?base=bowl`)
+    expect(wrapper.findAll('.tag').map((t) => t.text().replace(' (done)', ''))).toEqual(['Protein', 'Rice', 'Beans', 'Toppings', 'Sauce', 'Finish'])
+    const scrolls = []
+    window.scrollTo = (o) => scrolls.push(o)
+    await click(wrapper, 'Toppings', '.tag')
+    expect(scrolls.some((o) => o && o.behavior === 'smooth')).toBe(true)
+    expect(router.currentRoute.value.query.step).toBe('toppings')
+    expect(wrapper.find('.tag[data-key=toppings]').attributes('aria-current')).toBe('true')
+    expect(wrapper.find('.tag[data-key=beans]').classes()).not.toContain('done')
+    await click(wrapper, 'Pinto Beans', '.bc__btn')
+    expect(wrapper.find('.tag[data-key=beans]').classes()).toContain('done')
+    window.scrollTo = () => {}
+    wrapper.unmount()
+  })
+
+  it('refresh mid-build keeps the base, the choices and the portion', async () => {
+    const first = await mountAt(`${B}?base=burrito&step=protein`)
+    await click(first.wrapper, 'Grilled Shrimp', '.bc__btn')
     first.wrapper.unmount()
-    const again = await mountAt('/order/brooklyn-5119-a-avenue-u/build?step=protein')
-    expect(again.wrapper.find('.b__h').text()).toBe('Pick your protein')
-    expect(again.wrapper.find('[aria-pressed=true]').text()).toContain('Grilled Shrimp')
-    expect(again.wrapper.find('.bar__total').exists()).toBe(false)
+    const again = await mountAt(`${B}?base=burrito&step=protein`)
+    expect(again.wrapper.find('.hero__t').text()).toBe('Burrito')
+    expect(again.wrapper.find('.tag.on').text()).toContain('Protein')
+    expect(again.wrapper.findAll('[aria-pressed=true]').some((b) => b.text().includes('Grilled Shrimp'))).toBe(true)
     again.wrapper.unmount()
   })
 
-  it('level control appears for a picked topping and is a radio group', async () => {
-    const { wrapper } = await mountAt('/order/brooklyn-5119-a-avenue-u/build?step=toppings')
-    const group = wrapper.find('[role=radiogroup]')
-    expect(group.exists()).toBe(true)
-    expect(group.findAll('[role=radio]')).toHaveLength(4)
-    await group.findAll('[role=radio]')[0].trigger('click')
-    expect(group.findAll('[role=radio]')[0].attributes('aria-checked')).toBe('true')
+  it('the options panel offers Light / Normal / Extra / Side (Normal / Double for protein)', async () => {
+    const { wrapper } = await mountAt(`${B}?base=bowl`)
+    const card = () => wrapper.findAll('.bc').find((c) => c.text().includes('Pico de Gallo'))
+    await card().find('.bc__more').trigger('click')
+    const radios = card().findAll('[role=radio]')
+    expect(radios.map((r) => r.text())).toEqual(['Light', 'Normal', 'Extra', 'Side'])
+    await radios[0].trigger('click') // picks Pico at Light
+    await flushPromises()
+    expect(useOrder().state.draft.selections.toppings).toEqual([{ name: 'Pico de Gallo', level: 'light' }])
+    expect(card().find('[role=radiogroup]').exists()).toBe(false) // panel closes
+    const chicken = () => wrapper.findAll('.bc').find((c) => c.text().includes('Grill Chicken'))
+    await chicken().find('.bc__more').trigger('click')
+    expect(chicken().findAll('[role=radio]').map((r) => r.text())).toEqual(['Normal', 'Double +$2.95'])
     wrapper.unmount()
   })
 

@@ -1,6 +1,6 @@
 import { computed, reactive, watch } from 'vue'
 import { findItem, findStore, isOrderable } from './lib/catalog'
-import { defaultSelection, lineCents, setLevel, togglePick, totals } from './lib/pricing'
+import { defaultSelection, isStale, lineCents, setLevel, togglePick, totals } from './lib/pricing'
 
 // One persisted store for the guest's store choice, the bag and the meal being built.
 // This is what makes a refresh or the back gesture safe (the #1 bug in the app we analysed).
@@ -12,7 +12,8 @@ function load() {
     return {
       storeSlug: isOrderable(findStore(raw.storeSlug)) ? raw.storeSlug : null,
       lines: (raw.lines ?? []).filter((l) => findItem(l.itemSlug)),
-      draft: raw.draft && findItem(raw.draft.itemSlug) ? raw.draft : null,
+      // A draft saved under an older menu (renamed or removed options) is dropped, not half-loaded.
+      draft: raw.draft && findItem(raw.draft.itemSlug) && !isStale(findItem(raw.draft.itemSlug), raw.draft.selections) ? raw.draft : null,
     }
   } catch {
     return { storeSlug: null, lines: [], draft: null }
@@ -63,6 +64,7 @@ export function useOrder() {
   function level(groupKey, name, lvl) {
     state.draft.selections[groupKey] = setLevel(state.draft.selections[groupKey] ?? [], name, lvl)
   }
+  const clear = (groupKey) => (state.draft.selections[groupKey] = [])
   const setQty = (n) => (state.draft.qty = Math.min(20, Math.max(1, n)))
   const setLabel = (text) => (state.draft.label = text.slice(0, 30))
   const discardDraft = () => (state.draft = null)
@@ -97,7 +99,7 @@ export function useOrder() {
 
   return {
     state, store, count, subtotal, totalsFor, draftItem, draftUnit,
-    chooseStore, openDraft, pick, level, setQty, setLabel, discardDraft, commitDraft,
+    chooseStore, openDraft, pick, level, clear, setQty, setLabel, discardDraft, commitDraft,
     quickAdd, removeLine, duplicateLine, setLineQty, clearBag,
   }
 }

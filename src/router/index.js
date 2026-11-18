@@ -35,7 +35,7 @@ export const routes = [
       },
       { path: 'checkout', name: 'order-checkout', component: () => import('@/order/views/OrderCheckoutView.vue'), meta: { title: `Checkout · ${BRAND}` } },
       { path: ':store', name: 'order-menu', component: () => import('@/order/views/OrderMenuView.vue'), props: true, meta: { title: `Order · ${BRAND}` } },
-      { path: ':store/build', name: 'order-build', component: () => import('@/order/views/OrderBuilderView.vue'), props: true, meta: { title: `Build your own · ${BRAND}` } },
+      { path: ':store/build', name: 'order-build', component: () => import('@/order/views/OrderBuilderView.vue'), props: true, meta: { title: `Build your own · ${BRAND}`, wide: true } },
       { path: ':store/item/:slug', name: 'order-item', component: () => import('@/order/views/OrderItemView.vue'), props: true, meta: { title: `Order · ${BRAND}` } },
     ],
   },
@@ -48,6 +48,8 @@ export function createAppRouter(history = createWebHistory()) {
     routes,
     scrollBehavior(to, from, saved) {
       if (saved) return saved
+      // Same page, only the query changed (e.g. the builder's ?step / ?base): stay where we are.
+      if (from.matched.length && to.path === from.path && to.hash === from.hash) return false
       // Header is 68px; the menu page adds a 56px sticky tab bar.
       if (to.hash) return { el: to.hash, top: to.path === '/menu' ? 132 : 76, behavior: 'smooth' }
       return { top: 0, behavior: 'instant' }
