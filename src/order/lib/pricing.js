@@ -156,3 +156,32 @@ export const isStale = (item, sel) =>
     const g = (item.groups ?? []).find((x) => x.key === key)
     return !g || picks.some((p) => !optionOf(g, p.name))
   })
+
+/** Line-by-line price breakdown for the bag: [{ label, cents, add }] (cents null = included;
+ *  add = an add-on shown as "+$x").
+ *  Paid picks get their own row; free picks of a group share one row. */
+export function breakdown(item, sel) {
+  const rows = []
+  if (!(item.groups ?? []).length || item.basePriceCents) rows.push({ label: item.name, cents: item.basePriceCents ?? 0 })
+  for (const g of item.groups ?? []) {
+    const picks = (sel[g.key] ?? []).filter((p) => {
+      const o = optionOf(g, p.name)
+      return o && !isExtraProteinAddon(g, o)
+    })
+    if (!picks.length) continue
+    const half = g.halfAndHalf && picks.length === 2 ? '½ ' : ''
+    const name = (p) => {
+      const lvl = g.allowLevels && p.level && p.level !== 'regular' && !(g.key === 'protein' && p.level === 'extra') ? ` (${LEVEL_LABEL[p.level].toLowerCase()})` : ''
+      return `${half}${p.name}${lvl}`
+    }
+    if (g.setsPrice) {
+      rows.push({ label: picks.map(name).join(', '), cents: Math.max(...picks.map((p) => optionOf(g, p.name).priceCents)) })
+      continue
+    }
+    const free = picks.filter((p) => !optionOf(g, p.name).priceCents)
+    if (free.length) rows.push({ label: free.map(name).join(', '), cents: null })
+    picks.filter((p) => optionOf(g, p.name).priceCents).forEach((p) => rows.push({ label: name(p), cents: optionOf(g, p.name).priceCents, add: true }))
+  }
+  if (hasExtraProtein(item, sel)) rows.push({ label: 'Double protein', cents: EXTRA_PROTEIN_CENTS, add: true })
+  return rows
+}

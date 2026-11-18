@@ -1,5 +1,5 @@
 import { computed, reactive, watch } from 'vue'
-import { findItem, findStore, isOrderable } from './lib/catalog'
+import { findItem, findStore, isOrderable, taxRateFor } from './lib/catalog'
 import { defaultSelection, isStale, lineCents, setLevel, togglePick, totals } from './lib/pricing'
 
 // One persisted store for the guest's store choice, the bag and the meal being built.
@@ -12,11 +12,12 @@ function load() {
     return {
       storeSlug: isOrderable(findStore(raw.storeSlug)) ? raw.storeSlug : null,
       lines: (raw.lines ?? []).filter((l) => findItem(l.itemSlug)),
+      utensils: !!raw.utensils,
       // A draft saved under an older menu (renamed or removed options) is dropped, not half-loaded.
       draft: raw.draft && findItem(raw.draft.itemSlug) && !isStale(findItem(raw.draft.itemSlug), raw.draft.selections) ? raw.draft : null,
     }
   } catch {
-    return { storeSlug: null, lines: [], draft: null }
+    return { storeSlug: null, lines: [], draft: null, utensils: false }
   }
 }
 
@@ -36,7 +37,11 @@ export function useOrder() {
   const store = computed(() => findStore(state.storeSlug))
   const count = computed(() => state.lines.reduce((n, l) => n + l.qty, 0))
   const subtotal = computed(() => state.lines.reduce((sum, l) => sum + lineCents(findItem(l.itemSlug), l), 0))
-  const totalsFor = (tipPct = 0) => totals(subtotal.value, { rate: store.value?.taxRate ?? null, tipPct })
+  // Tax uses the store's confirmed rate, else a sample state rate (flagged as estimated).
+  const totalsFor = (tipPct = 0) => ({
+    ...totals(subtotal.value, { rate: taxRateFor(store.value), tipPct }),
+    taxEstimated: store.value?.taxRate == null,
+  })
 
   const draftItem = computed(() => (state.draft ? findItem(state.draft.itemSlug) : null))
   const draftUnit = computed(() => (draftItem.value ? lineCents(draftItem.value, { selections: state.draft.selections, qty: 1 }) : 0))
@@ -52,8 +57,8 @@ export function useOrder() {
     if (state.draft && state.draft.itemSlug === itemSlug && state.draft.editId === (fromLine?.id ?? null)) return state.draft
     const item = findItem(itemSlug)
     state.draft = fromLine
-      ? { itemSlug, selections: JSON.parse(JSON.stringify(fromLine.selections)), label: fromLine.label, qty: fromLine.qty, editId: fromLine.id }
-      : { itemSlug, selections: defaultSelection(item), label: '', qty: 1, editId: null }
+      ? { itemSlug, selections: JSON.parse(JSON.stringify(fromLine.selections)), label: fromLine.label, qty: fromLine.qty, editId: fromLine.id, extras: [] }
+      : { itemSlug, selections: defaultSelection(item), label: '', qty: 1, editId: null, extras: [] }
     return state.draft
   }
 
@@ -64,6 +69,14 @@ export function useOrder() {
   function level(groupKey, name, lvl) {
     state.draft.selections[groupKey] = setLevel(state.draft.selections[groupKey] ?? [], name, lvl)
   }
+  // Sides, drinks and desserts picked on the builder: added to the bag as their own lines.
+  function toggleExtra(slug) {
+    const list = state.draft.extras ?? (state.draft.extras = [])
+    const at = list.indexOf(slug)
+    if (at >= 0) list.splice(at, 1)
+    else list.push(slug)
+  }
+  const setUtensils = (on) => (state.utensils = !!on)
   const clear = (groupKey) => (state.draft.selections[groupKey] = [])
   const setQty = (n) => (state.draft.qty = Math.min(20, Math.max(1, n)))
   const setLabel = (text) => (state.draft.label = text.slice(0, 30))
@@ -75,6 +88,7 @@ export function useOrder() {
     const at = state.lines.findIndex((l) => l.id === line.id)
     if (at >= 0) state.lines.splice(at, 1, line)
     else state.lines.push(line)
+    ;(d.extras ?? []).forEach((slug) => findItem(slug) && quickAdd(slug))
     state.draft = null
     return line
   }
@@ -99,7 +113,7 @@ export function useOrder() {
 
   return {
     state, store, count, subtotal, totalsFor, draftItem, draftUnit,
-    chooseStore, openDraft, pick, level, clear, setQty, setLabel, discardDraft, commitDraft,
+    chooseStore, openDraft, pick, level, clear, toggleExtra, setUtensils, setQty, setLabel, discardDraft, commitDraft,
     quickAdd, removeLine, duplicateLine, setLineQty, clearBag,
   }
 }
@@ -109,4 +123,5 @@ export function __resetOrder() {
   state.storeSlug = null
   state.lines = []
   state.draft = null
+  state.utensils = false
 }

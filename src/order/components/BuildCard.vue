@@ -3,7 +3,8 @@ import { computed, nextTick, ref } from 'vue'
 
 // One ingredient card, laid out like chipotle.com/order/build: photo bleeding off the left edge,
 // then NAME, an optional note ("Includes guacamole", "Mild") and "price   cal". Picked cards get
-// a coloured border and a badge on the photo: a tick, or "1/2" for half-and-half picks. The ⋮
+// a coloured border and a badge on the photo: a tick, or a text badge ("1/2" half and half,
+// "1x" / "2x" with Double protein). `radio` draws the photo-less Double card (empty circle). The ⋮
 // button slides an options panel over the card (Light / Normal / Extra / Side, or Normal /
 // Double for protein); "‹" closes it. `none` draws the ⊘ "No rice" / "No beans" card.
 const props = defineProps({
@@ -13,7 +14,8 @@ const props = defineProps({
   cal: { type: Number, default: null },
   price: { type: String, default: '' },
   picked: { type: Boolean, default: false },
-  half: { type: Boolean, default: false },
+  badge: { type: String, default: '' }, // text in the badge instead of a tick
+  radio: { type: Boolean, default: false },
   disabled: { type: Boolean, default: false },
   none: { type: Boolean, default: false },
   levels: { type: Array, default: () => [] }, // [{ value, label }]; empty = no ⋮ button
@@ -50,18 +52,19 @@ function onKey(e) {
 </script>
 
 <template>
-  <li class="bc" :class="{ on: picked, off: disabled && !picked, none }">
+  <li class="bc" :class="{ on: picked, off: disabled && !picked, none, radio }">
     <button type="button" class="bc__btn" :aria-pressed="picked" :disabled="disabled && !picked" @click="emit('pick')">
       <span class="bc__img">
-        <svg v-if="none" class="bc__no" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="4" /><path d="M10 10l28 28" stroke="currentColor" stroke-width="4" /></svg>
+        <span v-if="radio" class="bc__radio" aria-hidden="true"><svg v-if="picked" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10" /></svg></span>
+        <svg v-else-if="none" class="bc__no" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="4" /><path d="M10 10l28 28" stroke="currentColor" stroke-width="4" /></svg>
         <img v-else :src="image" alt="" width="360" height="360" loading="lazy" decoding="async" />
-        <span v-if="picked" class="bc__badge" :class="{ half }" aria-hidden="true">
-          <template v-if="half">1/2</template>
+        <span v-if="picked && !radio" class="bc__badge" :class="{ half: !!badge }" aria-hidden="true">
+          <template v-if="badge">{{ badge }}</template>
           <svg v-else viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10" /></svg>
         </span>
       </span>
       <span class="bc__txt">
-        <span class="bc__name">{{ name }}<span v-if="half" class="sr-only"> (half portion)</span></span>
+        <span class="bc__name">{{ name }}<span v-if="badge" class="sr-only"> ({{ badge === '1/2' ? 'half portion' : badge === '2x' ? 'double portion' : 'full portion' }})</span></span>
         <span v-if="note" class="bc__note">{{ note }}</span>
         <span v-if="price || calText" class="bc__meta">
           <span v-if="price">{{ price }}</span>
@@ -128,6 +131,10 @@ function onKey(e) {
 .bc__img { position: relative; flex: none; width: 106px; height: 114px; display: grid; place-items: center; }
 .bc__img img { width: 100%; height: 100%; object-fit: cover; transform: scale(1.32) translateX(-8%); }
 .bc__no { width: 46px; height: 46px; color: #c8bfb0; }
+.bc__radio { width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid #c8bfb0; background: #fff; display: grid; place-items: center; color: #fff; }
+.bc__radio svg { width: 20px; height: 20px; }
+.bc.radio.on .bc__radio { background: var(--guac); border-color: var(--guac); }
+.bc.radio .bc__btn { background: #f1eee7; }
 .bc__badge { position: absolute; top: 50%; left: 50%; width: 40px; height: 40px; margin: -20px 0 0 -20px; border-radius: 50%; display: grid; place-items: center; background: var(--guac); color: #fff; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25); }
 .bc__badge svg { width: 20px; height: 20px; }
 .bc__badge.half { background: var(--lime); color: var(--on-lime); font: 900 15px/1 var(--f-display); font-stretch: 85%; letter-spacing: 0.02em; }

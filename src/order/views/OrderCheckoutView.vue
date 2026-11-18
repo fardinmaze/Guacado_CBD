@@ -115,10 +115,11 @@ const eta = computed(() => asapMinutes(12, 0))
           <span class="p">{{ cents(x.price) }}</span>
         </li>
       </ul>
+      <p class="parts">Napkins &amp; utensils: {{ order.state.utensils ? 'included' : 'not included' }}</p>
       <dl class="tot">
         <div><dt>Subtotal</dt><dd>{{ cents(t.subtotal) }}</dd></div>
         <div v-if="t.taxPending"><dt>Tax</dt><dd class="pend">Confirmed at your restaurant</dd></div>
-        <div v-else><dt>Tax</dt><dd>{{ cents(t.tax) }}</dd></div>
+        <div v-else><dt>{{ t.taxEstimated ? 'Estimated tax' : 'Tax' }}</dt><dd>{{ cents(t.tax) }}</dd></div>
         <div v-if="t.tip"><dt>Tip</dt><dd>{{ cents(t.tip) }}</dd></div>
         <div class="grand"><dt>Total</dt><dd>{{ cents(t.total) }}<span v-if="t.taxPending">+ tax</span></dd></div>
       </dl>

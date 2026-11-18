@@ -2,18 +2,20 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { calLabel, findItem } from '@/order/lib/catalog'
-import { EXTRA_PROTEIN_CENTS, calories, cents, hasExtraProtein, isHalf, validate } from '@/order/lib/pricing'
+import { useBagSheet } from '@/order/useBagSheet'
+import { EXTRA_PROTEIN_CENTS, cents, hasExtraProtein, isHalf, validate } from '@/order/lib/pricing'
 import { useOrder } from '@/order/useOrder'
 import { useToast } from '@/composables/useToast'
 import BuildCard from '@/order/components/BuildCard.vue'
-import MealExtras from '@/order/components/MealExtras.vue'
 
 // Build your own, laid out like chipotle.com/order/build/burrito-bowl.
 // 1. Choose a base (Bowl, Burrito...). Once chosen it is kept in the URL (?base=burrito) and the
 //    base list is not shown again; "Change" in the hero brings it back. Menu tiles can link
 //    straight to a base (go=build:burrito).
-// 2. One page of portions: Protein or veggie, Rice, Beans, Top things off, Sauce, Finish. A sticky
-//    row of tags scrolls the page to each portion and marks the done ones (no NEXT steps).
+// 2. One page of portions: Protein or veggie, Rice, Beans, Top things off, Sauce, then side cups,
+//    drinks and desserts (added to the bag as their own items). A sticky row of tags scrolls the
+//    page to each portion and marks the done ones (no NEXT steps).
+// 3. ADD TO BAG asks who the meal is for, then opens the bag drawer (breakdown, quantity, totals).
 // Protein and rice take up to two picks: two picks are half and half (1/2 badge; two proteins
 // cost the dearer one). Calories per ingredient are SAMPLE values (menu.seed.json).
 const props = defineProps({ store: { type: String, required: true } })
@@ -30,9 +32,14 @@ const SECTIONS = [
   { key: 'beans', label: 'Beans', groups: ['beans'], title: 'Beans', sub: 'Choose up to two.' },
   { key: 'toppings', label: 'Toppings', groups: ['addons', 'toppings'], title: 'Top things off', sub: '' },
   { key: 'sauce', label: 'Sauce', groups: ['sauce'], title: 'Homemade sauce', sub: 'Choose up to two.' },
-  { key: 'finish', label: 'Finish', groups: [], title: 'Finish your meal', sub: '' },
+  { key: 'sides', label: 'Side cups', groups: [], extras: ['side-cup-chicken', 'side-cup-beef'], title: 'Cups of chicken or beef', sub: 'Added to your bag on their own.' },
+  { key: 'drinks', label: 'Drinks', groups: [], extras: ['bottle-drink', 'water', 'organic-tractor-tea', 'organic-lemonade'], title: 'Drinks', sub: '' },
+  { key: 'desserts', label: 'Desserts', groups: [], extras: ['churros', 'tres-leches-cake', 'plantains'], title: 'Desserts', sub: '' },
 ]
-const PORTIONS = SECTIONS.slice(0, -1)
+const PORTIONS = SECTIONS.filter((s) => s.groups.length)
+const EXTRAS = SECTIONS.filter((s) => s.extras)
+const extraItems = (s) => s.extras.map(findItem).filter((i) => i?.image)
+const extraPicked = (slug) => (draft.value?.extras ?? []).includes(slug)
 
 const editLine = computed(() => order.state.lines.find((l) => l.id === route.query.edit) ?? null)
 watch(
@@ -101,16 +108,21 @@ function toggleDouble() {
   } else order.pick('addons', 'Extra Protein')
 }
 const proteinNames = computed(() => picksOf('protein').map((p) => p.name))
+// Badge on a picked card: "1/2" for half and half; with Double protein "1x" (each half becomes a
+// full portion) or "2x" (one protein, doubled); otherwise a tick.
+function badgeOf(key, name) {
+  const half = isHalf(groupOf(key), sel.value)
+  if (key === 'protein' && (isPicked('addons', 'Extra Protein') || levelOf(key, name) === 'extra')) return half ? '1x' : '2x'
+  return half ? '1/2' : ''
+}
 
 // --- Totals, meal name, errors ----------------------------------------------------------------
 const errors = computed(() => validate(item, sel.value))
 const showErrors = ref(false)
 const errorFor = (key) => errors.value.find((e) => e.group === key)?.message ?? ''
 const sectionError = (s) => s.groups.map(errorFor).find(Boolean) ?? ''
-const done = (s) => s.groups.length > 0 && !sectionError(s) && s.groups.some((k) => picksOf(k).length)
+const done = (s) => (s.extras ? s.extras.some(extraPicked) : !sectionError(s) && s.groups.some((k) => picksOf(k).length))
 const ready = computed(() => picksOf('protein').length > 0)
-const unit = computed(() => order.draftUnit.value * (draft.value?.qty ?? 1))
-const cal = computed(() => calories(item, sel.value))
 const mealName = computed(() => draft.value?.label?.trim() || [proteinNames.value.join(' & '), base.value.name].filter(Boolean).join(' '))
 
 // --- Tags: scroll to a portion; the one on screen is highlighted ------------------------------
@@ -162,17 +174,38 @@ onMounted(async () => {
 })
 onBeforeUnmount(() => spy?.disconnect())
 
-function add() {
+// ADD TO BAG -> "Who's this meal for?" -> the bag drawer.
+const naming = ref(false)
+const mealFor = ref('')
+const nameErr = ref('')
+const nameInput = ref(null)
+const bag = useBagSheet()
+async function add() {
   if (errors.value.length) {
     showErrors.value = true
     const first = SECTIONS.find((s) => sectionError(s))
     if (first) jump(first.key)
     return
   }
+  mealFor.value = draft.value.label ?? ''
+  nameErr.value = ''
+  naming.value = true
+  await nextTick()
+  nameInput.value?.focus()
+}
+async function confirmName() {
+  if (!mealFor.value.trim()) {
+    nameErr.value = 'Type a name so we can label the bag.'
+    nameInput.value?.focus()
+    return
+  }
+  order.setLabel(mealFor.value.trim())
   const wasEdit = !!draft.value.editId
   order.commitDraft()
+  naming.value = false
   toast.show(wasEdit ? 'Meal updated' : 'Added to your bag')
-  router.push(`/order/${props.store}`)
+  await router.push(`/order/${props.store}`)
+  bag.show()
 }
 </script>
 
@@ -257,7 +290,7 @@ function add() {
               :cal="o.cal"
               :price="priceOf(k, o)"
               :picked="isPicked(k, o.name)"
-              :half="isPicked(k, o.name) && isHalf(groupOf(k), sel)"
+              :badge="badgeOf(k, o.name)"
               :disabled="atCap(k)"
               :levels="levelsOf(k)"
               :level="levelOf(k, o.name)"
@@ -275,9 +308,8 @@ function add() {
           />
           <BuildCard
             v-if="s.key === 'protein' && proteinNames.length"
-            class="dbl"
+            radio
             name="Double your protein"
-            :image="cardsOf('protein').find((o) => o.name === proteinNames[0])?.image"
             :note="`Double portion of ${proteinNames.join(' and ')}`"
             :price="`+ ${cents(EXTRA_PROTEIN_CENTS)}`"
             :picked="doubled"
@@ -287,16 +319,24 @@ function add() {
         <p v-if="s.groups.some(atCap) && s.key !== 'toppings'" class="sec__hint">That's two. Tap one to swap it out.</p>
       </section>
 
-      <section id="sec-finish" data-key="finish" class="sec" aria-labelledby="h-finish">
-        <div class="sec__head"><h2 id="h-finish" class="sec__t">Finish your meal</h2></div>
-        <ul class="sum">
-          <li v-for="s in PORTIONS" :key="s.key">
-            <span class="sum__k">{{ s.label }}</span>
-            <span class="sum__v">{{ s.groups.flatMap((k) => picksOf(k).filter((p) => p.name !== 'Extra Protein').map((p) => (isHalf(groupOf(k), sel) ? '½ ' : '') + p.name + (p.level && p.level !== 'regular' ? ` (${p.level})` : ''))).join(', ') || 'None' }}</span>
-            <button type="button" class="sum__edit" @click="jump(s.key)">Edit<span class="sr-only"> {{ s.label }}</span></button>
-          </li>
+      <!-- After the meal: side cups, drinks, desserts. Each goes into the bag as its own item. -->
+      <section v-for="s in EXTRAS" :id="`sec-${s.key}`" :key="s.key" :data-key="s.key" class="sec" :aria-labelledby="`h-${s.key}`">
+        <div class="sec__head">
+          <h2 :id="`h-${s.key}`" class="sec__t">{{ s.title }}</h2>
+          <p v-if="s.sub" class="sec__sub">{{ s.sub }}</p>
+        </div>
+        <ul class="grid">
+          <BuildCard
+            v-for="x in extraItems(s)"
+            :key="x.slug"
+            :name="x.name"
+            :image="x.image"
+            :cal="x.calMin ?? null"
+            :price="cents(x.basePriceCents)"
+            :picked="extraPicked(x.slug)"
+            @pick="order.toggleExtra(x.slug)"
+          />
         </ul>
-        <MealExtras class="fin" :label="draft.label" :qty="draft.qty" @update:label="order.setLabel" @update:qty="order.setQty" />
       </section>
 
       <!-- Bottom bar, chipotle.com style: YOUR MEAL + meal name, price, ADD TO BAG. -->
@@ -306,12 +346,27 @@ function add() {
             <span class="mbar__k">Your meal</span>
             <span class="mbar__name">{{ ready ? mealName : 'Select a protein or veggie to get started' }}</span>
           </div>
-          <p v-if="ready" class="mbar__price" aria-live="polite" aria-atomic="true">
-            <strong>{{ cents(unit) }}</strong><span>{{ cal.toLocaleString('en-US') }} cal</span>
-          </p>
           <button type="button" class="mbar__add" @click="add">{{ draft.editId ? 'Update' : 'Add to bag' }}</button>
         </div>
       </div>
+
+      <Teleport to="body">
+        <div v-if="naming" class="nm" @click.self="naming = false" @keydown.esc="naming = false">
+          <form class="nm__box" role="dialog" aria-modal="true" aria-labelledby="nm-t" novalidate @submit.prevent="confirmName">
+            <h2 id="nm-t" class="nm__t">Who's this meal for?</h2>
+            <p class="nm__d">We'll write the name on the bag so everyone gets the right meal.</p>
+            <label class="nm__f">
+              <span class="sr-only">Meal name</span>
+              <input ref="nameInput" v-model="mealFor" type="text" maxlength="30" autocomplete="given-name" placeholder="e.g. Sara" :aria-invalid="!!nameErr" aria-describedby="nm-e" />
+            </label>
+            <p id="nm-e" class="nm__e" role="alert">{{ nameErr }}</p>
+            <div class="nm__act">
+              <button type="button" class="nm__cancel" @click="naming = false">Cancel</button>
+              <button type="submit" class="nm__ok">{{ draft.editId ? 'Update meal' : 'Add to bag' }}</button>
+            </div>
+          </form>
+        </div>
+      </Teleport>
     </template>
   </div>
 </template>
@@ -356,16 +411,7 @@ function add() {
 .grid { list-style: none; margin: 0; padding: 0; display: grid; gap: 24px; }
 @media (min-width: 700px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 699px) { .grid { gap: 12px; } }
-.dbl :deep(.bc__btn) { background: #f1eee7; }
 
-/* Finish */
-.sum { list-style: none; margin: 0 0 24px; padding: 0; border: 1px solid #d6d1c6; }
-.sum li { display: grid; grid-template-columns: 90px 1fr auto; align-items: center; gap: 12px; padding: 10px 8px 10px 16px; border-top: 1px solid var(--line); }
-.sum li:first-child { border-top: 0; }
-.sum__k { font: 800 13px/1 var(--f-display); font-stretch: 85%; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent-text); }
-.sum__v { font-weight: 700; font-size: 14px; }
-.sum__edit { min-height: 40px; padding: 0 10px; border: 0; background: none; color: var(--ink); font: 700 14px var(--f-body); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
-.fin { max-width: 520px; }
 
 /* Bottom bar */
 .mbar { position: fixed; inset: auto 0 0; z-index: 40; background: #f1f0ee; border-top: 1px solid #dedad2; padding-bottom: env(safe-area-inset-bottom, 0px); }
@@ -373,12 +419,24 @@ function add() {
 .mbar__meal { display: grid; gap: 6px; min-width: 0; flex: 1; }
 .mbar__k { font: 900 16px/1 var(--f-display); font-stretch: 80%; text-transform: uppercase; letter-spacing: 0.03em; }
 .mbar__name { font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.mbar__price { display: grid; justify-items: end; gap: 2px; margin: 0; }
-.mbar__price strong { font: 900 22px/1 var(--f-display); font-stretch: 80%; }
-.mbar__price span { font-size: 12px; font-weight: 700; color: var(--ink-muted); }
 .mbar__add { flex: none; min-height: 50px; padding: 0 clamp(22px, 5vw, 72px); border: 0; border-radius: 3px; background: var(--ink); color: #fff; font: 900 18px/1 var(--f-display); font-stretch: 80%; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; }
 .mbar__add:hover { background: var(--guac); }
 .mbar__add:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 @media (max-width: 520px) { .mbar__k { display: none; } .mbar__add { padding: 0 18px; font-size: 16px; } }
+/* "Who's this meal for?" dialog */
+.nm { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 16px; background: rgba(0, 0, 0, 0.55); }
+.nm__box { width: min(100%, 440px); padding: 28px 24px 22px; background: #fff; border-radius: 6px; box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.5); }
+.nm__t { font: 900 30px/1 var(--f-display); font-stretch: 74%; text-transform: uppercase; }
+.nm__d { margin: 10px 0 18px; font-size: 14px; color: var(--ink-muted); }
+.nm__f input { width: 100%; min-height: 52px; padding: 0 14px; border: 1.5px solid #c8bfb0; border-radius: 4px; font: 600 17px var(--f-body); color: var(--ink); }
+.nm__f input:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
+.nm__f input[aria-invalid='true'] { border-color: var(--chili); }
+.nm__e { min-height: 20px; margin: 6px 0 4px; font-size: 13px; font-weight: 700; color: var(--chili); }
+.nm__act { display: flex; justify-content: flex-end; gap: 10px; }
+.nm__cancel, .nm__ok { min-height: 48px; padding: 0 20px; border-radius: 3px; font: 900 16px/1 var(--f-display); font-stretch: 80%; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; }
+.nm__cancel { border: 1.5px solid #c8bfb0; background: #fff; color: var(--ink); }
+.nm__ok { border: 0; background: var(--ink); color: #fff; }
+.nm__ok:hover { background: var(--guac); }
+.nm__cancel:focus-visible, .nm__ok:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { .tag { transition: none; } }
 </style>

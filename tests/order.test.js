@@ -5,7 +5,7 @@ import App from '@/App.vue'
 import { createAppRouter } from '@/router'
 import { findItem, findStore, stores, categories, categoryFrom } from '@/order/lib/catalog'
 import {
-  calories, cents, defaultSelection, fromCents, isStale, setLevel, summaryParts, taxCents, togglePick, totals, unitCents, validate,
+  breakdown, calories, cents, defaultSelection, fromCents, isStale, setLevel, summaryParts, taxCents, togglePick, totals, unitCents, validate,
 } from '@/order/lib/pricing'
 import { minutesUntilClose, pickupSlots, storeStatus } from '@/order/lib/hours'
 import { __resetOrder, useOrder } from '@/order/useOrder'
@@ -125,6 +125,17 @@ describe('selection rules', () => {
     const half = { ...meal, protein: [{ name: 'Grill Chicken', level: 'regular' }, { name: 'Grilled Steak', level: 'regular' }] }
     expect(calories(byo, half)).toBe(645 - 180 + 90 + 75)
     expect(calories(byo, { ...half, addons: pick('Extra Protein') })).toBe(645 - 180 + 180 + 150)
+  })
+  it('breaks a meal down line by line for the bag', () => {
+    const half = sel({ protein: [{ name: 'Tofu', level: 'regular' }, { name: 'Grilled Steak', level: 'regular' }], toppings: [{ name: 'Pico de Gallo', level: 'light' }], addons: [{ name: 'Add Fresh Guac', level: 'regular' }, { name: 'Extra Protein', level: 'regular' }] })
+    expect(breakdown(byo, half)).toEqual([
+      { label: 'Bowl', cents: null },
+      { label: '½ Tofu, ½ Grilled Steak', cents: 1395 },
+      { label: 'Pico de Gallo (light)', cents: null },
+      { label: 'Add Fresh Guac', cents: 195, add: true },
+      { label: 'Double protein', cents: 295, add: true },
+    ])
+    expect(breakdown(findItem('churros'), {})).toEqual([{ label: 'Churros', cents: 395 }])
   })
   it('spots a meal saved under an older menu', () => {
     expect(isStale(byo, sel())).toBe(false)
@@ -295,14 +306,43 @@ describe('ordering flow in the app', () => {
     const steak = wrapper.findAll('.bc').find((c) => c.text().includes('Grilled Steak'))
     expect(steak.find('.bc__meta').text()).toMatch(/\$13\.95\s*150 cal/)
     expect(wrapper.findAll('.bc').find((c) => c.text().includes('Veggie Fajita')).find('.bc__note').text()).toBe('Includes guacamole')
-    expect(wrapper.findAll('.sec')).toHaveLength(6)
+    expect(wrapper.findAll('.sec')).toHaveLength(8)
     await click(wrapper, 'Grilled Steak', '.bc__btn')
     await click(wrapper, 'Add Fresh Guac', '.bc__btn')
     expect(wrapper.find('.mbar__name').text()).toBe('Grilled Steak Bowl')
-    expect(wrapper.find('.mbar__price strong').text()).toBe('$15.90')
+    expect(wrapper.find('.mbar').text()).not.toMatch(/\$\d/) // no price on the bottom bar
+    expect(useOrder().draftUnit.value).toBe(1590)
+    // ADD TO BAG asks who the meal is for (required), then opens the bag drawer
     await click(wrapper, 'Add to bag', '.mbar__add')
-    expect(router.currentRoute.value.path).toBe('/order/brooklyn-5119-a-avenue-u')
+    const dialog = () => document.querySelector('.nm__box')
+    expect(dialog().textContent).toContain("Who's this meal for?")
+    dialog().querySelector('.nm__ok').click()
+    await flushPromises()
+    expect(dialog().textContent).toContain('Type a name')
+    const input = dialog().querySelector('input')
+    input.value = 'Sara'
+    input.dispatchEvent(new Event('input'))
+    dialog().querySelector('.nm__ok').click()
+    await flushPromises()
+    await vi.waitFor(() => expect(router.currentRoute.value.path).toBe('/order/brooklyn-5119-a-avenue-u'))
+    await flushPromises()
     expect(useOrder().subtotal.value).toBe(1590)
+    expect(useOrder().state.lines[0].label).toBe('Sara')
+    const bag = document.querySelector('[aria-labelledby=bag-title]')
+    expect(bag.querySelector('.line__name').textContent).toBe('Sara')
+    expect(bag.querySelector('.line__sub').textContent).toBe('Bowl')
+    expect(bag.textContent).toContain('+$1.95')
+    expect(bag.querySelector('.line__total').textContent).toBe('$15.90')
+    expect(bag.querySelector('[aria-label="Edit Sara"]')).not.toBeNull()
+    expect(bag.querySelector('[aria-label="Duplicate Sara"]')).not.toBeNull()
+    expect(bag.querySelector('[aria-label="Remove Sara"]')).not.toBeNull()
+    expect(bag.textContent).toContain('Estimated tax') // sample NY rate until the owner confirms
+    expect(bag.textContent).toContain('$17.31') // 15.90 + 8.875%
+    expect(bag.textContent).toContain('Get rewarded')
+    const ut = bag.querySelector('.ut input')
+    ut.click()
+    await flushPromises()
+    expect(useOrder().state.utensils).toBe(true)
     wrapper.unmount()
   })
 
@@ -314,8 +354,15 @@ describe('ordering flow in the app', () => {
     expect(wrapper.find('.mbar__name').text()).toBe('Grill Chicken & Grilled Steak Bowl')
     expect(wrapper.findAll('.bc').find((c) => c.text().includes('Tofu')).find('.bc__btn').attributes('disabled')).toBeDefined()
     expect(wrapper.text()).toContain('Double portion of Grill Chicken and Grilled Steak')
+    expect(wrapper.find('.bc.radio img').exists()).toBe(false) // the Double card has no photo
     await click(wrapper, 'Double your protein', '.bc__btn')
-    expect(wrapper.find('.mbar__price strong').text()).toBe('$16.90')
+    expect(useOrder().draftUnit.value).toBe(1690)
+    // doubled half and half: each half becomes a full portion (1x)
+    expect(wrapper.findAll('#sec-protein .bc__badge.half').map((b) => b.text())).toEqual(['1x', '1x'])
+    await click(wrapper, 'Grilled Steak', '.bc__btn') // back to one protein, still doubled: 2x
+    expect(wrapper.findAll('#sec-protein .bc__badge.half').map((b) => b.text())).toEqual(['2x'])
+    await click(wrapper, 'Double your protein', '.bc__btn')
+    expect(wrapper.findAll('#sec-protein .bc__badge.half')).toHaveLength(0)
     await click(wrapper, 'Mexican Rice', '.bc__btn')
     await click(wrapper, 'Cilantro Lime White Rice', '.bc__btn')
     expect(wrapper.findAll('#sec-rice .bc__badge.half')).toHaveLength(2)
@@ -326,7 +373,7 @@ describe('ordering flow in the app', () => {
 
   it('tags scroll to portions, mark the done ones, and the URL keeps the place', async () => {
     const { wrapper, router } = await mountAt(`${B}?base=bowl`)
-    expect(wrapper.findAll('.tag').map((t) => t.text().replace(' (done)', ''))).toEqual(['Protein', 'Rice', 'Beans', 'Toppings', 'Sauce', 'Finish'])
+    expect(wrapper.findAll('.tag').map((t) => t.text().replace(' (done)', ''))).toEqual(['Protein', 'Rice', 'Beans', 'Toppings', 'Sauce', 'Side cups', 'Drinks', 'Desserts'])
     const scrolls = []
     window.scrollTo = (o) => scrolls.push(o)
     await click(wrapper, 'Toppings', '.tag')
@@ -337,6 +384,20 @@ describe('ordering flow in the app', () => {
     await click(wrapper, 'Pinto Beans', '.bc__btn')
     expect(wrapper.find('.tag[data-key=beans]').classes()).toContain('done')
     window.scrollTo = () => {}
+    wrapper.unmount()
+  })
+
+  it('side cups, drinks and desserts after the meal go into the bag as their own items', async () => {
+    const { wrapper } = await mountAt(`${B}?base=bowl`)
+    await click(wrapper, 'Grill Chicken', '.bc__btn')
+    await click(wrapper, 'Side Cup of Beef', '.bc__btn')
+    await click(wrapper, 'Water', '.bc__btn')
+    await click(wrapper, 'Churros', '.bc__btn')
+    expect(wrapper.find('.tag[data-key=drinks]').classes()).toContain('done')
+    useOrder().setLabel('Ali')
+    useOrder().commitDraft()
+    expect(useOrder().state.lines.map((l) => l.itemSlug)).toEqual(['build-your-own', 'side-cup-beef', 'water', 'churros'])
+    expect(useOrder().subtotal.value).toBe(1295 + 295 + 195 + 395)
     wrapper.unmount()
   })
 
@@ -388,15 +449,15 @@ describe('ordering flow in the app', () => {
     await click(wrapper, 'VIEW BAG')
     const sheet = document.querySelector('[role=dialog]')
     expect(sheet.textContent).toContain('Chips')
-    expect(sheet.textContent).not.toMatch(/\$\d/)
-    expect(sheet.textContent).toContain('Chips')
+    expect(sheet.querySelector('.line__total').textContent).toBe('$2.95')
     sheet.querySelector('[aria-label="Close bag"]').click()
     await flushPromises()
     expect(document.querySelector('[role=dialog]')).toBeNull()
     wrapper.unmount()
     const co = await mountAt('/order/checkout')
     expect(co.wrapper.text()).toContain('Online payment isn')
-    expect(co.wrapper.text()).toContain('Confirmed at your restaurant')
+    expect(co.wrapper.text()).toContain('Estimated tax')
+    expect(co.wrapper.text()).toContain('Napkins & utensils: not included')
     expect(co.wrapper.find('.bar button').attributes('disabled')).toBeDefined()
     expect(router).toBeTruthy()
     co.wrapper.unmount()

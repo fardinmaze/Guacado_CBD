@@ -14,6 +14,11 @@ export const stores = storeSeed.stores
 export const findStore = (slug) => stores.find((s) => s.slug === slug)
 export const isOrderable = (store) => !!store && store.status === 'OPEN'
 
+// SAMPLE tax rates by state, used until the owner confirms each store's rate (store.taxRate).
+// Restaurant meal tax differs by city/county, so totals using these are labelled "estimated".
+export const SAMPLE_TAX_RATES = { NY: 0.08875, NJ: 0.06625, CT: 0.0735, MD: 0.06, PA: 0.06, MI: 0.06 }
+export const taxRateFor = (store) => store?.taxRate ?? SAMPLE_TAX_RATES[store?.state] ?? null
+
 export const categoryFrom = (cat) => Math.min(...cat.items.map(fromCents))
 
 /** "420–1310 Cal", "430 Cal" or "" when the boards do not print calories. */

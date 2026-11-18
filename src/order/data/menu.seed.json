@@ -18,7 +18,8 @@
       "which extras are charged",
       "calories per ingredient: builder cards show SAMPLE values (only item ranges are on the boards)",
       "per-store tax rates",
-      "Add Queso Blanco price (sample $1.95)"
+      "Add Queso Blanco price (sample $1.95)",
+      "Side Cup of Chicken / Beef: price (sample $2.95) and calories"
     ]
   },
   "categories": [
@@ -1090,6 +1091,30 @@
           "calMax": 220,
           "groups": [],
           "sort": 4
+        },
+        {
+          "slug": "side-cup-chicken",
+          "name": "Side Cup of Chicken",
+          "kind": "FIXED",
+          "basePriceCents": 295,
+          "calMin": 180,
+          "calMax": 180,
+          "image": "/media/build/extra-cup-chicken.webp",
+          "groups": [],
+          "sort": 5,
+          "note": "SAMPLE price ($2.95, the boards' extra-protein serving) and calories: owner to confirm"
+        },
+        {
+          "slug": "side-cup-beef",
+          "name": "Side Cup of Beef",
+          "kind": "FIXED",
+          "basePriceCents": 295,
+          "calMin": 150,
+          "calMax": 150,
+          "image": "/media/build/extra-cup-beef.webp",
+          "groups": [],
+          "sort": 6,
+          "note": "SAMPLE price ($2.95, the boards' extra-protein serving) and calories: owner to confirm"
         }
       ],
       "sort": 4
@@ -1309,7 +1334,8 @@
           "kind": "FIXED",
           "basePriceCents": 295,
           "groups": [],
-          "sort": 0
+          "sort": 0,
+          "image": "/media/build/drink-bottle.webp"
         },
         {
           "slug": "water",
@@ -1317,7 +1343,8 @@
           "kind": "FIXED",
           "basePriceCents": 195,
           "groups": [],
-          "sort": 1
+          "sort": 1,
+          "image": "/media/build/drink-water.webp"
         },
         {
           "slug": "organic-tractor-tea",
@@ -1325,7 +1352,8 @@
           "kind": "FIXED",
           "basePriceCents": 495,
           "groups": [],
-          "sort": 2
+          "sort": 2,
+          "image": "/media/build/drink-tea.webp"
         },
         {
           "slug": "organic-lemonade",
@@ -1333,7 +1361,8 @@
           "kind": "FIXED",
           "basePriceCents": 495,
           "groups": [],
-          "sort": 3
+          "sort": 3,
+          "image": "/media/build/drink-lemonade.webp"
         },
         {
           "slug": "shake",
@@ -1392,7 +1421,8 @@
           "kind": "FIXED",
           "basePriceCents": 395,
           "groups": [],
-          "sort": 0
+          "sort": 0,
+          "image": "/media/build/dessert-churros.webp"
         },
         {
           "slug": "tres-leches-cake",
@@ -1400,7 +1430,8 @@
           "kind": "FIXED",
           "basePriceCents": 495,
           "groups": [],
-          "sort": 1
+          "sort": 1,
+          "image": "/media/build/dessert-tres-leches.webp"
         },
         {
           "slug": "plantains",
@@ -1408,7 +1439,8 @@
           "kind": "FIXED",
           "basePriceCents": 395,
           "groups": [],
-          "sort": 2
+          "sort": 2,
+          "image": "/media/build/dessert-plantains.webp"
         }
       ],
       "sort": 7
