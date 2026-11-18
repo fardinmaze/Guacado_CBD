@@ -16,6 +16,7 @@ export const routes = [
   { path: '/menu', name: 'menu', component: () => import('@/views/MenuView.vue'), meta: { title: 'Fresh Guacado Menu · Bowls, Tacos, Burritos & More', description: `Explore Fresh Guacado's menu of bowls, tacos, burritos, family kits, sides and drinks. Build your own and order pickup.` } },
   { path: '/catering', name: 'catering', component: () => import('@/views/CateringView.vue'), meta: { title: 'Fresh Guacado Catering · Mexican Food for Every Gathering', description: 'Bring Fresh Guacado to birthdays, office lunches, weddings and game days. Explore catering packages and plan your food spread.' } },
   { path: '/locations', name: 'locations', component: () => import('@/views/LocationsView.vue'), meta: { title: 'Find a Fresh Guacado Near You · Order Mexican Food for Pickup', description: `Find a Fresh Guacado location near you. Explore the menu and order pickup. Open daily from 10:30am to 3am across ${stats.states} states.` } },
+  { path: '/values', name: 'values', component: () => import('@/views/ValuesView.vue'), meta: { title: `Our Values · ${BRAND}`, description: 'Guac mashed in-house, homemade sauces and a fresh selection of toppings: how Fresh Guacado makes every meal.' } },
   {
     // Mobile-first pickup ordering. Own shell (no marketing header/footer): meta.order hides them in App.vue.
     path: '/order',

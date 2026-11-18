@@ -42,7 +42,7 @@ watch(() => route.fullPath, () => (open.value = false))
 
       <nav class="nav" aria-label="Main">
         <AppLink v-for="item in links" :key="item.label" :to="item.to" :href="item.href">{{ item.label }}</AppLink>
-        <a :href="site.orderUrl">Order</a>
+        <RouterLink to="/values">Our Values</RouterLink>
       </nav>
 
       <div class="hdr__actions">

@@ -32,7 +32,8 @@ const heroSrc = small ? videos.hero.sd : videos.hero.hd
 </template>
 
 <style scoped>
-.hero { position: relative; background: #000; color: #fff; min-height: max(420px, 70vh); min-height: max(420px, 70svh); display: grid; place-items: center; overflow: hidden; }
+/* First screen = util bar + header + this hero + the rewards strip (OrderStrip, --strip-h). */
+.hero { position: relative; background: #000; color: #fff; min-height: max(420px, 70vh); min-height: max(420px, calc(100svh - var(--util-h) - var(--header-h) - var(--strip-h) - 1px)); display: grid; place-items: center; overflow: hidden; }
 .hero__media { position: absolute; inset: 0; }
 .hero__media :deep(video) { object-position: 50% 65%; }
 /* No dark overlay on the video; a soft text shadow keeps the white copy readable. */

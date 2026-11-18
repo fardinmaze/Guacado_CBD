@@ -56,7 +56,7 @@ function onKey(e) {
 <template>
   <li class="bc" :class="{ on: picked, off: disabled && !picked, none, radio, locked }">
     <button type="button" class="bc__btn" :aria-pressed="picked" :disabled="locked || (disabled && !picked)" @click="emit('pick')">
-      <span class="bc__img">
+      <span v-if="image || none || radio" class="bc__img">
         <span v-if="radio" class="bc__radio" aria-hidden="true"><svg v-if="picked" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10" /></svg></span>
         <svg v-else-if="none" class="bc__no" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="4" /><path d="M10 10l28 28" stroke="currentColor" stroke-width="4" /></svg>
         <img v-else :src="image" alt="" width="360" height="360" loading="lazy" decoding="async" />
@@ -129,6 +129,8 @@ function onKey(e) {
 .bc__btn:hover:not(:disabled) { border-color: var(--ink-muted); }
 .bc__btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 .bc__btn:disabled { opacity: 0.45; cursor: not-allowed; }
+/* Options without a photo (e.g. drink flavors): text-only card. */
+.bc__btn:not(:has(.bc__img)) { padding-left: 20px; min-height: 76px; }
 .bc.locked .bc__btn:disabled { opacity: 1; cursor: default; }
 .bc.on .bc__btn { border: 2px solid var(--guac); box-shadow: inset 0 0 0 1px var(--guac); }
 

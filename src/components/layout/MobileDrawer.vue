@@ -11,7 +11,7 @@ const emit = defineEmits(['close'])
 
 const root = ref(null)
 const closeBtn = ref(null)
-const links = nav.filter((n) => n.label !== 'Order')
+const links = [...nav.filter((n) => n.label !== 'Order'), { label: 'Our Values', to: '/values' }]
 
 function onKeydown(e) {
   if (e.key === 'Escape') return emit('close')

@@ -48,7 +48,8 @@
   --r-pill: 999px;
 
   /* Layout */
-  --header-h: 70px;
+  --header-h: 92px; /* taller bar, same type sizes: more space above and below */
+  --strip-h: 96px; /* the rewards strip under the home hero */
   --util-h: 28px;
   --r-btn: 4px; /* marketing buttons are square-cornered, Chipotle-style */
   --gut-l: max(16px, env(safe-area-inset-left, 0px));

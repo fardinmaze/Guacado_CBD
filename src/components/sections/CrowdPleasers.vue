@@ -1,29 +1,30 @@
 <script setup>
-import menu from '@/data/menu.json'
 import { links, occasions, site } from '@/data/site'
 // Owner photos: family kit spread (Contents/family kit guac.avif) and the group spread
 // (Contents/group.jpeg, same file as the Sides banner, so it reuses that WebP).
-const kitImg = '/media/family-kit.webp'
+const groupOrderImg = '/media/catering/group-order.webp'
 const groupImg = '/media/sides/sides-main-900.webp'
 
 // "Crowd pleasers": two cards, centred title, wide action buttons (Chipotle layout).
-// Each card opens with a full-width photo. Off-white kits card; light green catering card whose
+// Each card opens with a full-width photo. Off-white group order card; light green catering card whose
 // photo fades into the card with a light green gradient (0% at the top to 100% at the bottom).
-const kits = menu.familyKits
 </script>
 
 <template>
   <section class="crowd" aria-labelledby="crowd-title">
     <h2 id="crowd-title">Good food brings everyone together.</h2>
     <div class="crowd__grid">
-      <article id="kits" class="cc cc--kits">
-        <span class="cc__media"><img :src="kitImg" alt="A family kit: chips with guac, salsa and queso, tacos, quesadillas and burritos" width="900" height="600" loading="lazy" decoding="async" /></span>
-        <h3>Family kits</h3>
-        <p>Feeding 4–6? Bring home two proteins, tortillas or chips, and all the fixings.</p>
+      <!-- Group order: the ordering feature itself is still to come; the button starts a normal order. -->
+      <article id="group" class="cc cc--kits">
+        <span class="cc__media"><img :src="groupOrderImg" alt="Friends sharing burritos, bowls and chips from a Fresh Guacado bag" width="1200" height="509" loading="lazy" decoding="async" /></span>
+        <h3>Group order</h3>
+        <p>Ordering for the team or the whole crew? Everyone picks their own meal, and it all comes together in one pickup.</p>
         <ul class="cc__list">
-          <li v-for="k in kits.items" :key="k.name">{{ k.name }}</li>
+          <li>Everyone builds their own meal</li>
+          <li>Regular menu prices</li>
+          <li>One order, one pickup</li>
         </ul>
-        <RouterLink :to="{ path: '/order', query: { go: 'family' } }" class="cc__btn">Order a family kit</RouterLink>
+        <RouterLink :to="{ path: '/order' }" class="cc__btn">Start a group order</RouterLink>
       </article>
 
       <article id="catering" class="cc cc--cater">
@@ -33,7 +34,7 @@ const kits = menu.familyKits
         <ul class="cc__tags" aria-label="Occasions we cater">
           <li v-for="o in occasions" :key="o">{{ o }}</li>
         </ul>
-        <a :href="links.cateringPackages" class="cc__btn">See catering packages</a>
+        <RouterLink to="/catering" class="cc__btn">See catering packages</RouterLink>
         <a :href="`mailto:${site.email}?subject=Catering%20enquiry`" class="cc__btn cc__btn--alt">Email us</a>
       </article>
     </div>

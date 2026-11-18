@@ -29,7 +29,7 @@ const cards = [
   },
   {
     id: 'queso',
-    title: 'Say creamy queso',
+    title: 'Creamy Queso',
     text: 'Warm, creamy queso poured over grilled steak or served with chips for dipping. Add it to any order.',
     video: '/media/feature-queso.mp4',
     poster: '/media/feature-queso.jpg',

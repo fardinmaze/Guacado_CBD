@@ -36,7 +36,7 @@ describe('App smoke test', () => {
     expect(wrapper.find('h1').text()).toContain('Big Mexican Flavors')
     expect(wrapper.findAll('.cat .cat__name').map((n) => n.text())).toEqual([
       'Burrito', 'Burrito Bowl', 'Birria Tacos', 'Quesadilla', 'Tostada Special', 'Loaded Plates',
-      'Salad Bowl', 'Crunchwrap', 'Family Kit', 'Kids Meal', 'Drinks',
+      'Salad Bowl', 'Crunchwrap', 'Family Kit', 'Kids Meal', 'Sides', 'Desserts', 'Drinks',
     ])
     // Featured: Chipotle-style carousel of tall cards with cal | price and an order button
     expect(wrapper.find('#feat-title').text()).toBe('Featured')
@@ -53,9 +53,14 @@ describe('App smoke test', () => {
     expect(wrapper.find('.fcard.is-hi').text()).toContain('Birria')
     // "Fresh" in the guac headline uses the brand accent; the queso card says "Say creamy queso"
     const titles = wrapper.findAll('.trio .fcard h2')
-    expect(titles.map((t) => t.text())).toEqual(['Make room for Fresh Guac', 'Birria tacos', 'Say creamy queso'])
+    expect(titles.map((t) => t.text())).toEqual(['Make room for Fresh Guac', 'Birria tacos', 'Creamy Queso'])
     expect(titles[0].find('.brand__fresh').text()).toBe('Fresh')
-    expect(wrapper.find('#kits').exists()).toBe(true)
+    // every Featured card links to the builder as "Build Your Own"
+    wrapper.findAll('.feat .fc').forEach((c) => expect(c.find('.fc__own').text()).toBe('Build Your Own'))
+    // Crowd pleasers: Group order (was Family kits) next to Catering
+    expect(wrapper.find('#group h3').text()).toBe('Group order')
+    expect(wrapper.find('#group img').attributes('src')).toBe('/media/catering/group-order.webp')
+    expect(wrapper.find('.strip__t').text()).toBe('Join Guacado Rewards. Unlock Fresh Guacado.')
     expect(wrapper.find('#catering').exists()).toBe(true)
     wrapper.unmount()
   })
@@ -92,6 +97,21 @@ describe('App smoke test', () => {
     wrapper.unmount()
   })
 
+  it('navbar: Our Values replaces Order; the values page and the catering card link stay in-site', async () => {
+    const { wrapper } = await mountAt('/')
+    const nav = wrapper.findAll('.nav a').map((a) => a.text())
+    expect(nav).toContain('Our Values')
+    expect(nav).not.toContain('Order')
+    const cater = wrapper.findAll('#catering a').find((a) => a.text() === 'See catering packages')
+    expect(cater.attributes('href')).toBe('/catering')
+    wrapper.unmount()
+    const v = await mountAt('/values')
+    expect(v.wrapper.find('h1').text()).toMatch(/We believe that\s*good food\s*brings people\s*together/i)
+    expect(v.wrapper.findAll('.v-facts li').length).toBe(4)
+    expect(v.wrapper.find('.v-facts li b').text()).toBe('6') // homemade sauces, from the menu data
+    v.wrapper.unmount()
+  })
+
   it('home has no location list, and prices only on the Featured cards (finder lives on /locations)', async () => {
     const { wrapper } = await mountAt('/')
     expect(wrapper.findAll('[data-loc]')).toHaveLength(0)
@@ -110,11 +130,11 @@ describe('App smoke test', () => {
     wrapper.unmount()
   })
 
-  it('menu page is the Chipotle-style grid: 11 tiles into the order flow, no tile prices, no food advisory', async () => {
+  it('menu page is the Chipotle-style grid: 13 tiles into the order flow, no tile prices, no food advisory', async () => {
     const { wrapper } = await mountAt('/menu')
     expect(wrapper.find('h1').text()).toContain('Something delicious')
     const tiles = wrapper.findAll('.cat')
-    expect(tiles).toHaveLength(11)
+    expect(tiles).toHaveLength(13)
     tiles.forEach((t) => expect(t.attributes('href')).toMatch(/^\/order\?go=/))
     expect(wrapper.find('.cats').text()).not.toMatch(/\$\d/)
     expect(wrapper.find('.sides').exists()).toBe(true)

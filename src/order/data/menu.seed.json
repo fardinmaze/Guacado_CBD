@@ -548,7 +548,8 @@
               "allowLevels": false
             }
           ],
-          "sort": 0
+          "sort": 0,
+          "image": "/media/menu/birria-tacos.webp"
         },
         {
           "slug": "tacos",
@@ -569,12 +570,14 @@
                   "name": "Soft",
                   "priceCents": 0,
                   "isDefault": true,
-                  "sort": 0
+                  "sort": 0,
+                  "image": "/media/sides/tortilla.webp"
                 },
                 {
                   "name": "Crispy",
                   "priceCents": 0,
-                  "sort": 1
+                  "sort": 1,
+                  "image": "/media/menu/tacos.webp"
                 }
               ],
               "sort": 0,
@@ -616,56 +619,64 @@
                   "priceCents": 0,
                   "ingredient": "grill-chicken",
                   "isDefault": true,
-                  "sort": 0
+                  "sort": 0,
+                  "image": "/media/build/protein-grill-chicken.webp"
                 },
                 {
                   "name": "Honey Chipotle",
                   "priceCents": 0,
                   "ingredient": "honey-chipotle",
                   "isDefault": false,
-                  "sort": 1
+                  "sort": 1,
+                  "image": "/media/build/protein-honey-chipotle.webp"
                 },
                 {
                   "name": "Grilled Steak",
                   "priceCents": 0,
                   "ingredient": "grilled-steak",
                   "isDefault": false,
-                  "sort": 2
+                  "sort": 2,
+                  "image": "/media/build/protein-grilled-steak.webp"
                 },
                 {
                   "name": "Ground Beef",
                   "priceCents": 0,
                   "ingredient": "ground-beef",
                   "isDefault": false,
-                  "sort": 3
+                  "sort": 3,
+                  "image": "/media/build/protein-ground-beef.webp"
                 },
                 {
                   "name": "Grilled Shrimp",
                   "priceCents": 0,
                   "ingredient": "grilled-shrimp",
                   "isDefault": false,
-                  "sort": 4
+                  "sort": 4,
+                  "image": "/media/build/protein-grilled-shrimp.webp"
                 },
                 {
                   "name": "Beef Barbacoa",
                   "priceCents": 0,
                   "ingredient": "beef-barbacoa",
                   "isDefault": false,
-                  "sort": 5
+                  "sort": 5,
+                  "image": "/media/build/protein-beef-barbacoa.webp"
                 },
                 {
                   "name": "Veggie Fajita w/ Guac",
                   "priceCents": 0,
                   "ingredient": "veggie-fajita-guac",
                   "isDefault": false,
-                  "sort": 6
+                  "sort": 6,
+                  "image": "/media/build/protein-veggie-fajita.webp"
                 },
                 {
                   "name": "Tofu",
                   "priceCents": 0,
                   "ingredient": "tofu",
                   "isDefault": false,
-                  "sort": 7
+                  "sort": 7,
+                  "image": "/media/build/protein-tofu.webp"
                 }
               ],
               "sort": 2
@@ -681,56 +692,65 @@
                   "name": "Rice",
                   "priceCents": 0,
                   "ingredient": "rice",
-                  "sort": 0
+                  "sort": 0,
+                  "image": "/media/build/rice-mexican.webp"
                 },
                 {
                   "name": "Beans",
                   "priceCents": 0,
                   "ingredient": "beans",
-                  "sort": 1
+                  "sort": 1,
+                  "image": "/media/build/beans-black.webp"
                 },
                 {
                   "name": "Pico de Gallo",
                   "priceCents": 0,
                   "ingredient": "pico-de-gallo",
-                  "sort": 2
+                  "sort": 2,
+                  "image": "/media/build/top-pico.webp"
                 },
                 {
                   "name": "Salsa",
                   "priceCents": 0,
                   "ingredient": "salsa",
-                  "sort": 3
+                  "sort": 3,
+                  "image": "/media/build/top-red-salsa.webp"
                 },
                 {
                   "name": "Lettuce",
                   "priceCents": 0,
                   "ingredient": "lettuce",
-                  "sort": 4
+                  "sort": 4,
+                  "image": "/media/build/top-lettuce.webp"
                 },
                 {
                   "name": "Shredded Cheese",
                   "priceCents": 0,
                   "ingredient": "shredded-cheese",
-                  "sort": 5
+                  "sort": 5,
+                  "image": "/media/build/top-cheese.webp"
                 },
                 {
                   "name": "Sour Cream",
                   "priceCents": 0,
                   "ingredient": "sour-cream",
-                  "sort": 6
+                  "sort": 6,
+                  "image": "/media/build/top-sour-cream.webp"
                 },
                 {
                   "name": "Jalapeños",
                   "priceCents": 0,
                   "ingredient": "jalapenos",
-                  "sort": 7
+                  "sort": 7,
+                  "image": "/media/build/top-jalapeno.webp"
                 }
               ],
               "sort": 3,
               "setsPrice": false
             }
           ],
-          "sort": 1
+          "sort": 1,
+          "image": "/media/menu/tacos.webp"
         }
       ],
       "sort": 1
@@ -761,62 +781,71 @@
                   "priceCents": 0,
                   "ingredient": "grill-chicken",
                   "isDefault": true,
-                  "sort": 0
+                  "sort": 0,
+                  "image": "/media/build/protein-grill-chicken.webp"
                 },
                 {
                   "name": "Honey Chipotle",
                   "priceCents": 0,
                   "ingredient": "honey-chipotle",
                   "isDefault": false,
-                  "sort": 1
+                  "sort": 1,
+                  "image": "/media/build/protein-honey-chipotle.webp"
                 },
                 {
                   "name": "Grilled Steak",
                   "priceCents": 0,
                   "ingredient": "grilled-steak",
                   "isDefault": false,
-                  "sort": 2
+                  "sort": 2,
+                  "image": "/media/build/protein-grilled-steak.webp"
                 },
                 {
                   "name": "Ground Beef",
                   "priceCents": 0,
                   "ingredient": "ground-beef",
                   "isDefault": false,
-                  "sort": 3
+                  "sort": 3,
+                  "image": "/media/build/protein-ground-beef.webp"
                 },
                 {
                   "name": "Grilled Shrimp",
                   "priceCents": 0,
                   "ingredient": "grilled-shrimp",
                   "isDefault": false,
-                  "sort": 4
+                  "sort": 4,
+                  "image": "/media/build/protein-grilled-shrimp.webp"
                 },
                 {
                   "name": "Beef Barbacoa",
                   "priceCents": 0,
                   "ingredient": "beef-barbacoa",
                   "isDefault": false,
-                  "sort": 5
+                  "sort": 5,
+                  "image": "/media/build/protein-beef-barbacoa.webp"
                 },
                 {
                   "name": "Veggie Fajita w/ Guac",
                   "priceCents": 0,
                   "ingredient": "veggie-fajita-guac",
                   "isDefault": false,
-                  "sort": 6
+                  "sort": 6,
+                  "image": "/media/build/protein-veggie-fajita.webp"
                 },
                 {
                   "name": "Tofu",
                   "priceCents": 0,
                   "ingredient": "tofu",
                   "isDefault": false,
-                  "sort": 7
+                  "sort": 7,
+                  "image": "/media/build/protein-tofu.webp"
                 }
               ],
               "sort": 0
             }
           ],
-          "sort": 0
+          "sort": 0,
+          "image": "/media/menu/tostada-special.webp"
         }
       ],
       "sort": 2
@@ -1096,7 +1125,8 @@
           "calMin": 430,
           "calMax": 430,
           "groups": [],
-          "sort": 0
+          "sort": 0,
+          "image": "/media/sides/chips.webp"
         },
         {
           "slug": "fries-dipper",
@@ -1106,7 +1136,8 @@
           "calMin": 395,
           "calMax": 395,
           "groups": [],
-          "sort": 1
+          "sort": 1,
+          "image": "/media/sides/fries-dipper.webp"
         },
         {
           "slug": "nacho-cheese-fries",
@@ -1116,7 +1147,8 @@
           "calMin": 598,
           "calMax": 598,
           "groups": [],
-          "sort": 2
+          "sort": 2,
+          "image": "/media/sides/nacho-cheese-fries.webp"
         },
         {
           "slug": "tortilla-on-side",
@@ -1126,7 +1158,8 @@
           "calMin": null,
           "calMax": null,
           "groups": [],
-          "sort": 3
+          "sort": 3,
+          "image": "/media/sides/tortilla.webp"
         },
         {
           "slug": "rice-and-beans",
@@ -1136,7 +1169,8 @@
           "calMin": 160,
           "calMax": 220,
           "groups": [],
-          "sort": 4
+          "sort": 4,
+          "image": "/media/build/rice-mexican.webp"
         },
         {
           "slug": "side-cup-chicken",
@@ -1200,7 +1234,8 @@
               "allowLevels": false
             }
           ],
-          "sort": 0
+          "sort": 0,
+          "image": "/media/build/add-guac.webp"
         },
         {
           "slug": "queso",
@@ -1233,7 +1268,8 @@
               "allowLevels": false
             }
           ],
-          "sort": 1
+          "sort": 1,
+          "image": "/media/build/add-queso.webp"
         },
         {
           "slug": "salsa",
@@ -1266,7 +1302,8 @@
               "allowLevels": false
             }
           ],
-          "sort": 2
+          "sort": 2,
+          "image": "/media/build/top-red-salsa.webp"
         },
         {
           "slug": "chips-guac",
@@ -1299,7 +1336,8 @@
               "allowLevels": false
             }
           ],
-          "sort": 3
+          "sort": 3,
+          "image": "/media/sides/chips-guac-8oz.webp"
         },
         {
           "slug": "chips-queso",
@@ -1332,7 +1370,8 @@
               "allowLevels": false
             }
           ],
-          "sort": 4
+          "sort": 4,
+          "image": "/media/sides/chips-queso-8oz.webp"
         },
         {
           "slug": "chips-salsa",
@@ -1365,7 +1404,8 @@
               "allowLevels": false
             }
           ],
-          "sort": 5
+          "sort": 5,
+          "image": "/media/sides/chips-salsa-8oz.webp"
         }
       ],
       "sort": 5
@@ -1424,7 +1464,8 @@
                   "priceCents": 0,
                   "sort": 6
                 }
-              ]
+              ],
+              "autoPick": false
             }
           ],
           "sort": 0,

@@ -682,6 +682,20 @@ describe('ordering flow in the app', () => {
     wrapper.unmount()
   })
 
+  it('drinks use the new item page: Jarritos flavor cards, then straight into the bag', async () => {
+    const { wrapper, router } = await mountAt('/order/brooklyn-5119-a-avenue-u/item/bottle-drink')
+    expect(wrapper.find('.hero__t').text()).toBe('Jarritos')
+    expect(wrapper.find('.sec__t').text()).toBe('Flavor | Choose one')
+    expect(wrapper.findAll('.bc__name').map((n) => n.text())).toContain('Tamarind')
+    await click(wrapper, 'Add to bag', '.mbar__add')
+    expect(wrapper.find('.sec__err').exists()).toBe(true)
+    await click(wrapper, 'Mango', '.bc__btn')
+    await click(wrapper, 'Add to bag', '.mbar__add') // drinks skip the name step
+    await vi.waitFor(() => expect(router.currentRoute.value.path).toBe('/order/brooklyn-5119-a-avenue-u'))
+    expect(useOrder().state.lines[0]).toMatchObject({ itemSlug: 'bottle-drink', selections: { flavor: pick('Mango') } })
+    wrapper.unmount()
+  })
+
   it('family meals: deep link go=family and the order menu send kits to the family pages', async () => {
     useOrder().chooseStore('brooklyn-5119-a-avenue-u')
     const a = await mountAt('/order?go=family')

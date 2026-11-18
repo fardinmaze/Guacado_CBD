@@ -8,7 +8,7 @@ defineProps({
 })
 
 // "Featured", laid out like chipotle.com/#menu: wax-paper band, centred title, then a carousel of
-// tall cards (photo, NAME, "cal | price", what's in it, Order now, Make it my own) with round
+// tall cards (photo, NAME, "cal | price", what's in it, Order now, Build Your Own) with round
 // arrows and page dots. Photos: owner's shots (Contents/Favorites + edited files), cropped 4:3 in
 // public/media/favorites. Prices and calories come from the order menu data, so they never drift
 // from the boards; builder dishes show the starting price.
@@ -29,7 +29,7 @@ const favorites = [
     id: 'steak-bowl', name: 'Steak Burrito Bowl', image: img('steak-bowl'), alt: 'Grilled steak bowl with rice, corn, guac and a drizzle of sauce',
     cal: calLabel(byo), price: cents(optionCents('build-your-own', 'protein', 'Grilled Steak')),
     text: 'Grilled steak over rice with corn, fresh toppings and a homemade sauce.',
-    to: order('build:bowl'), own: BUILD,
+    to: order('build:bowl'),
   },
   {
     id: 'birria-tacos', name: 'Birria Tacos', image: img('birria-tacos'), alt: 'Birria tacos with lime, pickled onion and a cup of consommé',
@@ -41,7 +41,7 @@ const favorites = [
     id: 'crunchwrap', name: 'Crunchwrap', image: img('crunchwrap'), alt: 'Crunchwrap cut in half with a side of queso',
     cal: calLabel(byo), price: `From ${cents(fromCents(byo))}`,
     text: 'Your protein and toppings, folded and grilled until crispy.',
-    to: order('build:crunch-wrap'), own: BUILD,
+    to: order('build:crunch-wrap'),
   },
   {
     id: 'tacos', name: 'Tacos', image: img('tacos'), alt: 'Three loaded tacos in a takeout box',
@@ -53,7 +53,7 @@ const favorites = [
     id: 'taco-salad', name: 'Taco Salad', image: img('taco-salad'), alt: 'Taco salad in a crispy tortilla bowl',
     cal: calLabel(byo), price: `From ${cents(fromCents(byo))}`,
     text: 'Fresh greens and your protein in a crispy tortilla bowl.',
-    to: order('build:taco-salad'), own: BUILD,
+    to: order('build:taco-salad'),
   },
   {
     id: 'churros', name: 'Churros', image: img('churros'), alt: 'Churros dusted with cookie crumbs',
@@ -111,8 +111,7 @@ onBeforeUnmount(() => window.removeEventListener('resize', measure))
               <p class="fc__text">{{ t.text }}</p>
               <div class="fc__act">
                 <RouterLink :to="t.to" class="fc__btn">Order now<span class="sr-only">: {{ t.name }}</span></RouterLink>
-                <RouterLink v-if="t.own" :to="t.own" class="fc__own">Make it my own</RouterLink>
-                <span v-else class="fc__own fc__own--gap" aria-hidden="true">&nbsp;</span>
+                <RouterLink :to="BUILD" class="fc__own">Build Your Own</RouterLink>
               </div>
             </div>
           </article>
@@ -179,8 +178,6 @@ h2 { font: 900 clamp(38px, 4.4vw, 52px)/1 var(--f-display); font-stretch: 72%; t
 .fc__btn { display: block; padding: 13px 10px; border-radius: 3px; background: var(--ink); color: #fff; text-align: center; text-decoration: none; font: 900 15px/1 var(--f-display); font-stretch: 80%; text-transform: uppercase; letter-spacing: 0.05em; }
 .fc__btn:hover { background: var(--guac); }
 .fc__own { display: block; padding: 10px; text-align: center; color: var(--ink); text-decoration: none; font: 900 13px/1 var(--f-display); font-stretch: 82%; text-transform: uppercase; letter-spacing: 0.05em; }
-/* Same height as the link, so every card's Order now button lines up. */
-.fc__own--gap { visibility: hidden; }
 .fc__own:hover { color: var(--accent-text); text-decoration: underline; text-underline-offset: 3px; }
 .fc__btn:focus-visible, .fc__own:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 
