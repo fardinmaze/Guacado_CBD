@@ -6,6 +6,14 @@ describe('goPath: where a website flavor tile lands in the order flow', () => {
   it('build goes to the builder', () => {
     expect(goPath(s, 'build')).toEqual({ path: `/order/${s}/build` })
     expect(goPath(s, 'build:burrito')).toEqual({ path: `/order/${s}/build`, query: { base: 'burrito' } })
+    expect(goPath(s, 'family')).toEqual({ path: `/order/${s}/family` })
+    expect(goPath(s, 'family:taco-kit')).toEqual({ path: `/order/${s}/family/taco-kit` })
+    expect(goPath(s, 'family:chips')).toEqual({ path: `/order/${s}` })
+    expect(goPath(s, 'kids')).toEqual({ path: `/order/${s}/kids` })
+    expect(goPath(s, 'catering:office-lunch:25')).toEqual({ path: `/order/${s}/catering/office-lunch`, query: { people: '25' } })
+    expect(goPath(s, 'catering:catering-single')).toEqual({ path: `/order/${s}/catering/catering-single` })
+    expect(goPath(s, 'catering:chips')).toEqual({ path: `/order/${s}` })
+    expect(goPath(s, 'kids:kids-cheese-quesadilla')).toEqual({ path: `/order/${s}/kids/kids-cheese-quesadilla` })
   })
   it('items with choices open their options page', () => {
     expect(goPath(s, 'item:birria-tacos')).toEqual({ path: `/order/${s}/item/birria-tacos` })

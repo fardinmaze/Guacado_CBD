@@ -2,7 +2,7 @@
 import { useRouter } from 'vue-router'
 import { site } from '@/data/site'
 import { tacos, birria, tostada, guac } from '@/assets/illustrations'
-import { calLabel, categories, isQuickAdd } from '@/order/lib/catalog'
+import { calLabel, categories, findItem, isQuickAdd } from '@/order/lib/catalog'
 import { useOrder } from '@/order/useOrder'
 import { useBagSheet } from '@/order/useBagSheet'
 import { useToast } from '@/composables/useToast'
@@ -16,8 +16,14 @@ const order = useOrder()
 const { show: showBag } = useBagSheet()
 const toast = useToast()
 
-const art = { 'build-your-own': guac, tacos, specials: tostada, kids: tacos, sides: guac, dips: guac, beverages: tostada, desserts: birria, 'family-kits': birria }
+const art = { 'build-your-own': guac, tacos, specials: tostada, kids: tacos, sides: guac, dips: guac, beverages: tostada, desserts: birria, 'family-kits': birria, catering: guac }
 const base = (slug) => `/order/${props.store}${slug}`
+// Family kits and kids meals use their own pages (chipotle.com family-meals / kid's-meal flows).
+const FLOW = { 'family-kits': 'family', kids: 'kids', catering: 'catering' }
+const itemPath = (i) => {
+  const flow = FLOW[findItem(i.slug)?.category]
+  return base(i.kind === 'BUILDER' ? '/build' : flow ? `/${flow}/${i.slug}` : `/item/${i.slug}`)
+}
 
 function quick(item) {
   order.quickAdd(item.slug)
@@ -52,7 +58,7 @@ function jump(slug) {
       <h2 :id="`h-${c.slug}`" class="sec__h">{{ c.name }}</h2>
       <ul class="items">
         <li v-for="i in c.items" :key="i.slug" class="item">
-          <component :is="isQuickAdd(i) ? 'div' : 'RouterLink'" class="item__main" v-bind="isQuickAdd(i) ? {} : { to: base(i.kind === 'BUILDER' ? '/build' : `/item/${i.slug}`) }">
+          <component :is="isQuickAdd(i) ? 'div' : 'RouterLink'" class="item__main" v-bind="isQuickAdd(i) ? {} : { to: itemPath(i) }">
             <span class="item__name">{{ i.name }}</span>
             <span v-if="i.description" class="item__d">{{ i.description }}</span>
             <span v-else-if="i.includes" class="item__d">{{ i.includes.join(' · ') }}</span>
@@ -61,7 +67,7 @@ function jump(slug) {
             </span>
           </component>
           <button v-if="isQuickAdd(i)" type="button" class="add" :aria-label="`Add ${i.name} to bag`" @click="quick(i)">+</button>
-          <RouterLink v-else class="add add--go" :to="base(i.kind === 'BUILDER' ? '/build' : `/item/${i.slug}`)" :aria-label="`Choose options for ${i.name}`">→</RouterLink>
+          <RouterLink v-else class="add add--go" :to="itemPath(i)" :aria-label="`Choose options for ${i.name}`">→</RouterLink>
         </li>
       </ul>
     </section>

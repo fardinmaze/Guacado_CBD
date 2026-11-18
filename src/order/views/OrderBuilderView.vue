@@ -7,6 +7,7 @@ import { EXTRA_PROTEIN_CENTS, cents, hasExtraProtein, isHalf, validate } from '@
 import { useOrder } from '@/order/useOrder'
 import { useToast } from '@/composables/useToast'
 import BuildCard from '@/order/components/BuildCard.vue'
+import MealNameDialog from '@/order/components/MealNameDialog.vue'
 
 // Build your own, laid out like chipotle.com/order/build/burrito-bowl.
 // 1. Choose a base (Bowl, Burrito...). Once chosen it is kept in the URL (?base=burrito) and the
@@ -183,9 +184,6 @@ onBeforeUnmount(() => spy?.disconnect())
 
 // ADD TO BAG -> "Who's this meal for?" -> the bag drawer.
 const naming = ref(false)
-const mealFor = ref('')
-const nameErr = ref('')
-const nameInput = ref(null)
 const bag = useBagSheet()
 async function add() {
   if (errors.value.length || SECTIONS.some((s) => s.extras && sectionError(s))) {
@@ -194,19 +192,10 @@ async function add() {
     if (first) jump(first.key)
     return
   }
-  mealFor.value = draft.value.label ?? ''
-  nameErr.value = ''
   naming.value = true
-  await nextTick()
-  nameInput.value?.focus()
 }
-async function confirmName() {
-  if (!mealFor.value.trim()) {
-    nameErr.value = 'Type a name so we can label the bag.'
-    nameInput.value?.focus()
-    return
-  }
-  order.setLabel(mealFor.value.trim())
+async function confirmName(name) {
+  order.setLabel(name)
   const wasEdit = !!draft.value.editId
   order.commitDraft()
   naming.value = false
@@ -374,23 +363,7 @@ async function confirmName() {
         </div>
       </div>
 
-      <Teleport to="body">
-        <div v-if="naming" class="nm" @click.self="naming = false" @keydown.esc="naming = false">
-          <form class="nm__box" role="dialog" aria-modal="true" aria-labelledby="nm-t" novalidate @submit.prevent="confirmName">
-            <h2 id="nm-t" class="nm__t">Who's this meal for?</h2>
-            <p class="nm__d">We'll write the name on the bag so everyone gets the right meal.</p>
-            <label class="nm__f">
-              <span class="sr-only">Meal name</span>
-              <input ref="nameInput" v-model="mealFor" type="text" maxlength="30" autocomplete="given-name" placeholder="e.g. Sara" :aria-invalid="!!nameErr" aria-describedby="nm-e" />
-            </label>
-            <p id="nm-e" class="nm__e" role="alert">{{ nameErr }}</p>
-            <div class="nm__act">
-              <button type="button" class="nm__cancel" @click="naming = false">Cancel</button>
-              <button type="submit" class="nm__ok">{{ draft.editId ? 'Update meal' : 'Add to bag' }}</button>
-            </div>
-          </form>
-        </div>
-      </Teleport>
+      <MealNameDialog :open="naming" :initial="draft.label" :editing="!!draft.editId" @confirm="confirmName" @cancel="naming = false" />
     </template>
   </div>
 </template>
@@ -454,20 +427,5 @@ async function confirmName() {
 .chip[aria-checked='true'] { background: var(--guac); border-color: var(--guac); color: #fff; }
 .chip:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 
-/* "Who's this meal for?" dialog */
-.nm { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; padding: 16px; background: rgba(0, 0, 0, 0.55); }
-.nm__box { width: min(100%, 440px); padding: 28px 24px 22px; background: #fff; border-radius: 6px; box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.5); }
-.nm__t { font: 900 30px/1 var(--f-display); font-stretch: 74%; text-transform: uppercase; }
-.nm__d { margin: 10px 0 18px; font-size: 14px; color: var(--ink-muted); }
-.nm__f input { width: 100%; min-height: 52px; padding: 0 14px; border: 1.5px solid #c8bfb0; border-radius: 4px; font: 600 17px var(--f-body); color: var(--ink); }
-.nm__f input:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
-.nm__f input[aria-invalid='true'] { border-color: var(--chili); }
-.nm__e { min-height: 20px; margin: 6px 0 4px; font-size: 13px; font-weight: 700; color: var(--chili); }
-.nm__act { display: flex; justify-content: flex-end; gap: 10px; }
-.nm__cancel, .nm__ok { min-height: 48px; padding: 0 20px; border-radius: 3px; font: 900 16px/1 var(--f-display); font-stretch: 80%; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; }
-.nm__cancel { border: 1.5px solid #c8bfb0; background: #fff; color: var(--ink); }
-.nm__ok { border: 0; background: var(--ink); color: #fff; }
-.nm__ok:hover { background: var(--guac); }
-.nm__cancel:focus-visible, .nm__ok:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { .tag { transition: none; } }
 </style>

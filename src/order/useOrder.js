@@ -57,8 +57,8 @@ export function useOrder() {
     if (state.draft && state.draft.itemSlug === itemSlug && state.draft.editId === (fromLine?.id ?? null)) return state.draft
     const item = findItem(itemSlug)
     state.draft = fromLine
-      ? { itemSlug, selections: JSON.parse(JSON.stringify(fromLine.selections)), label: fromLine.label, qty: fromLine.qty, editId: fromLine.id, extras: [] }
-      : { itemSlug, selections: defaultSelection(item), label: '', qty: 1, editId: null, extras: [] }
+      ? { itemSlug, selections: JSON.parse(JSON.stringify(fromLine.selections)), label: fromLine.label, qty: fromLine.qty, editId: fromLine.id, extras: [], event: fromLine.event ?? null }
+      : { itemSlug, selections: defaultSelection(item), label: '', qty: item.minPeople ?? 1, editId: null, extras: [], event: null }
     return state.draft
   }
 
@@ -72,11 +72,11 @@ export function useOrder() {
   // Sides, drinks and desserts picked on the builder: added to the bag as their own lines.
   // Each is { slug, selections } (selections hold a choice such as the Jarritos flavor).
   const extrasOf = () => (state.draft.extras ?? (state.draft.extras = []))
-  function toggleExtra(slug) {
+  function toggleExtra(slug, selections = {}) {
     const list = extrasOf()
     const at = list.findIndex((x) => (x.slug ?? x) === slug)
     if (at >= 0) list.splice(at, 1)
-    else list.push({ slug, selections: {} })
+    else list.push({ slug, selections: JSON.parse(JSON.stringify(selections)) })
   }
   function setExtraChoice(slug, groupKey, name) {
     const x = extrasOf().find((e) => e.slug === slug)
@@ -84,13 +84,19 @@ export function useOrder() {
   }
   const setUtensils = (on) => (state.utensils = !!on)
   const clear = (groupKey) => (state.draft.selections[groupKey] = [])
-  const setQty = (n) => (state.draft.qty = Math.min(20, Math.max(1, n)))
+  // Catering is priced per person: qty is the headcount (minimum per package, up to 200).
+  const qtyLimits = (item) => (item?.perPerson ? [item.minPeople ?? 1, 200] : [1, 20])
+  const setQty = (n) => {
+    const [min, max] = qtyLimits(draftItem.value)
+    state.draft.qty = Math.min(max, Math.max(min, n))
+  }
+  const setEvent = (event) => (state.draft.event = event ? { ...event } : null)
   const setLabel = (text) => (state.draft.label = text.slice(0, 30))
   const discardDraft = () => (state.draft = null)
 
   function commitDraft() {
     const d = state.draft
-    const line = { id: d.editId ?? uid(), itemSlug: d.itemSlug, qty: d.qty, label: d.label.trim(), selections: d.selections }
+    const line = { id: d.editId ?? uid(), itemSlug: d.itemSlug, qty: d.qty, label: d.label.trim(), selections: d.selections, ...(d.event ? { event: d.event } : {}) }
     const at = state.lines.findIndex((l) => l.id === line.id)
     if (at >= 0) state.lines.splice(at, 1, line)
     else state.lines.push(line)
@@ -110,6 +116,15 @@ export function useOrder() {
     if (existing) existing.qty = Math.min(20, existing.qty + 1)
     else state.lines.push({ id: uid(), itemSlug, qty: 1, label: '', selections: {} })
   }
+  // Add an item as-is (its default choices plus any `preset` picks), e.g. a family kit or kids meal
+  // from a picker card; leaves any draft alone.
+  const addLine = (itemSlug, label = '', { qty, event } = {}) => {
+    const item = findItem(itemSlug)
+    const preset = Object.fromEntries(Object.entries(item.preset ?? {}).map(([k, names]) => [k, names.map((name) => ({ name, level: 'regular' }))]))
+    const line = { id: uid(), itemSlug, qty: qty ?? item.minPeople ?? 1, label, selections: { ...defaultSelection(item), ...preset }, ...(event ? { event: { ...event } } : {}) }
+    state.lines.push(line)
+    return line
+  }
   const removeLine = (id) => (state.lines = state.lines.filter((l) => l.id !== id))
   const duplicateLine = (id) => {
     const l = state.lines.find((x) => x.id === id)
@@ -118,15 +133,16 @@ export function useOrder() {
   const setLineQty = (id, n) => {
     const l = state.lines.find((x) => x.id === id)
     if (!l) return
+    const [min, max] = qtyLimits(findItem(l.itemSlug))
     if (n < 1) removeLine(id)
-    else l.qty = Math.min(20, n)
+    else l.qty = Math.min(max, Math.max(min, n))
   }
   const clearBag = () => (state.lines = [])
 
   return {
     state, store, count, subtotal, totalsFor, draftItem, draftUnit,
-    chooseStore, openDraft, pick, level, clear, toggleExtra, setExtraChoice, setUtensils, setQty, setLabel, discardDraft, commitDraft,
-    quickAdd, removeLine, duplicateLine, setLineQty, clearBag,
+    chooseStore, openDraft, pick, level, clear, toggleExtra, setExtraChoice, setUtensils, setQty, setEvent, setLabel, discardDraft, commitDraft,
+    quickAdd, addLine, removeLine, duplicateLine, setLineQty, clearBag,
   }
 }
 

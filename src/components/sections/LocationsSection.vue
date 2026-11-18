@@ -38,11 +38,18 @@ const visible = computed(() =>
 
       <p v-if="instruction" class="instr">{{ instruction }}</p>
       <div class="tools">
-        <label class="search">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
-          <span class="sr-only">Search Fresh Guacado locations by city, street or ZIP code</span>
-          <input v-model="query" type="search" placeholder="Enter a city, street or ZIP code" autocomplete="postal-code" />
-        </label>
+        <!-- Search + delivery side by side. Delivery runs through the online ordering partner. -->
+        <div class="searchrow">
+          <label class="search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="M20 20l-3.5-3.5" /></svg>
+            <span class="sr-only">Search Fresh Guacado locations by city, street or ZIP code</span>
+            <input v-model="query" type="search" placeholder="Enter a city, street or ZIP code" autocomplete="postal-code" />
+          </label>
+          <a :href="site.orderUrl" class="deliver" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z" /><circle cx="12" cy="9.5" r="2.5" /></svg>
+            Get delivery<span class="sr-only"> (opens our online ordering in a new tab)</span>
+          </a>
+        </div>
         <div class="filters" role="group" aria-label="Filter by state">
           <OptionChip v-for="c in chips" :key="c.code" :pressed="state === c.code" @click="state = c.code">
             {{ c.code === 'All' ? 'All' : stateNames[c.code] }} <small>{{ c.count }}</small>
@@ -65,7 +72,13 @@ const visible = computed(() =>
 <style scoped>
 .instr { color: var(--ink-muted); margin: -12px 0 18px; }
 .tools { display: grid; gap: 14px; margin-bottom: 24px; }
-.search { position: relative; display: block; max-width: 560px; }
+.searchrow { display: flex; flex-wrap: wrap; align-items: stretch; gap: 10px; max-width: 760px; }
+.search { position: relative; display: block; flex: 1 1 320px; max-width: 560px; }
+.deliver { flex: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 56px; padding: 0 26px; border-radius: var(--r-pill); background: var(--guac); color: #fff; text-decoration: none; font: 900 16px/1 var(--f-display); font-stretch: 80%; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; }
+.deliver svg { width: 20px; height: 20px; }
+.deliver:hover { background: var(--guac-dark); }
+.deliver:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+@media (max-width: 480px) { .deliver { flex: 1 1 100%; } }
 .search svg { position: absolute; left: 18px; top: 50%; width: 20px; height: 20px; transform: translateY(-50%); color: var(--ink-muted); }
 .search input {
   width: 100%;

@@ -23,7 +23,7 @@ const kits = menu.familyKits
         <ul class="cc__list">
           <li v-for="k in kits.items" :key="k.name">{{ k.name }}</li>
         </ul>
-        <a :href="site.orderUrl" class="cc__btn">Order a family kit</a>
+        <RouterLink :to="{ path: '/order', query: { go: 'family' } }" class="cc__btn">Order a family kit</RouterLink>
       </article>
 
       <article id="catering" class="cc cc--cater">

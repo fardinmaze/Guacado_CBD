@@ -68,11 +68,14 @@ describe('pricing (03-TECH-SPEC §4 required cases)', () => {
   it('a fixed item with a base price: tostada $8.95', () => {
     expect(unitCents(findItem('tostada'), defaultSelection(findItem('tostada')))).toBe(895)
   })
-  it('Fajita Kit needs exactly 2 proteins', () => {
+  it('Fajita Kit needs exactly 2 proteins plus a rice and a beans; defaults are chicken + steak', () => {
     const kit = findItem('fajita-kit')
-    expect(validate(kit, { kitProteins: pick('Tofu') })[0].message).toBe('Pick exactly 2.')
-    expect(validate(kit, { kitProteins: [...pick('Tofu'), ...pick('Grill Chicken')] })).toEqual([])
-    expect(unitCents(kit, { kitProteins: [...pick('Tofu'), ...pick('Grill Chicken')] })).toBe(5595)
+    const sides = { kitRice: pick('Mexican Rice'), kitBeans: pick('Pinto Beans') }
+    expect(validate(kit, { ...sides, kitProteins: pick('Tofu') })[0].message).toBe('Pick exactly 2.')
+    expect(validate(kit, { ...sides, kitProteins: [...pick('Tofu'), ...pick('Grill Chicken')] })).toEqual([])
+    expect(unitCents(kit, { ...sides, kitProteins: [...pick('Tofu'), ...pick('Grill Chicken')] })).toBe(5595)
+    expect(defaultSelection(kit)).toEqual({ kitProteins: [...pick('Grill Chicken'), ...pick('Grilled Steak')], kitRice: pick('Mexican Rice'), kitBeans: pick('Black Beans') })
+    expect(findItem('nacho-kit').groups.map((g) => g.key)).toEqual(['kitProteins', 'kitBeans']) // nachos come without rice
   })
   it('tax at 0.08875 on 1295 = 115; unknown rate shows no tax', () => {
     expect(taxCents(1295, 0.08875)).toBe(115)
@@ -458,17 +461,235 @@ describe('ordering flow in the app', () => {
     wrapper.unmount()
   })
 
-  it('kit item: add is blocked until exactly 2 proteins are chosen', async () => {
-    const { wrapper } = await mountAt('/order/brooklyn-5119-a-avenue-u/item/taco-kit')
-    // default selection already picks nothing for kit proteins
-    await click(wrapper, 'ADD TO BAG')
-    expect(useOrder().state.lines).toHaveLength(0)
-    expect(wrapper.text()).toContain('Pick exactly 2.')
-    await click(wrapper, 'Tofu')
-    await click(wrapper, 'Grilled Steak')
-    await click(wrapper, 'ADD TO BAG')
+  const F = '/order/brooklyn-5119-a-avenue-u/family'
+  const nameAndConfirm = async (name) => {
+    const box = document.querySelector('.nm__box')
+    const input = box.querySelector('input')
+    input.value = name
+    input.dispatchEvent(new Event('input'))
+    box.querySelector('.nm__ok').click()
+    await flushPromises()
+  }
+
+  it('family meals: pick page with a card per kit; ADD TO BAG adds it as described', async () => {
+    const { wrapper, router } = await mountAt(F)
+    expect(wrapper.find('.hero__pre').text()).toBe('Pick your')
+    expect(wrapper.find('.hero__t').text()).toBe('Family kits')
+    expect(wrapper.findAll('.kc .kc__name').map((n) => n.text())).toEqual(['Taco Kit', 'Nacho Kit', 'Fajita Kit'])
+    const taco = wrapper.findAll('.kc')[0]
+    expect(taco.find('.kc__serves').text()).toBe('Serves 4–6 people')
+    expect(taco.find('.kc__meta').text()).toMatch(/5900–6626 Cal\s*\$49\.95/)
+    expect(taco.find('.kc__text').text()).toMatch(/^Grill Chicken & Grilled Steak, Mexican Rice, Black Beans, 12 soft corn tortillas/)
+    expect(taco.find('.kc__custom').attributes('href')).toBe(`${F}/taco-kit`)
+    await taco.find('.kc__add').trigger('click')
+    await nameAndConfirm('Team')
+    await vi.waitFor(() => expect(router.currentRoute.value.path).toBe('/order/brooklyn-5119-a-avenue-u'))
+    const [line] = useOrder().state.lines
+    expect(line).toMatchObject({ itemSlug: 'taco-kit', label: 'Team' })
+    expect(line.selections.kitProteins.map((p) => p.name)).toEqual(['Grill Chicken', 'Grilled Steak'])
     expect(useOrder().subtotal.value).toBe(4995)
+    expect(document.querySelector('[aria-labelledby=bag-title] .line__name').textContent).toBe('Team')
     wrapper.unmount()
+  })
+
+  it('family meals: customize a kit (two proteins, rice, beans, included, add-ons)', async () => {
+    const { wrapper } = await mountAt(`${F}/taco-kit`)
+    expect(wrapper.find('.hero__t').text()).toBe('Taco Kit')
+    expect(wrapper.findAll('.sec__t').map((h) => h.text())).toEqual(['Protein | Choose two', 'Rice | Choose one', 'Beans | Choose one', 'Included', 'Add-ons'])
+    const included = wrapper.findAll('.bc.locked')
+    expect(included.map((c) => c.find('.bc__name').text())).toContain('12 soft corn tortillas')
+    included.forEach((c) => expect(c.find('.bc__btn').attributes('disabled')).toBeDefined())
+    expect(wrapper.find('.mbar__name').text()).toBe('Taco Kit - Grill Chicken & Grilled Steak')
+    await click(wrapper, 'Grill Chicken', '#sec-kitProteins .bc__btn') // one protein left
+    await click(wrapper, 'Add to bag', '.mbar__add')
+    expect(document.querySelector('.nm__box')).toBeNull()
+    expect(wrapper.find('#sec-kitProteins .sec__err').text()).toBe('Pick exactly 2.')
+    await click(wrapper, 'Tofu', '#sec-kitProteins .bc__btn')
+    await click(wrapper, 'Pinto Beans', '.bc__btn')
+    await click(wrapper, 'Large Guacamole', '.bc__btn')
+    await click(wrapper, 'Add to bag', '.mbar__add')
+    await nameAndConfirm('Office')
+    const lines = useOrder().state.lines
+    expect(lines.map((l) => l.itemSlug)).toEqual(['taco-kit', 'guacamole'])
+    expect(lines[0].selections.kitProteins.map((p) => p.name)).toEqual(['Grilled Steak', 'Tofu'])
+    expect(lines[0].selections.kitBeans).toEqual(pick('Pinto Beans'))
+    expect(lines[1].selections.size).toEqual(pick('8 oz'))
+    expect(useOrder().subtotal.value).toBe(4995 + 695)
+    wrapper.unmount()
+  })
+
+  const K = '/order/brooklyn-5119-a-avenue-u/kids'
+
+  it('kids meal: Family Kit style picker, then the item builder with its photo up top', async () => {
+    const { wrapper, router } = await mountAt(K)
+    expect(wrapper.find('.hero__pre').text()).toBe('Pick your')
+    expect(wrapper.find('.hero__t').text()).toBe('Kids meals')
+    expect(wrapper.findAll('.kc__name').map((n) => n.text())).toEqual(['Kids Create Your Own', 'Kids Cheese Quesadilla'])
+    const [byo, quesadilla] = wrapper.findAll('.kc')
+    expect(byo.find('.kc__meta').text()).toMatch(/300–530 Cal\s*\$8\.95/)
+    // both cards: ADD TO BAG (as described) + CUSTOMIZE
+    ;[byo, quesadilla].forEach((c) => {
+      expect(c.find('.kc__add').text()).toContain('Add to bag')
+      expect(c.find('.kc__custom').text()).toContain('Customize')
+    })
+    expect(byo.find('.kc__text').text()).toBe('Grill Chicken with rice and shredded cheese, 2 soft tortillas, and organic milk.')
+    expect(quesadilla.find('.kc__custom').attributes('href')).toBe(`${K}/kids-cheese-quesadilla`)
+    await byo.find('.kc__custom').trigger('click')
+    await flushPromises()
+    await vi.waitFor(() => expect(router.currentRoute.value.path).toBe(`${K}/kids-create-your-own`))
+    await flushPromises()
+    expect(wrapper.find('.hero__t').text()).toBe('Kids Create Your Own')
+    expect(wrapper.find('.hero__img img').attributes('src')).toBe('/media/menu/tacos.webp')
+    expect(wrapper.findAll('.sec__t').map((h) => h.text())).toEqual(['Tortilla', 'Protein or veggie', 'Toppings | Choose two', 'Drink | Choose one', 'Add-ons'])
+    expect(wrapper.findAll('#sec-shell .bc__name').map((n) => n.text())).toEqual(['2 Soft Tortillas', '2 Crispy Tortillas'])
+    expect(wrapper.find('.mbar__name').text()).toBe('Select a protein or veggie to get started')
+    // missing protein and toppings: ADD TO BAG points at them instead of asking for a name
+    await click(wrapper, 'Add to bag', '.mbar__add')
+    expect(document.querySelector('.nm__box')).toBeNull()
+    expect(wrapper.find('#sec-main .sec__err').exists()).toBe(true)
+    await click(wrapper, 'Grilled Steak', '#sec-main .bc__btn')
+    await click(wrapper, 'Rice', '#sec-toppings .bc__btn')
+    await click(wrapper, 'Shredded Cheese', '#sec-toppings .bc__btn')
+    expect(wrapper.find('.mbar__name').text()).toBe('Kids Create Your Own - Grilled Steak')
+    await click(wrapper, 'Add to bag', '.mbar__add')
+    await nameAndConfirm('Mia')
+    const [line] = useOrder().state.lines
+    expect(line).toMatchObject({ itemSlug: 'kids-create-your-own', label: 'Mia' })
+    expect(line.selections.toppings.map((p) => p.name)).toEqual(['Rice', 'Shredded Cheese'])
+    expect(useOrder().subtotal.value).toBe(895)
+    wrapper.unmount()
+  })
+
+  it('kids meal: the quesadilla page shows what is included, the drink and add-ons; links use the kids pages', async () => {
+    const { wrapper } = await mountAt(`${K}/kids-cheese-quesadilla`)
+    expect(wrapper.findAll('.sec__t').map((h) => h.text())).toEqual(['Included', 'Drink | Choose one', 'Add-ons'])
+    expect(wrapper.find('.bc.locked .bc__name').text()).toBe('Cheese quesadilla')
+    expect(wrapper.findAll('#sec-addons .bc__name').map((n) => n.text())).toEqual(['Chips', 'Churros', 'Plantains'])
+    expect(wrapper.find('.mbar__name').text()).toBe('Kids Cheese Quesadilla')
+    await click(wrapper, 'Water', '#sec-drink .bc__btn')
+    await click(wrapper, 'Churros', '#sec-addons .bc__btn')
+    await click(wrapper, 'Add to bag', '.mbar__add')
+    await nameAndConfirm('Leo')
+    expect(useOrder().state.lines.map((l) => l.itemSlug)).toEqual(['kids-cheese-quesadilla', 'churros'])
+    expect(useOrder().state.lines[0].selections.drink).toEqual(pick('Water'))
+    expect(useOrder().subtotal.value).toBe(895 + 395)
+    wrapper.unmount()
+    useOrder().chooseStore('brooklyn-5119-a-avenue-u')
+    const a = await mountAt('/order?go=kids')
+    expect(a.router.currentRoute.value.path).toBe(K)
+    a.wrapper.unmount()
+    const b = await mountAt('/order/brooklyn-5119-a-avenue-u')
+    expect(b.wrapper.find('[aria-label="Choose options for Kids Create Your Own"]').attributes('href')).toBe(`${K}/kids-create-your-own`)
+    b.wrapper.unmount()
+  })
+
+  it('kids meal: ADD TO BAG on the Create Your Own card adds the meal it describes', async () => {
+    const { wrapper } = await mountAt(K)
+    await wrapper.findAll('.kc')[0].find('.kc__add').trigger('click')
+    await nameAndConfirm('Noah')
+    const [line] = useOrder().state.lines
+    expect(line.selections).toMatchObject({ main: pick('Grill Chicken'), toppings: [...pick('Rice'), ...pick('Shredded Cheese')], shell: pick('Soft'), drink: pick('Organic Milk') })
+    expect(useOrder().subtotal.value).toBe(895)
+    wrapper.unmount()
+  })
+
+  it('kids meal: ADD TO BAG on the quesadilla card adds it with organic milk', async () => {
+    const { wrapper, router } = await mountAt(K)
+    await wrapper.findAll('.kc')[1].find('.kc__add').trigger('click')
+    await nameAndConfirm('Ava')
+    await vi.waitFor(() => expect(router.currentRoute.value.path).toBe('/order/brooklyn-5119-a-avenue-u'))
+    const [line] = useOrder().state.lines
+    expect(line).toMatchObject({ itemSlug: 'kids-cheese-quesadilla', label: 'Ava' })
+    expect(line.selections.drink).toEqual(pick('Organic Milk'))
+    wrapper.unmount()
+  })
+
+  const C = '/order/brooklyn-5119-a-avenue-u/catering'
+  const later = (days) => {
+    const d = new Date(Date.now() + days * 864e5)
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+  }
+
+  it('catering page: Build Your Own tiers, popular builds with a headcount, chips & dips, burrito box', async () => {
+    const { wrapper } = await mountAt('/catering')
+    const tiers = wrapper.findAll('.tier')
+    expect(tiers.map((t) => t.find('.tier__n').text())).toEqual(['Single', 'Double', 'Triple'])
+    expect(tiers[0].attributes('aria-checked')).toBe('true')
+    expect(wrapper.find('.byo .btn-gold').attributes('href')).toBe('/order?go=catering:catering-single')
+    await tiers[1].trigger('click')
+    expect(wrapper.find('.byo .btn-gold').text()).toContain('Build your Double')
+    expect(wrapper.find('.byo .btn-gold').attributes('href')).toBe('/order?go=catering:catering-double')
+    expect(wrapper.findAll('.pc h3').map((h) => h.text())).toEqual(['Office Lunch', 'Plant Powered', 'Big Get-Together', 'Burritos by the Box'])
+    const office = wrapper.findAll('.pc')[0]
+    await office.find('select').setValue('25')
+    expect(office.find('.pc__add').attributes('href')).toBe('/order?go=catering:office-lunch:25')
+    expect(wrapper.find('#cd-t').text()).toBe('Chips & dips')
+    expect(wrapper.find('#bx-t').text()).toContain('by the box')
+    wrapper.unmount()
+  })
+
+  it('catering order: event details (24 hours ahead) -> build -> who is it for -> bag, priced per person', async () => {
+    useOrder().chooseStore('brooklyn-5119-a-avenue-u')
+    const { wrapper, router } = await mountAt('/order?go=catering:catering-double:20')
+    expect(router.currentRoute.value.fullPath).toBe(`${C}/catering-double?people=20`)
+    expect(wrapper.find('.ed__t').text()).toBe('Event details')
+    expect(wrapper.find('.fld__store').text()).toContain('5119-A Avenue U')
+    const form = wrapper.find('.ed__form')
+    // too soon: tomorrow is fine only if it's 24h+ away, today never is
+    await form.find('input[type=date]').setValue(later(0))
+    await form.find('select').setValue('12:00')
+    await form.trigger('submit')
+    expect(wrapper.find('.ed__err').text()).toContain('24 hours')
+    await form.find('input[type=date]').setValue(later(3))
+    await form.trigger('submit')
+    await flushPromises()
+    expect(wrapper.find('.hero__t').text()).toBe('Double')
+    expect(wrapper.findAll('.sec__t').map((h) => h.text())).toEqual(['Protein | Choose two', 'Bases | Choose two', 'Toppings | Choose two', 'Salsas | Choose two', 'Tortillas | Choose one'])
+    await click(wrapper, 'Add to bag', '.mbar__add')
+    expect(document.querySelector('.nm__box')).toBeNull() // choices missing
+    for (const [sec, names] of Object.entries({ protein: ['Grill Chicken', 'Grilled Steak'], bases: ['Mexican Rice', 'Black Beans'], toppings: ['Romaine Lettuce', 'Shredded Cheese'], salsas: ['Pico de Gallo', 'Green Salsa Verde'], tortillas: ['Soft Corn Tortillas'] })) {
+      for (const n of names) await click(wrapper, n, `#sec-${sec} .bc__btn`)
+    }
+    expect(wrapper.find('.mbar__name').text()).toBe('Build Your Own Double · 20 people · $259.00')
+    await click(wrapper, 'Add to bag', '.mbar__add')
+    expect(document.querySelector('.nm__t').textContent).toBe("Who's this order for?")
+    await nameAndConfirm('Team lunch')
+    const [line] = useOrder().state.lines
+    expect(line).toMatchObject({ itemSlug: 'catering-double', qty: 20, label: 'Team lunch', event: { date: later(3), time: '12:00' } })
+    expect(useOrder().subtotal.value).toBe(1295 * 20)
+    const bag = document.querySelector('[aria-labelledby=bag-title]')
+    expect(bag.textContent).toContain('20 people')
+    expect(bag.textContent).toMatch(/Pickup \w{3}, \w{3} \d+ · 12:00/)
+    // the people stepper moves in fives and stops at the minimum
+    useOrder().setLineQty(line.id, 5)
+    expect(useOrder().state.lines[0].qty).toBe(10)
+    wrapper.unmount()
+  })
+
+  it('catering order: a popular build skips the build step', async () => {
+    useOrder().chooseStore('brooklyn-5119-a-avenue-u')
+    const { wrapper } = await mountAt(`${C}/office-lunch?people=30`)
+    const form = wrapper.find('.ed__form')
+    expect(form.find('.ed__go').text()).toBe('Save & add to bag')
+    await form.find('input[type=date]').setValue(later(2))
+    await form.findAll('select')[0].setValue('11:30')
+    await form.trigger('submit')
+    await flushPromises()
+    await nameAndConfirm('Board meeting')
+    const [line] = useOrder().state.lines
+    expect(line).toMatchObject({ itemSlug: 'office-lunch', qty: 30 })
+    expect(useOrder().subtotal.value).toBe(1295 * 30)
+    wrapper.unmount()
+  })
+
+  it('family meals: deep link go=family and the order menu send kits to the family pages', async () => {
+    useOrder().chooseStore('brooklyn-5119-a-avenue-u')
+    const a = await mountAt('/order?go=family')
+    expect(a.router.currentRoute.value.path).toBe(F)
+    a.wrapper.unmount()
+    const b = await mountAt('/order/brooklyn-5119-a-avenue-u')
+    expect(b.wrapper.find('[aria-label="Choose options for Taco Kit"]').attributes('href')).toBe(`${F}/taco-kit`)
+    b.wrapper.unmount()
   })
 
   it('quick add, bag sheet and checkout (payment stays off)', async () => {

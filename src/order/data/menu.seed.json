@@ -20,7 +20,10 @@
       "per-store tax rates",
       "Add Queso Blanco price (sample $1.95)",
       "Side Cup of Chicken / Beef: price (sample $2.95) and calories",
-      "Organic Tractor Mango Peach price (sample $4.95)"
+      "Organic Tractor Mango Peach price (sample $4.95)",
+      "Family kits: rice/beans choice (Mexican or white rice, black or pinto beans) and the default proteins (Grill Chicken + Grilled Steak)",
+      "Kids Create Your Own quick-add meal (Grill Chicken, rice, shredded cheese, soft tortillas, organic milk)",
+      "Catering: every package, what it includes, per-person prices and minimums are SAMPLES (Guacado has not published a catering menu)"
     ]
   },
   "categories": [
@@ -842,60 +845,70 @@
                   "name": "Grill Chicken",
                   "priceCents": 0,
                   "ingredient": "grill-chicken",
-                  "sort": 0
+                  "sort": 0,
+                  "image": "/media/build/protein-grill-chicken.webp"
                 },
                 {
                   "name": "Honey Chipotle",
                   "priceCents": 0,
                   "ingredient": "honey-chipotle",
-                  "sort": 1
+                  "sort": 1,
+                  "image": "/media/build/protein-honey-chipotle.webp"
                 },
                 {
                   "name": "Grilled Steak",
                   "priceCents": 0,
                   "ingredient": "grilled-steak",
-                  "sort": 2
+                  "sort": 2,
+                  "image": "/media/build/protein-grilled-steak.webp"
                 },
                 {
                   "name": "Ground Beef",
                   "priceCents": 0,
                   "ingredient": "ground-beef",
-                  "sort": 3
+                  "sort": 3,
+                  "image": "/media/build/protein-ground-beef.webp"
                 },
                 {
                   "name": "Grilled Shrimp",
                   "priceCents": 0,
                   "ingredient": "grilled-shrimp",
-                  "sort": 4
+                  "sort": 4,
+                  "image": "/media/build/protein-grilled-shrimp.webp"
                 },
                 {
                   "name": "Beef Barbacoa",
                   "priceCents": 0,
                   "ingredient": "beef-barbacoa",
-                  "sort": 5
+                  "sort": 5,
+                  "image": "/media/build/protein-beef-barbacoa.webp"
                 },
                 {
                   "name": "Veggie Fajita w/ Guac",
                   "priceCents": 0,
                   "ingredient": "veggie-fajita-guac",
-                  "sort": 6
+                  "sort": 6,
+                  "image": "/media/build/protein-veggie-fajita.webp"
                 },
                 {
                   "name": "Tofu",
                   "priceCents": 0,
                   "ingredient": "tofu",
-                  "sort": 7
+                  "sort": 7,
+                  "image": "/media/build/protein-tofu.webp"
                 },
                 {
                   "name": "Guac",
                   "priceCents": 0,
                   "ingredient": "guacamole",
-                  "sort": 8
+                  "sort": 8,
+                  "image": "/media/build/add-guac.webp"
                 }
               ],
               "sort": 0,
               "allowLevels": false,
-              "setsPrice": false
+              "setsPrice": false,
+              "autoPick": false
             },
             {
               "key": "toppings",
@@ -907,49 +920,57 @@
                   "name": "Rice",
                   "priceCents": 0,
                   "ingredient": "rice",
-                  "sort": 0
+                  "sort": 0,
+                  "image": "/media/build/rice-mexican.webp"
                 },
                 {
                   "name": "Beans",
                   "priceCents": 0,
                   "ingredient": "beans",
-                  "sort": 1
+                  "sort": 1,
+                  "image": "/media/build/beans-black.webp"
                 },
                 {
                   "name": "Pico de Gallo",
                   "priceCents": 0,
                   "ingredient": "pico-de-gallo",
-                  "sort": 2
+                  "sort": 2,
+                  "image": "/media/build/top-pico.webp"
                 },
                 {
                   "name": "Salsa",
                   "priceCents": 0,
                   "ingredient": "salsa",
-                  "sort": 3
+                  "sort": 3,
+                  "image": "/media/build/top-red-salsa.webp"
                 },
                 {
                   "name": "Lettuce",
                   "priceCents": 0,
                   "ingredient": "lettuce",
-                  "sort": 4
+                  "sort": 4,
+                  "image": "/media/build/top-lettuce.webp"
                 },
                 {
                   "name": "Shredded Cheese",
                   "priceCents": 0,
                   "ingredient": "shredded-cheese",
-                  "sort": 5
+                  "sort": 5,
+                  "image": "/media/build/top-cheese.webp"
                 },
                 {
                   "name": "Sour Cream",
                   "priceCents": 0,
                   "ingredient": "sour-cream",
-                  "sort": 6
+                  "sort": 6,
+                  "image": "/media/build/top-sour-cream.webp"
                 },
                 {
                   "name": "Jalapeños",
                   "priceCents": 0,
                   "ingredient": "jalapenos",
-                  "sort": 7
+                  "sort": 7,
+                  "image": "/media/build/top-jalapeno.webp"
                 }
               ],
               "sort": 1,
@@ -966,12 +987,16 @@
                   "name": "Soft",
                   "priceCents": 0,
                   "isDefault": true,
-                  "sort": 0
+                  "sort": 0,
+                  "image": "/media/sides/tortilla.webp",
+                  "label": "2 Soft Tortillas"
                 },
                 {
                   "name": "Crispy",
                   "priceCents": 0,
-                  "sort": 1
+                  "sort": 1,
+                  "image": "/media/menu/tacos.webp",
+                  "label": "2 Crispy Tortillas"
                 }
               ],
               "sort": 2,
@@ -988,12 +1013,14 @@
                   "name": "Organic Milk",
                   "priceCents": 0,
                   "isDefault": true,
-                  "sort": 0
+                  "sort": 0,
+                  "image": "/media/build/drink-kids-milk.webp"
                 },
                 {
                   "name": "Water",
                   "priceCents": 0,
-                  "sort": 1
+                  "sort": 1,
+                  "image": "/media/build/drink-water.webp"
                 }
               ],
               "sort": 3,
@@ -1001,7 +1028,18 @@
               "setsPrice": false
             }
           ],
-          "sort": 0
+          "sort": 0,
+          "image": "/media/menu/tacos.webp",
+          "preset": {
+            "main": [
+              "Grill Chicken"
+            ],
+            "toppings": [
+              "Rice",
+              "Shredded Cheese"
+            ]
+          },
+          "presetNote": "SAMPLE: the meal ADD TO BAG adds from the picker card; owner to confirm"
         },
         {
           "slug": "kids-cheese-quesadilla",
@@ -1021,12 +1059,14 @@
                   "name": "Organic Milk",
                   "priceCents": 0,
                   "isDefault": true,
-                  "sort": 0
+                  "sort": 0,
+                  "image": "/media/build/drink-kids-milk.webp"
                 },
                 {
                   "name": "Water",
                   "priceCents": 0,
-                  "sort": 1
+                  "sort": 1,
+                  "image": "/media/build/drink-water.webp"
                 }
               ],
               "sort": 0,
@@ -1034,7 +1074,12 @@
               "setsPrice": false
             }
           ],
-          "sort": 1
+          "sort": 1,
+          "image": "/media/menu/kids-meal.webp",
+          "description": "A grilled cheese quesadilla with organic milk or water.",
+          "includes": [
+            "Cheese quesadilla"
+          ]
         }
       ],
       "sort": 3
@@ -1543,63 +1588,122 @@
                   "name": "Grill Chicken",
                   "priceCents": 0,
                   "ingredient": "grill-chicken",
-                  "isDefault": false,
-                  "sort": 0
+                  "isDefault": true,
+                  "sort": 0,
+                  "image": "/media/build/protein-grill-chicken.webp"
                 },
                 {
                   "name": "Honey Chipotle",
                   "priceCents": 0,
                   "ingredient": "honey-chipotle",
                   "isDefault": false,
-                  "sort": 1
+                  "sort": 1,
+                  "image": "/media/build/protein-honey-chipotle.webp"
                 },
                 {
                   "name": "Grilled Steak",
                   "priceCents": 0,
                   "ingredient": "grilled-steak",
-                  "isDefault": false,
-                  "sort": 2
+                  "isDefault": true,
+                  "sort": 2,
+                  "image": "/media/build/protein-grilled-steak.webp"
                 },
                 {
                   "name": "Ground Beef",
                   "priceCents": 0,
                   "ingredient": "ground-beef",
                   "isDefault": false,
-                  "sort": 3
+                  "sort": 3,
+                  "image": "/media/build/protein-ground-beef.webp"
                 },
                 {
                   "name": "Grilled Shrimp",
                   "priceCents": 0,
                   "ingredient": "grilled-shrimp",
                   "isDefault": false,
-                  "sort": 4
+                  "sort": 4,
+                  "image": "/media/build/protein-grilled-shrimp.webp"
                 },
                 {
                   "name": "Beef Barbacoa",
                   "priceCents": 0,
                   "ingredient": "beef-barbacoa",
                   "isDefault": false,
-                  "sort": 5
+                  "sort": 5,
+                  "image": "/media/build/protein-beef-barbacoa.webp"
                 },
                 {
                   "name": "Veggie Fajita w/ Guac",
                   "priceCents": 0,
                   "ingredient": "veggie-fajita-guac",
                   "isDefault": false,
-                  "sort": 6
+                  "sort": 6,
+                  "image": "/media/build/protein-veggie-fajita.webp"
                 },
                 {
                   "name": "Tofu",
                   "priceCents": 0,
                   "ingredient": "tofu",
                   "isDefault": false,
-                  "sort": 7
+                  "sort": 7,
+                  "image": "/media/build/protein-tofu.webp"
                 }
               ],
               "sort": 0
+            },
+            {
+              "key": "kitRice",
+              "name": "Choose your rice",
+              "minSelect": 1,
+              "maxSelect": 1,
+              "allowLevels": false,
+              "setsPrice": false,
+              "options": [
+                {
+                  "name": "Mexican Rice",
+                  "priceCents": 0,
+                  "image": "/media/build/rice-mexican.webp",
+                  "isDefault": true,
+                  "sort": 0
+                },
+                {
+                  "name": "Cilantro Lime White Rice",
+                  "priceCents": 0,
+                  "image": "/media/build/rice-cilantro-lime.webp",
+                  "isDefault": false,
+                  "sort": 1
+                }
+              ],
+              "sort": 1
+            },
+            {
+              "key": "kitBeans",
+              "name": "Choose your beans",
+              "minSelect": 1,
+              "maxSelect": 1,
+              "allowLevels": false,
+              "setsPrice": false,
+              "options": [
+                {
+                  "name": "Black Beans",
+                  "priceCents": 0,
+                  "image": "/media/build/beans-black.webp",
+                  "isDefault": true,
+                  "sort": 0
+                },
+                {
+                  "name": "Pinto Beans",
+                  "priceCents": 0,
+                  "image": "/media/build/beans-pinto.webp",
+                  "isDefault": false,
+                  "sort": 1
+                }
+              ],
+              "sort": 2
             }
           ],
-          "sort": 0
+          "sort": 0,
+          "image": "/media/family-kit.webp"
         },
         {
           "slug": "nacho-kit",
@@ -1630,63 +1734,97 @@
                   "name": "Grill Chicken",
                   "priceCents": 0,
                   "ingredient": "grill-chicken",
-                  "isDefault": false,
-                  "sort": 0
+                  "isDefault": true,
+                  "sort": 0,
+                  "image": "/media/build/protein-grill-chicken.webp"
                 },
                 {
                   "name": "Honey Chipotle",
                   "priceCents": 0,
                   "ingredient": "honey-chipotle",
                   "isDefault": false,
-                  "sort": 1
+                  "sort": 1,
+                  "image": "/media/build/protein-honey-chipotle.webp"
                 },
                 {
                   "name": "Grilled Steak",
                   "priceCents": 0,
                   "ingredient": "grilled-steak",
-                  "isDefault": false,
-                  "sort": 2
+                  "isDefault": true,
+                  "sort": 2,
+                  "image": "/media/build/protein-grilled-steak.webp"
                 },
                 {
                   "name": "Ground Beef",
                   "priceCents": 0,
                   "ingredient": "ground-beef",
                   "isDefault": false,
-                  "sort": 3
+                  "sort": 3,
+                  "image": "/media/build/protein-ground-beef.webp"
                 },
                 {
                   "name": "Grilled Shrimp",
                   "priceCents": 0,
                   "ingredient": "grilled-shrimp",
                   "isDefault": false,
-                  "sort": 4
+                  "sort": 4,
+                  "image": "/media/build/protein-grilled-shrimp.webp"
                 },
                 {
                   "name": "Beef Barbacoa",
                   "priceCents": 0,
                   "ingredient": "beef-barbacoa",
                   "isDefault": false,
-                  "sort": 5
+                  "sort": 5,
+                  "image": "/media/build/protein-beef-barbacoa.webp"
                 },
                 {
                   "name": "Veggie Fajita w/ Guac",
                   "priceCents": 0,
                   "ingredient": "veggie-fajita-guac",
                   "isDefault": false,
-                  "sort": 6
+                  "sort": 6,
+                  "image": "/media/build/protein-veggie-fajita.webp"
                 },
                 {
                   "name": "Tofu",
                   "priceCents": 0,
                   "ingredient": "tofu",
                   "isDefault": false,
-                  "sort": 7
+                  "sort": 7,
+                  "image": "/media/build/protein-tofu.webp"
                 }
               ],
               "sort": 0
+            },
+            {
+              "key": "kitBeans",
+              "name": "Choose your beans",
+              "minSelect": 1,
+              "maxSelect": 1,
+              "allowLevels": false,
+              "setsPrice": false,
+              "options": [
+                {
+                  "name": "Black Beans",
+                  "priceCents": 0,
+                  "image": "/media/build/beans-black.webp",
+                  "isDefault": true,
+                  "sort": 0
+                },
+                {
+                  "name": "Pinto Beans",
+                  "priceCents": 0,
+                  "image": "/media/build/beans-pinto.webp",
+                  "isDefault": false,
+                  "sort": 1
+                }
+              ],
+              "sort": 1
             }
           ],
-          "sort": 1
+          "sort": 1,
+          "image": "/media/family-kit.webp"
         },
         {
           "slug": "fajita-kit",
@@ -1720,66 +1858,986 @@
                   "name": "Grill Chicken",
                   "priceCents": 0,
                   "ingredient": "grill-chicken",
-                  "isDefault": false,
-                  "sort": 0
+                  "isDefault": true,
+                  "sort": 0,
+                  "image": "/media/build/protein-grill-chicken.webp"
                 },
                 {
                   "name": "Honey Chipotle",
                   "priceCents": 0,
                   "ingredient": "honey-chipotle",
                   "isDefault": false,
-                  "sort": 1
+                  "sort": 1,
+                  "image": "/media/build/protein-honey-chipotle.webp"
                 },
                 {
                   "name": "Grilled Steak",
                   "priceCents": 0,
                   "ingredient": "grilled-steak",
-                  "isDefault": false,
-                  "sort": 2
+                  "isDefault": true,
+                  "sort": 2,
+                  "image": "/media/build/protein-grilled-steak.webp"
                 },
                 {
                   "name": "Ground Beef",
                   "priceCents": 0,
                   "ingredient": "ground-beef",
                   "isDefault": false,
-                  "sort": 3
+                  "sort": 3,
+                  "image": "/media/build/protein-ground-beef.webp"
                 },
                 {
                   "name": "Grilled Shrimp",
                   "priceCents": 0,
                   "ingredient": "grilled-shrimp",
                   "isDefault": false,
-                  "sort": 4
+                  "sort": 4,
+                  "image": "/media/build/protein-grilled-shrimp.webp"
                 },
                 {
                   "name": "Beef Barbacoa",
                   "priceCents": 0,
                   "ingredient": "beef-barbacoa",
                   "isDefault": false,
-                  "sort": 5
+                  "sort": 5,
+                  "image": "/media/build/protein-beef-barbacoa.webp"
                 },
                 {
                   "name": "Veggie Fajita w/ Guac",
                   "priceCents": 0,
                   "ingredient": "veggie-fajita-guac",
                   "isDefault": false,
-                  "sort": 6
+                  "sort": 6,
+                  "image": "/media/build/protein-veggie-fajita.webp"
                 },
                 {
                   "name": "Tofu",
                   "priceCents": 0,
                   "ingredient": "tofu",
                   "isDefault": false,
+                  "sort": 7,
+                  "image": "/media/build/protein-tofu.webp"
+                }
+              ],
+              "sort": 0
+            },
+            {
+              "key": "kitRice",
+              "name": "Choose your rice",
+              "minSelect": 1,
+              "maxSelect": 1,
+              "allowLevels": false,
+              "setsPrice": false,
+              "options": [
+                {
+                  "name": "Mexican Rice",
+                  "priceCents": 0,
+                  "image": "/media/build/rice-mexican.webp",
+                  "isDefault": true,
+                  "sort": 0
+                },
+                {
+                  "name": "Cilantro Lime White Rice",
+                  "priceCents": 0,
+                  "image": "/media/build/rice-cilantro-lime.webp",
+                  "isDefault": false,
+                  "sort": 1
+                }
+              ],
+              "sort": 1
+            },
+            {
+              "key": "kitBeans",
+              "name": "Choose your beans",
+              "minSelect": 1,
+              "maxSelect": 1,
+              "allowLevels": false,
+              "setsPrice": false,
+              "options": [
+                {
+                  "name": "Black Beans",
+                  "priceCents": 0,
+                  "image": "/media/build/beans-black.webp",
+                  "isDefault": true,
+                  "sort": 0
+                },
+                {
+                  "name": "Pinto Beans",
+                  "priceCents": 0,
+                  "image": "/media/build/beans-pinto.webp",
+                  "isDefault": false,
+                  "sort": 1
+                }
+              ],
+              "sort": 2
+            }
+          ],
+          "sort": 2,
+          "image": "/media/family-kit.webp"
+        }
+      ],
+      "sort": 8
+    },
+    {
+      "slug": "catering",
+      "name": "Catering",
+      "sort": 99,
+      "note": "SAMPLE catering menu and prices: Guacado has not published catering packages yet. Owner to confirm everything here.",
+      "items": [
+        {
+          "slug": "catering-single",
+          "name": "Build Your Own Single",
+          "tier": "Single",
+          "badge": "Best value",
+          "kind": "CATERING",
+          "perPerson": true,
+          "minPeople": 10,
+          "basePriceCents": 995,
+          "image": "/media/family-kit.webp",
+          "sort": 0,
+          "description": "The Single comes with one protein, two bases, two toppings, two salsas and one type of tortilla.",
+          "groups": [
+            {
+              "key": "protein",
+              "name": "Protein",
+              "minSelect": 1,
+              "maxSelect": 1,
+              "allowLevels": false,
+              "setsPrice": false,
+              "options": [
+                {
+                  "name": "Grill Chicken",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-grill-chicken.webp",
+                  "sort": 0
+                },
+                {
+                  "name": "Honey Chipotle",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-honey-chipotle.webp",
+                  "sort": 1
+                },
+                {
+                  "name": "Grilled Steak",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-grilled-steak.webp",
+                  "sort": 2
+                },
+                {
+                  "name": "Ground Beef",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-ground-beef.webp",
+                  "sort": 3
+                },
+                {
+                  "name": "Grilled Shrimp",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-grilled-shrimp.webp",
+                  "sort": 4
+                },
+                {
+                  "name": "Beef Barbacoa",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-beef-barbacoa.webp",
+                  "sort": 5
+                },
+                {
+                  "name": "Veggie Fajita w/ Guac",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-veggie-fajita.webp",
+                  "sort": 6
+                },
+                {
+                  "name": "Tofu",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-tofu.webp",
+                  "sort": 7
+                }
+              ],
+              "sort": 0
+            },
+            {
+              "key": "bases",
+              "name": "Bases",
+              "minSelect": 2,
+              "maxSelect": 2,
+              "allowLevels": false,
+              "setsPrice": false,
+              "options": [
+                {
+                  "name": "Mexican Rice",
+                  "priceCents": 0,
+                  "image": "/media/build/rice-mexican.webp",
+                  "sort": 0
+                },
+                {
+                  "name": "Cilantro Lime White Rice",
+                  "priceCents": 0,
+                  "image": "/media/build/rice-cilantro-lime.webp",
+                  "sort": 1
+                },
+                {
+                  "name": "Black Beans",
+                  "priceCents": 0,
+                  "image": "/media/build/beans-black.webp",
+                  "sort": 2
+                },
+                {
+                  "name": "Pinto Beans",
+                  "priceCents": 0,
+                  "image": "/media/build/beans-pinto.webp",
+                  "sort": 3
+                }
+              ],
+              "sort": 1
+            },
+            {
+              "key": "toppings",
+              "name": "Toppings",
+              "minSelect": 2,
+              "maxSelect": 2,
+              "allowLevels": false,
+              "setsPrice": false,
+              "options": [
+                {
+                  "name": "Romaine Lettuce",
+                  "priceCents": 0,
+                  "image": "/media/build/top-lettuce.webp",
+                  "sort": 0
+                },
+                {
+                  "name": "Shredded Cheese",
+                  "priceCents": 0,
+                  "image": "/media/build/top-cheese.webp",
+                  "sort": 1
+                },
+                {
+                  "name": "Sour Cream",
+                  "priceCents": 0,
+                  "image": "/media/build/top-sour-cream.webp",
+                  "sort": 2
+                },
+                {
+                  "name": "Mexican Corn",
+                  "priceCents": 0,
+                  "image": "/media/build/top-corn.webp",
+                  "sort": 3
+                },
+                {
+                  "name": "Chopped Red Onion",
+                  "priceCents": 0,
+                  "image": "/media/build/top-red-onion.webp",
+                  "sort": 4
+                },
+                {
+                  "name": "Fresh Cilantro",
+                  "priceCents": 0,
+                  "image": "/media/build/top-cilantro.webp",
+                  "sort": 5
+                },
+                {
+                  "name": "Jalapeños",
+                  "priceCents": 0,
+                  "image": "/media/build/top-jalapeno.webp",
+                  "sort": 6
+                },
+                {
+                  "name": "Tortilla Strips",
+                  "priceCents": 0,
+                  "image": "/media/build/top-tortilla-strips.webp",
+                  "sort": 7
+                }
+              ],
+              "sort": 2
+            },
+            {
+              "key": "salsas",
+              "name": "Salsas",
+              "minSelect": 2,
+              "maxSelect": 2,
+              "allowLevels": false,
+              "setsPrice": false,
+              "options": [
+                {
+                  "name": "Pico de Gallo",
+                  "priceCents": 0,
+                  "image": "/media/build/top-pico.webp",
+                  "sort": 0
+                },
+                {
+                  "name": "Medium Red Salsa",
+                  "priceCents": 0,
+                  "image": "/media/build/top-red-salsa.webp",
+                  "sort": 1
+                },
+                {
+                  "name": "Green Salsa Verde",
+                  "priceCents": 0,
+                  "image": "/media/build/top-salsa-verde.webp",
+                  "sort": 2
+                }
+              ],
+              "sort": 3
+            },
+            {
+              "key": "tortillas",
+              "name": "Tortillas",
+              "minSelect": 1,
+              "maxSelect": 1,
+              "allowLevels": false,
+              "setsPrice": false,
+              "options": [
+                {
+                  "name": "Soft Corn Tortillas",
+                  "priceCents": 0,
+                  "image": "/media/sides/tortilla.webp",
+                  "sort": 0
+                },
+                {
+                  "name": "Soft Flour Tortillas",
+                  "priceCents": 0,
+                  "image": "/media/sides/tortilla.webp",
+                  "sort": 1
+                }
+              ],
+              "sort": 4
+            }
+          ]
+        },
+        {
+          "slug": "catering-double",
+          "name": "Build Your Own Double",
+          "tier": "Double",
+          "badge": "Fan favorite",
+          "kind": "CATERING",
+          "perPerson": true,
+          "minPeople": 10,
+          "basePriceCents": 1295,
+          "image": "/media/family-kit.webp",
+          "sort": 1,
+          "description": "The Double comes with two proteins, two bases, two toppings, two salsas and one type of tortilla.",
+          "groups": [
+            {
+              "key": "protein",
+              "name": "Protein",
+              "minSelect": 2,
+              "maxSelect": 2,
+              "allowLevels": false,
+              "setsPrice": false,
+              "options": [
+                {
+                  "name": "Grill Chicken",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-grill-chicken.webp",
+                  "sort": 0
+                },
+                {
+                  "name": "Honey Chipotle",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-honey-chipotle.webp",
+                  "sort": 1
+                },
+                {
+                  "name": "Grilled Steak",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-grilled-steak.webp",
+                  "sort": 2
+                },
+                {
+                  "name": "Ground Beef",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-ground-beef.webp",
+                  "sort": 3
+                },
+                {
+                  "name": "Grilled Shrimp",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-grilled-shrimp.webp",
+                  "sort": 4
+                },
+                {
+                  "name": "Beef Barbacoa",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-beef-barbacoa.webp",
+                  "sort": 5
+                },
+                {
+                  "name": "Veggie Fajita w/ Guac",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-veggie-fajita.webp",
+                  "sort": 6
+                },
+                {
+                  "name": "Tofu",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-tofu.webp",
+                  "sort": 7
+                }
+              ],
+              "sort": 0
+            },
+            {
+              "key": "bases",
+              "name": "Bases",
+              "minSelect": 2,
+              "maxSelect": 2,
+              "allowLevels": false,
+              "setsPrice": false,
+              "options": [
+                {
+                  "name": "Mexican Rice",
+                  "priceCents": 0,
+                  "image": "/media/build/rice-mexican.webp",
+                  "sort": 0
+                },
+                {
+                  "name": "Cilantro Lime White Rice",
+                  "priceCents": 0,
+                  "image": "/media/build/rice-cilantro-lime.webp",
+                  "sort": 1
+                },
+                {
+                  "name": "Black Beans",
+                  "priceCents": 0,
+                  "image": "/media/build/beans-black.webp",
+                  "sort": 2
+                },
+                {
+                  "name": "Pinto Beans",
+                  "priceCents": 0,
+                  "image": "/media/build/beans-pinto.webp",
+                  "sort": 3
+                }
+              ],
+              "sort": 1
+            },
+            {
+              "key": "toppings",
+              "name": "Toppings",
+              "minSelect": 2,
+              "maxSelect": 2,
+              "allowLevels": false,
+              "setsPrice": false,
+              "options": [
+                {
+                  "name": "Romaine Lettuce",
+                  "priceCents": 0,
+                  "image": "/media/build/top-lettuce.webp",
+                  "sort": 0
+                },
+                {
+                  "name": "Shredded Cheese",
+                  "priceCents": 0,
+                  "image": "/media/build/top-cheese.webp",
+                  "sort": 1
+                },
+                {
+                  "name": "Sour Cream",
+                  "priceCents": 0,
+                  "image": "/media/build/top-sour-cream.webp",
+                  "sort": 2
+                },
+                {
+                  "name": "Mexican Corn",
+                  "priceCents": 0,
+                  "image": "/media/build/top-corn.webp",
+                  "sort": 3
+                },
+                {
+                  "name": "Chopped Red Onion",
+                  "priceCents": 0,
+                  "image": "/media/build/top-red-onion.webp",
+                  "sort": 4
+                },
+                {
+                  "name": "Fresh Cilantro",
+                  "priceCents": 0,
+                  "image": "/media/build/top-cilantro.webp",
+                  "sort": 5
+                },
+                {
+                  "name": "Jalapeños",
+                  "priceCents": 0,
+                  "image": "/media/build/top-jalapeno.webp",
+                  "sort": 6
+                },
+                {
+                  "name": "Tortilla Strips",
+                  "priceCents": 0,
+                  "image": "/media/build/top-tortilla-strips.webp",
+                  "sort": 7
+                }
+              ],
+              "sort": 2
+            },
+            {
+              "key": "salsas",
+              "name": "Salsas",
+              "minSelect": 2,
+              "maxSelect": 2,
+              "allowLevels": false,
+              "setsPrice": false,
+              "options": [
+                {
+                  "name": "Pico de Gallo",
+                  "priceCents": 0,
+                  "image": "/media/build/top-pico.webp",
+                  "sort": 0
+                },
+                {
+                  "name": "Medium Red Salsa",
+                  "priceCents": 0,
+                  "image": "/media/build/top-red-salsa.webp",
+                  "sort": 1
+                },
+                {
+                  "name": "Green Salsa Verde",
+                  "priceCents": 0,
+                  "image": "/media/build/top-salsa-verde.webp",
+                  "sort": 2
+                }
+              ],
+              "sort": 3
+            },
+            {
+              "key": "tortillas",
+              "name": "Tortillas",
+              "minSelect": 1,
+              "maxSelect": 1,
+              "allowLevels": false,
+              "setsPrice": false,
+              "options": [
+                {
+                  "name": "Soft Corn Tortillas",
+                  "priceCents": 0,
+                  "image": "/media/sides/tortilla.webp",
+                  "sort": 0
+                },
+                {
+                  "name": "Soft Flour Tortillas",
+                  "priceCents": 0,
+                  "image": "/media/sides/tortilla.webp",
+                  "sort": 1
+                }
+              ],
+              "sort": 4
+            }
+          ]
+        },
+        {
+          "slug": "catering-triple",
+          "name": "Build Your Own Triple",
+          "tier": "Triple",
+          "badge": "Most variety",
+          "kind": "CATERING",
+          "perPerson": true,
+          "minPeople": 10,
+          "basePriceCents": 1495,
+          "image": "/media/family-kit.webp",
+          "sort": 2,
+          "description": "The Triple comes with three proteins, two bases, two toppings, two salsas and one type of tortilla.",
+          "groups": [
+            {
+              "key": "protein",
+              "name": "Protein",
+              "minSelect": 3,
+              "maxSelect": 3,
+              "allowLevels": false,
+              "setsPrice": false,
+              "options": [
+                {
+                  "name": "Grill Chicken",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-grill-chicken.webp",
+                  "sort": 0
+                },
+                {
+                  "name": "Honey Chipotle",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-honey-chipotle.webp",
+                  "sort": 1
+                },
+                {
+                  "name": "Grilled Steak",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-grilled-steak.webp",
+                  "sort": 2
+                },
+                {
+                  "name": "Ground Beef",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-ground-beef.webp",
+                  "sort": 3
+                },
+                {
+                  "name": "Grilled Shrimp",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-grilled-shrimp.webp",
+                  "sort": 4
+                },
+                {
+                  "name": "Beef Barbacoa",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-beef-barbacoa.webp",
+                  "sort": 5
+                },
+                {
+                  "name": "Veggie Fajita w/ Guac",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-veggie-fajita.webp",
+                  "sort": 6
+                },
+                {
+                  "name": "Tofu",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-tofu.webp",
+                  "sort": 7
+                }
+              ],
+              "sort": 0
+            },
+            {
+              "key": "bases",
+              "name": "Bases",
+              "minSelect": 2,
+              "maxSelect": 2,
+              "allowLevels": false,
+              "setsPrice": false,
+              "options": [
+                {
+                  "name": "Mexican Rice",
+                  "priceCents": 0,
+                  "image": "/media/build/rice-mexican.webp",
+                  "sort": 0
+                },
+                {
+                  "name": "Cilantro Lime White Rice",
+                  "priceCents": 0,
+                  "image": "/media/build/rice-cilantro-lime.webp",
+                  "sort": 1
+                },
+                {
+                  "name": "Black Beans",
+                  "priceCents": 0,
+                  "image": "/media/build/beans-black.webp",
+                  "sort": 2
+                },
+                {
+                  "name": "Pinto Beans",
+                  "priceCents": 0,
+                  "image": "/media/build/beans-pinto.webp",
+                  "sort": 3
+                }
+              ],
+              "sort": 1
+            },
+            {
+              "key": "toppings",
+              "name": "Toppings",
+              "minSelect": 2,
+              "maxSelect": 2,
+              "allowLevels": false,
+              "setsPrice": false,
+              "options": [
+                {
+                  "name": "Romaine Lettuce",
+                  "priceCents": 0,
+                  "image": "/media/build/top-lettuce.webp",
+                  "sort": 0
+                },
+                {
+                  "name": "Shredded Cheese",
+                  "priceCents": 0,
+                  "image": "/media/build/top-cheese.webp",
+                  "sort": 1
+                },
+                {
+                  "name": "Sour Cream",
+                  "priceCents": 0,
+                  "image": "/media/build/top-sour-cream.webp",
+                  "sort": 2
+                },
+                {
+                  "name": "Mexican Corn",
+                  "priceCents": 0,
+                  "image": "/media/build/top-corn.webp",
+                  "sort": 3
+                },
+                {
+                  "name": "Chopped Red Onion",
+                  "priceCents": 0,
+                  "image": "/media/build/top-red-onion.webp",
+                  "sort": 4
+                },
+                {
+                  "name": "Fresh Cilantro",
+                  "priceCents": 0,
+                  "image": "/media/build/top-cilantro.webp",
+                  "sort": 5
+                },
+                {
+                  "name": "Jalapeños",
+                  "priceCents": 0,
+                  "image": "/media/build/top-jalapeno.webp",
+                  "sort": 6
+                },
+                {
+                  "name": "Tortilla Strips",
+                  "priceCents": 0,
+                  "image": "/media/build/top-tortilla-strips.webp",
+                  "sort": 7
+                }
+              ],
+              "sort": 2
+            },
+            {
+              "key": "salsas",
+              "name": "Salsas",
+              "minSelect": 2,
+              "maxSelect": 2,
+              "allowLevels": false,
+              "setsPrice": false,
+              "options": [
+                {
+                  "name": "Pico de Gallo",
+                  "priceCents": 0,
+                  "image": "/media/build/top-pico.webp",
+                  "sort": 0
+                },
+                {
+                  "name": "Medium Red Salsa",
+                  "priceCents": 0,
+                  "image": "/media/build/top-red-salsa.webp",
+                  "sort": 1
+                },
+                {
+                  "name": "Green Salsa Verde",
+                  "priceCents": 0,
+                  "image": "/media/build/top-salsa-verde.webp",
+                  "sort": 2
+                }
+              ],
+              "sort": 3
+            },
+            {
+              "key": "tortillas",
+              "name": "Tortillas",
+              "minSelect": 1,
+              "maxSelect": 1,
+              "allowLevels": false,
+              "setsPrice": false,
+              "options": [
+                {
+                  "name": "Soft Corn Tortillas",
+                  "priceCents": 0,
+                  "image": "/media/sides/tortilla.webp",
+                  "sort": 0
+                },
+                {
+                  "name": "Soft Flour Tortillas",
+                  "priceCents": 0,
+                  "image": "/media/sides/tortilla.webp",
+                  "sort": 1
+                }
+              ],
+              "sort": 4
+            }
+          ]
+        },
+        {
+          "slug": "office-lunch",
+          "name": "Office Lunch",
+          "tier": "Double protein",
+          "kind": "CATERING",
+          "perPerson": true,
+          "minPeople": 10,
+          "basePriceCents": 1295,
+          "image": "/media/sides/sides-main-900.webp",
+          "includes": [
+            "Grill Chicken",
+            "Grilled Steak",
+            "Mexican Rice",
+            "Black Beans",
+            "Romaine Lettuce",
+            "Shredded Cheese",
+            "Pico de Gallo",
+            "Medium Red Salsa",
+            "Soft Flour Tortillas"
+          ],
+          "groups": [],
+          "sort": 3
+        },
+        {
+          "slug": "plant-powered",
+          "name": "Plant Powered",
+          "tier": "Double protein",
+          "kind": "CATERING",
+          "perPerson": true,
+          "minPeople": 10,
+          "basePriceCents": 1295,
+          "image": "/media/favorites/taco-salad.webp",
+          "includes": [
+            "Veggie Fajita w/ Guac",
+            "Tofu",
+            "Cilantro Lime White Rice",
+            "Pinto Beans",
+            "Romaine Lettuce",
+            "Mexican Corn",
+            "Pico de Gallo",
+            "Green Salsa Verde",
+            "Soft Corn Tortillas"
+          ],
+          "groups": [],
+          "sort": 4
+        },
+        {
+          "slug": "big-get-together",
+          "name": "Big Get-Together",
+          "tier": "Triple protein",
+          "kind": "CATERING",
+          "perPerson": true,
+          "minPeople": 10,
+          "basePriceCents": 1495,
+          "image": "/media/family-kit.webp",
+          "includes": [
+            "Grill Chicken",
+            "Grilled Steak",
+            "Beef Barbacoa",
+            "Mexican Rice",
+            "Black Beans",
+            "Shredded Cheese",
+            "Sour Cream",
+            "Pico de Gallo",
+            "Green Salsa Verde",
+            "Soft Corn Tortillas"
+          ],
+          "groups": [],
+          "sort": 5
+        },
+        {
+          "slug": "burrito-box",
+          "name": "Burritos by the Box",
+          "tier": "Burritos by the box",
+          "kind": "CATERING",
+          "perPerson": true,
+          "minPeople": 6,
+          "basePriceCents": 1195,
+          "image": "/media/catering/group-order.webp",
+          "sort": 6,
+          "description": "Mix and match burritos for the group. Every burrito comes with rice, beans, shredded cheese and pico de gallo.",
+          "includes": [
+            "Rice",
+            "Beans",
+            "Shredded cheese",
+            "Pico de gallo"
+          ],
+          "groups": [
+            {
+              "key": "protein",
+              "name": "Burrito proteins",
+              "minSelect": 1,
+              "maxSelect": 3,
+              "allowLevels": false,
+              "setsPrice": false,
+              "options": [
+                {
+                  "name": "Grill Chicken",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-grill-chicken.webp",
+                  "sort": 0
+                },
+                {
+                  "name": "Honey Chipotle",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-honey-chipotle.webp",
+                  "sort": 1
+                },
+                {
+                  "name": "Grilled Steak",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-grilled-steak.webp",
+                  "sort": 2
+                },
+                {
+                  "name": "Ground Beef",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-ground-beef.webp",
+                  "sort": 3
+                },
+                {
+                  "name": "Grilled Shrimp",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-grilled-shrimp.webp",
+                  "sort": 4
+                },
+                {
+                  "name": "Beef Barbacoa",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-beef-barbacoa.webp",
+                  "sort": 5
+                },
+                {
+                  "name": "Veggie Fajita w/ Guac",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-veggie-fajita.webp",
+                  "sort": 6
+                },
+                {
+                  "name": "Tofu",
+                  "priceCents": 0,
+                  "image": "/media/build/protein-tofu.webp",
                   "sort": 7
                 }
               ],
               "sort": 0
             }
+          ]
+        },
+        {
+          "slug": "chips-dips-tray",
+          "name": "Chips & Dips",
+          "tier": "Serves 10–15",
+          "kind": "CATERING",
+          "perPerson": false,
+          "serves": "10–15",
+          "basePriceCents": 3995,
+          "image": "/media/sides/chips-salsa-8oz.webp",
+          "sort": 7,
+          "description": "House-made chips, all three salsas, and your choice of guacamole or queso.",
+          "includes": [
+            "Chips",
+            "Pico de gallo",
+            "Medium red salsa",
+            "Green salsa verde"
           ],
-          "sort": 2
+          "groups": [
+            {
+              "key": "dip",
+              "name": "Guacamole or queso",
+              "minSelect": 1,
+              "maxSelect": 1,
+              "allowLevels": false,
+              "setsPrice": false,
+              "options": [
+                {
+                  "name": "Guacamole",
+                  "priceCents": 0,
+                  "image": "/media/build/add-guac.webp",
+                  "isDefault": true,
+                  "sort": 0
+                },
+                {
+                  "name": "Queso",
+                  "priceCents": 0,
+                  "image": "/media/build/add-queso.webp",
+                  "sort": 1
+                }
+              ],
+              "sort": 0
+            }
+          ]
         }
-      ],
-      "sort": 8
+      ]
     }
   ]
 }

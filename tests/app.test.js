@@ -36,7 +36,7 @@ describe('App smoke test', () => {
     expect(wrapper.find('h1').text()).toContain('Big Mexican Flavors')
     expect(wrapper.findAll('.cat .cat__name').map((n) => n.text())).toEqual([
       'Burrito', 'Burrito Bowl', 'Birria Tacos', 'Quesadilla', 'Tostada Special', 'Loaded Plates',
-      'Salad Bowl', 'Crunchwrap', 'Family Meal', 'Kids Meal', 'Drinks',
+      'Salad Bowl', 'Crunchwrap', 'Family Kit', 'Kids Meal', 'Drinks',
     ])
     // Featured: Chipotle-style carousel of tall cards with cal | price and an order button
     expect(wrapper.find('#feat-title').text()).toBe('Featured')
@@ -51,6 +51,10 @@ describe('App smoke test', () => {
     expect(wrapper.findAll('.trio .fcard')).toHaveLength(3)
     expect(wrapper.findAll('.trio .fcard')[1].classes()).toContain('is-hi') // highlighted card in the middle
     expect(wrapper.find('.fcard.is-hi').text()).toContain('Birria')
+    // "Fresh" in the guac headline uses the brand accent; the queso card says "Say creamy queso"
+    const titles = wrapper.findAll('.trio .fcard h2')
+    expect(titles.map((t) => t.text())).toEqual(['Make room for Fresh Guac', 'Birria tacos', 'Say creamy queso'])
+    expect(titles[0].find('.brand__fresh').text()).toBe('Fresh')
     expect(wrapper.find('#kits').exists()).toBe(true)
     expect(wrapper.find('#catering').exists()).toBe(true)
     wrapper.unmount()

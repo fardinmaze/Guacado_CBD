@@ -16,6 +16,7 @@ const props = defineProps({
   picked: { type: Boolean, default: false },
   badge: { type: String, default: '' }, // text in the badge instead of a tick
   radio: { type: Boolean, default: false },
+  locked: { type: Boolean, default: false }, // included item: shown ticked, can't be changed
   tag: { type: String, default: '' }, // small pill above the name, e.g. "Only at Guacado"
   disabled: { type: Boolean, default: false },
   none: { type: Boolean, default: false },
@@ -53,8 +54,8 @@ function onKey(e) {
 </script>
 
 <template>
-  <li class="bc" :class="{ on: picked, off: disabled && !picked, none, radio }">
-    <button type="button" class="bc__btn" :aria-pressed="picked" :disabled="disabled && !picked" @click="emit('pick')">
+  <li class="bc" :class="{ on: picked, off: disabled && !picked, none, radio, locked }">
+    <button type="button" class="bc__btn" :aria-pressed="picked" :disabled="locked || (disabled && !picked)" @click="emit('pick')">
       <span class="bc__img">
         <span v-if="radio" class="bc__radio" aria-hidden="true"><svg v-if="picked" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10" /></svg></span>
         <svg v-else-if="none" class="bc__no" viewBox="0 0 48 48" aria-hidden="true"><circle cx="24" cy="24" r="20" fill="none" stroke="currentColor" stroke-width="4" /><path d="M10 10l28 28" stroke="currentColor" stroke-width="4" /></svg>
@@ -128,6 +129,7 @@ function onKey(e) {
 .bc__btn:hover:not(:disabled) { border-color: var(--ink-muted); }
 .bc__btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 .bc__btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.bc.locked .bc__btn:disabled { opacity: 1; cursor: default; }
 .bc.on .bc__btn { border: 2px solid var(--guac); box-shadow: inset 0 0 0 1px var(--guac); }
 
 /* Photo: a fixed slot on the left; the cut-out is scaled up so it bleeds off the card edge. */

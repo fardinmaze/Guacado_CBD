@@ -7,7 +7,7 @@ import LoopVideo from '@/components/ui/LoopVideo.vue'
 const cards = [
   {
     id: 'guac',
-    title: 'Make room for guac',
+    title: 'Make room for Fresh Guac',
     text: 'Fresh guacamole, mashed and mixed in-house. A scoop makes any bowl, burrito, nachos or tacos even better.',
     video: '/media/feature-guac.mp4',
     poster: '/media/feature-guac.jpg',
@@ -29,7 +29,7 @@ const cards = [
   },
   {
     id: 'queso',
-    title: 'Say queso',
+    title: 'Say creamy queso',
     text: 'Warm, creamy queso poured over grilled steak or served with chips for dipping. Add it to any order.',
     video: '/media/feature-queso.mp4',
     poster: '/media/feature-queso.jpg',
@@ -48,7 +48,8 @@ const cards = [
         <span v-if="c.badge" class="fcard__badge">{{ c.badge }}</span>
       </div>
       <div class="fcard__copy">
-        <h2>{{ c.title }}</h2>
+        <!-- "Fresh" is the brand keyword: same accent as the Fresh Guacado name -->
+        <h2><template v-for="(p, i) in c.title.split(/(Fresh)/)" :key="i"><span v-if="p === 'Fresh'" class="brand__fresh">Fresh</span><template v-else>{{ p }}</template></template></h2>
         <p>{{ c.text }}</p>
         <RouterLink :to="{ path: '/order', query: { go: c.go } }" class="fcard__btn">{{ c.cta }}</RouterLink>
       </div>

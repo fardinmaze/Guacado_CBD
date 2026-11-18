@@ -36,10 +36,19 @@ const view = (line) => {
     // the line needs (a fixed item's own price shows as the line total anyway).
     rows: breakdown(item, line.selections).filter((r) => r.label !== (line.label ? what : item.name) && r.label !== what),
     total: lineCents(item, line),
-    editable: !!item.groups?.length,
+    editable: !!item.groups?.length || item.kind === 'CATERING',
+    perPerson: !!item.perPerson,
+    min: item.perPerson ? item.minPeople ?? 1 : 1,
+    step: item.perPerson ? 5 : 1,
+    when: line.event ? whenText(line.event) : '',
   }
 }
 const lines = computed(() => order.state.lines.map(view))
+function whenText(e) {
+  const d = new Date(`${e.date}T${e.time}`)
+  if (Number.isNaN(d.getTime())) return ''
+  return `Pickup ${d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} · ${d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })}`
+}
 
 function onKey(e) {
   if (e.key === 'Escape') return hide()
@@ -75,7 +84,11 @@ function edit(v) {
   const base = v.line.selections.base?.[0]?.name
   const to = v.item.slug === 'build-your-own'
     ? { path: `/order/${slug}/build`, query: { edit: v.line.id, ...(base ? { base: toSlug(base) } : {}) } }
-    : { path: `/order/${slug}/item/${v.item.slug}`, query: { edit: v.line.id } }
+    : v.item.category === 'catering'
+      ? { path: `/order/${slug}/catering/${v.item.slug}`, query: { edit: v.line.id } }
+      : v.item.category === 'family-kits' || v.item.category === 'kids'
+      ? { path: `/order/${slug}/${v.item.category === 'kids' ? 'kids' : 'family'}/${v.item.slug}`, query: { edit: v.line.id } }
+      : { path: `/order/${slug}/item/${v.item.slug}`, query: { edit: v.line.id } }
   router.push(to)
 }
 function checkout() {
@@ -112,6 +125,7 @@ function checkout() {
                   <div class="line__names">
                     <p class="line__name">{{ v.title }}</p>
                     <p v-if="v.sub" class="line__sub">{{ v.sub }}</p>
+                    <p v-if="v.when" class="line__sub">{{ v.when }}</p>
                   </div>
                   <div class="icons">
                     <button v-if="v.editable" type="button" class="ic" :aria-label="`Edit ${v.title}`" title="Edit" @click="edit(v)">
@@ -134,10 +148,10 @@ function checkout() {
                 </dl>
 
                 <div class="line__foot">
-                  <div class="step" role="group" :aria-label="`Quantity of ${v.title}`">
-                    <button type="button" aria-label="One fewer" @click="order.setLineQty(v.line.id, v.line.qty - 1)">−</button>
-                    <span aria-live="polite">{{ v.line.qty }}</span>
-                    <button type="button" aria-label="One more" @click="order.setLineQty(v.line.id, v.line.qty + 1)">+</button>
+                  <div class="step" role="group" :aria-label="v.perPerson ? `People for ${v.title}` : `Quantity of ${v.title}`">
+                    <button type="button" :aria-label="v.perPerson ? `${v.step} fewer people` : 'One fewer'" :disabled="v.perPerson && v.line.qty <= v.min" @click="order.setLineQty(v.line.id, v.line.qty - v.step)">−</button>
+                    <span aria-live="polite">{{ v.line.qty }}<small v-if="v.perPerson"> people</small></span>
+                    <button type="button" :aria-label="v.perPerson ? `${v.step} more people` : 'One more'" @click="order.setLineQty(v.line.id, v.line.qty + v.step)">+</button>
                   </div>
                   <strong class="line__total">{{ cents(v.total) }}</strong>
                 </div>
@@ -217,7 +231,9 @@ function checkout() {
 .line__foot { display: flex; align-items: center; justify-content: space-between; }
 .step { display: inline-flex; align-items: center; border: 1.5px solid var(--line); border-radius: 999px; }
 .step button { width: 40px; height: 40px; border: 0; background: transparent; color: var(--ink); font: 700 20px/1 var(--f-body); cursor: pointer; border-radius: 50%; }
-.step span { min-width: 26px; text-align: center; font-weight: 800; }
+.step span { min-width: 26px; padding: 0 4px; text-align: center; font-weight: 800; }
+.step small { font-size: 12px; font-weight: 700; color: var(--ink-muted); }
+.step button:disabled { opacity: 0.35; cursor: not-allowed; }
 .line__total { font: 900 20px/1 var(--f-display); font-stretch: 80%; }
 
 .ut { position: relative; display: flex; gap: 12px; align-items: flex-start; margin-top: 18px; padding: 14px; border: 1px solid var(--line); border-radius: 8px; cursor: pointer; }

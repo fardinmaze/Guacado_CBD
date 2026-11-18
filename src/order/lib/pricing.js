@@ -48,7 +48,9 @@ export function defaultSelection(item) {
   const sel = {}
   for (const g of item.groups ?? []) {
     const picks = g.options.filter((o) => o.isDefault).map((o) => ({ name: o.name, level: 'regular' }))
-    if (!picks.length && g.minSelect > 0 && g.maxSelect === 1) picks.push({ name: g.options[0].name, level: 'regular' })
+    // A required single choice starts on its first option, unless the group asks to start empty
+    // (autoPick: false, e.g. the kids meal protein: "Select a protein or veggie to get started").
+    if (!picks.length && g.minSelect > 0 && g.maxSelect === 1 && g.autoPick !== false) picks.push({ name: g.options[0].name, level: 'regular' })
     sel[g.key] = picks
   }
   return sel
@@ -162,7 +164,8 @@ export const isStale = (item, sel) =>
  *  Paid picks get their own row; free picks of a group share one row. */
 export function breakdown(item, sel) {
   const rows = []
-  if (!(item.groups ?? []).length || item.basePriceCents) rows.push({ label: item.name, cents: item.basePriceCents ?? 0 })
+  if (!(item.groups ?? []).length || item.basePriceCents) rows.push({ label: item.perPerson ? `${item.name} (per person)` : item.name, cents: item.basePriceCents ?? 0 })
+  if (!(item.groups ?? []).length && item.kind === 'CATERING' && item.includes) rows.push({ label: item.includes.join(', '), cents: null })
   for (const g of item.groups ?? []) {
     const picks = (sel[g.key] ?? []).filter((p) => {
       const o = optionOf(g, p.name)

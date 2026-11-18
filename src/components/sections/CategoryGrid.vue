@@ -15,7 +15,7 @@ const props = defineProps({
 // Owner food photos (transparent cut-outs, trimmed + resized into public/media/menu).
 // Tiles without `img` are placeholders and show the Guacado badge until a photo arrives.
 const img = (name) => `/media/menu/${name}.webp`
-// Order set by the owner: rows of three, then Salad Bowl, Crunchwrap, Family Meal, and a centred
+// Order set by the owner: rows of three, then Salad Bowl, Crunchwrap, Family Kit, and a centred
 // last row with only Kids Meal and Drinks.
 const cats = [
   { id: 'burrito', name: 'Burrito', sub: 'Wrapped your way', img: img('burrito'), go: 'build:burrito' },
@@ -26,8 +26,8 @@ const cats = [
   { id: 'plates', name: 'Loaded Plates', sub: 'Piled high with your favorites', img: img('loaded-nachos'), go: 'build:nachos' },
   { id: 'salad', name: 'Salad Bowl', sub: 'Fresh greens, bold toppings', img: img('salad-bowl'), go: 'build:salad' },
   { id: 'crunchwrap', name: 'Crunchwrap', sub: 'Crispy, folded and loaded', img: img('crunchwrap'), go: 'build:crunch-wrap' },
-  { id: 'family', name: 'Family Meal', sub: 'Tacos, nachos or fajitas for the whole table', img: '/media/family-kit.webp', photo: true, badge: 'Feeds 4–6', go: 'cat:family-kits' },
-  { id: 'kids', name: 'Kids Meal', sub: 'Little appetites, big flavor', img: img('kids-meal'), go: 'cat:kids' },
+  { id: 'family', name: 'Family Kit', sub: 'Tacos, nachos or fajitas for the whole table', img: '/media/family-kit.webp', photo: true, badge: 'Feeds 4–6', go: 'family' },
+  { id: 'kids', name: 'Kids Meal', sub: 'Little appetites, big flavor', img: img('kids-meal'), go: 'kids' },
   { id: 'drinks', name: 'Drinks', sub: 'Jarritos, Tractor organics and more', img: '/media/build/drink-jarritos.webp', go: 'cat:beverages' },
 ]
 </script>
