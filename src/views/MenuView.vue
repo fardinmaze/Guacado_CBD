@@ -2,6 +2,7 @@
 import { advisory, site } from '@/data/site'
 import CategoryGrid from '@/components/sections/CategoryGrid.vue'
 import FeatureDuo from '@/components/sections/FeatureDuo.vue'
+import SidesTicker from '@/components/sections/SidesTicker.vue'
 import FeaturedStrip from '@/components/sections/FeaturedStrip.vue'
 
 // Menu page = chipotle.com's "#menu" block: a centred 3 x 3 flavor grid, the two story cards,
@@ -18,6 +19,7 @@ import FeaturedStrip from '@/components/sections/FeaturedStrip.vue'
   />
   <FeatureDuo />
   <FeaturedStrip eyebrow="Worth a craving" cta="Order pickup" :cta-to="{ path: '/order' }" />
+  <SidesTicker />
   <p class="advisory"><span class="wrap">{{ advisory }}</span></p>
 </template>
 

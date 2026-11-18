@@ -91,7 +91,8 @@ const cards = [
 }
 .fcard__btn:hover { background: var(--guac); }
 
-/* Highlighted card (Birria): green card, lime title, lime button, raised. */
+/* Highlighted card (Birria): green card, lime title, lime button. Same size and position as the
+   other two; only the colour sets it apart. */
 .fcard.is-hi { background: var(--guac); border-color: var(--guac); color: var(--on-green); box-shadow: 0 22px 44px -24px rgba(0, 109, 68, 0.65); }
 .fcard.is-hi h2 { color: var(--lime); }
 .fcard.is-hi p { color: rgba(255, 255, 255, 0.88); }
@@ -110,7 +111,6 @@ const cards = [
   padding: 7px 11px;
   border-radius: 999px;
 }
-@media (min-width: 760px) { .fcard.is-hi { transform: translateY(-10px); } }
 
 /* Hover / keyboard focus reveals the button (mouse devices). The button keeps its space,
    so revealing it never shifts the layout. */
@@ -118,7 +118,6 @@ const cards = [
   .fcard__btn { opacity: 0; transform: translateY(8px); }
   .fcard:hover .fcard__btn, .fcard:focus-within .fcard__btn { opacity: 1; transform: none; }
   .fcard:hover { transform: translateY(-6px); box-shadow: 0 22px 40px -26px rgba(20, 35, 27, 0.5); }
-  .fcard.is-hi:hover { transform: translateY(-16px); box-shadow: 0 28px 50px -24px rgba(0, 109, 68, 0.75); }
 }
 @media (prefers-reduced-motion: reduce) {
   .fcard, .fcard__btn { transition: none; }

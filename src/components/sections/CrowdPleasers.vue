@@ -1,10 +1,14 @@
 <script setup>
 import menu from '@/data/menu.json'
 import { links, occasions, site } from '@/data/site'
-const tacosImg = '/media/menu/tacos.webp' // owner photo (cut-out)
+// Owner photos: family kit spread (Contents/family kit guac.avif) and the group spread
+// (Contents/group.jpeg, same file as the Sides banner, so it reuses that WebP).
+const kitImg = '/media/family-kit.webp'
+const groupImg = '/media/sides/sides-main-900.webp'
 
 // "Crowd pleasers": two cards, centred title, wide action buttons (Chipotle layout).
-// Colours are Guacado's: off-white kits card, green catering card. No prices here.
+// Each card opens with a full-width photo. Off-white kits card; light green catering card whose
+// photo fades into the card with a light green gradient (0% at the top to 100% at the bottom).
 const kits = menu.familyKits
 </script>
 
@@ -13,7 +17,7 @@ const kits = menu.familyKits
     <h2 id="crowd-title">Good food brings everyone together.</h2>
     <div class="crowd__grid">
       <article id="kits" class="cc cc--kits">
-        <img class="cc__art" :src="tacosImg" alt="" width="538" height="720" loading="lazy" decoding="async" />
+        <span class="cc__media"><img :src="kitImg" alt="A family kit: chips with guac, salsa and queso, tacos, quesadillas and burritos" width="900" height="600" loading="lazy" decoding="async" /></span>
         <h3>Family kits</h3>
         <p>Feeding 4–6? Bring home two proteins, tortillas or chips, and all the fixings.</p>
         <ul class="cc__list">
@@ -23,6 +27,7 @@ const kits = menu.familyKits
       </article>
 
       <article id="catering" class="cc cc--cater">
+        <span class="cc__media cc__media--fade"><img :src="groupImg" alt="A catering spread of bowls, a taco salad, tacos and a burrito" width="900" height="720" loading="lazy" decoding="async" /></span>
         <h3>Catering</h3>
         <p>From office lunches to celebrations, let's put together a spread your guests will love. Tell us your date and headcount.</p>
         <ul class="cc__tags" aria-label="Occasions we cater">
@@ -40,8 +45,11 @@ const kits = menu.familyKits
 .crowd > h2 { font: 900 clamp(34px, 4vw, 48px)/1 var(--f-display); font-stretch: 72%; text-transform: uppercase; text-align: center; }
 .crowd__grid { width: 100%; max-width: 940px; display: grid; gap: 18px; }
 @media (min-width: 800px) { .crowd__grid { grid-template-columns: 1fr 1fr; gap: 24px; } }
-.cc { padding: clamp(22px, 3vw, 34px); display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
-.cc__art { width: auto; height: 210px; max-width: 100%; object-fit: contain; filter: drop-shadow(0 14px 18px rgba(20, 35, 27, 0.18)); }
+.cc { --pad: clamp(22px, 3vw, 34px); padding: var(--pad); overflow: hidden; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; }
+/* Photo across the full card width, flush with the card's top and sides. */
+.cc__media { position: relative; display: block; width: calc(100% + 2 * var(--pad)); margin: calc(-1 * var(--pad)) calc(-1 * var(--pad)) 6px; height: clamp(200px, 24vw, 250px); }
+.cc__media img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.cc__media--fade::after { content: ''; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(217, 235, 180, 0) 0%, rgba(217, 235, 180, 1) 100%); }
 .cc h3 { font: 900 clamp(26px, 3vw, 34px)/1 var(--f-display); font-stretch: 72%; text-transform: uppercase; }
 .cc p { font-size: 14px; line-height: 1.5; max-width: 40ch; }
 .cc__btn { margin-top: auto; width: 100%; max-width: 300px; display: block; padding: 16px 10px; border-radius: 3px; text-decoration: none; font: 900 16px/1 var(--f-display); font-stretch: 80%; text-transform: uppercase; letter-spacing: 0.06em; }
@@ -55,13 +63,13 @@ const kits = menu.familyKits
 .cc--kits .cc__btn { background: var(--guac); color: var(--on-green); }
 .cc--kits .cc__btn:hover { background: var(--guac-dark); }
 
-/* Green card */
-.cc--cater { background: var(--guac); color: var(--on-green); }
-.cc--cater p { opacity: 0.92; }
+/* Light green card (#d9ebb4, the same colour the photo gradient ends on) */
+.cc--cater { background: #d9ebb4; color: var(--ink); }
+.cc--cater p { color: var(--ink-muted); }
 .cc__tags { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; }
-.cc__tags li { font-size: 12.5px; font-weight: 700; padding: 6px 12px; background: rgba(255, 255, 255, 0.14); border-radius: 999px; }
-.cc--cater .cc__btn { background: var(--lime); color: var(--on-lime); }
-.cc--cater .cc__btn:hover { background: #d8e83c; }
+.cc__tags li { font-size: 12.5px; font-weight: 700; padding: 6px 12px; background: rgba(255, 255, 255, 0.6); border-radius: 999px; }
+.cc--cater .cc__btn { background: var(--guac); color: var(--on-green); }
+.cc--cater .cc__btn:hover { background: var(--guac-dark); }
 .cc__btn--alt { background: transparent !important; border: 2px solid currentColor; color: inherit !important; }
-.cc--cater .cc__btn--alt:hover { background: #fff !important; color: var(--guac) !important; }
+.cc--cater .cc__btn--alt:hover { background: var(--ink) !important; color: #fff !important; border-color: var(--ink); }
 </style>
