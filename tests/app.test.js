@@ -50,7 +50,7 @@ describe('App smoke test', () => {
     expect(wrapper.find('.strip__btn').attributes('href')).toBe(ORDER_URL)
     expect(wrapper.find('.act--order').attributes('href')).toBe(ORDER_URL)
     expect(wrapper.find('.bar__cta').attributes('href')).toBe(ORDER_URL)
-    expect(wrapper.find('.ftr__order').attributes('href')).toBe(ORDER_URL)
+    expect(wrapper.findAll('.ftr__big a').some((a) => a.text() === 'Order' && a.attributes('href') === ORDER_URL)).toBe(true)
     expect(wrapper.find('.hero a.btn').attributes('href')).toBe(ORDER_URL)
     // External order links plus links into the in-site ordering flow (/order)
     const inSite = wrapper.findAll('a[href^="/order"]').length
@@ -94,14 +94,14 @@ describe('App smoke test', () => {
     wrapper.unmount()
   })
 
-  it('menu page is the Chipotle-style grid: 9 tiles into the order flow, no prices, food advisory', async () => {
+  it('menu page is the Chipotle-style grid: 9 tiles into the order flow, no prices, no food advisory', async () => {
     const { wrapper } = await mountAt('/menu')
     expect(wrapper.find('h1').text()).toContain('Something delicious')
     const tiles = wrapper.findAll('.cat')
     expect(tiles).toHaveLength(9)
     tiles.forEach((t) => expect(t.attributes('href')).toMatch(/^\/order\?go=/))
     expect(wrapper.text()).not.toMatch(/\$\d/)
-    expect(wrapper.text()).toContain('Consuming raw or undercooked meats')
+    expect(wrapper.text()).not.toContain('Consuming raw or undercooked meats')
     wrapper.unmount()
   })
 

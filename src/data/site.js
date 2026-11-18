@@ -42,6 +42,16 @@ export const links = {
   fullMenu: `${MAIN}/brooklyn-guacado-mexican-grill-food-menu`,
 }
 
+// Footer Rewards invite + app badges (chipotle.com footer slots).
+// PLACEHOLDERS: Guacado has no app or rewards program yet. These '#' links are for the client
+// demo only; put the real URLs here before the site goes live (nothing else needs to change).
+export const promoLinks = {
+  rewardsJoin: '#',
+  rewardsLearn: '#',
+  appStore: '#',
+  googlePlay: '#',
+}
+
 export const footerColumns = [
   {
     title: 'Explore',

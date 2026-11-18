@@ -1,12 +1,17 @@
 <script setup>
 import Brand from '@/components/ui/Brand.vue'
-import { links, nav, site } from '@/data/site'
+import { links, nav, promoLinks, site } from '@/data/site'
 import badge from '@/assets/logos/guacado-badge.webp'
 import AppLink from '@/components/ui/AppLink.vue'
 
-// Big links (left column), small links (middle column), order promo (right): the chipotle.com footer layout.
+// chipotle.com footer layout: big links (left column), small links (middle column), Rewards
+// invitation (right, centred), then a row with "Download our app" (under the big links) and
+// "Connect with us" (under the small links), the copyright line and the grey legal bar.
+// Rewards and app links are placeholders in promoLinks (src/data/site.js).
 const big = ['Menu', 'Order', 'Catering', 'Locations', 'Jobs', 'Franchise Opportunities'].map((l) => nav.find((n) => n.label === l))
+big.push({ label: 'Rewards', href: promoLinks.rewardsLearn })
 const small = [
+  { label: 'Contact us', href: `mailto:${site.email}` },
   { label: 'Full menu on guacadomexican.com', href: links.fullMenu },
   { label: 'Catering packages', href: links.cateringPackages },
   { label: 'All locations', to: '/locations' },
@@ -29,18 +34,28 @@ const small = [
 
       <aside class="ftr__promo">
         <img :src="badge" alt="" width="84" height="86" loading="lazy" />
-        <span class="ftr__kicker">Hungry yet?</span>
-        <b>Your next favorite is waiting.</b>
-        <span class="ftr__lead">Explore the menu and order pickup from your nearest <Brand />. Open every day, 10:30am to 3am.</span>
-        <a :href="site.orderUrl" class="ftr__order">Order pickup</a>
-        <RouterLink to="/locations" class="ftr__learn">Find a location</RouterLink>
+        <span class="ftr__brand"><Brand /> Rewards</span>
+        <span class="ftr__kicker">Join Rewards</span>
+        <b>Get rewarded.</b>
+        <span class="ftr__lead">The faster way to your next free <Brand /> favorite.</span>
+        <a :href="promoLinks.rewardsJoin" class="ftr__join">Join now</a>
+        <a :href="promoLinks.rewardsLearn" class="ftr__learn">Learn more</a>
       </aside>
     </div>
 
     <div class="ftr__mid">
       <div>
-        <h3>Got a question?</h3>
-        <a class="copy" :href="`mailto:${site.email}`">Email us</a>
+        <h3>Download our app</h3>
+        <div class="stores">
+          <a :href="promoLinks.appStore" class="store" aria-label="Download on the App Store">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.4 12.6c0-2.6 2.1-3.8 2.2-3.9-1.2-1.8-3.1-2-3.7-2-1.6-.2-3.1.9-3.9.9-.8 0-2-.9-3.4-.9-1.7 0-3.3 1-4.2 2.6-1.8 3.1-.5 7.7 1.3 10.2.9 1.2 1.9 2.6 3.2 2.6 1.3-.1 1.8-.8 3.3-.8 1.6 0 2 .8 3.4.8 1.4 0 2.3-1.3 3.1-2.5 1-1.4 1.4-2.8 1.4-2.9 0 0-2.7-1-2.7-4.1zM13.9 5c.7-.9 1.2-2 1-3.2-1 0-2.3.7-3 1.5-.7.8-1.2 2-1.1 3.1 1.2.1 2.3-.6 3.1-1.4z" /></svg>
+            <span><small>Download on the</small>App Store</span>
+          </a>
+          <a :href="promoLinks.googlePlay" class="store" aria-label="Get it on Google Play">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#00d7fe" d="M3.6 2.3c-.3.3-.4.7-.4 1.3v16.8c0 .6.2 1 .4 1.3l9.5-9.7z" /><path fill="#ffce00" d="M16.3 15.2 13.1 12l3.2-3.2 3.8 2.2c1.1.6 1.1 1.6 0 2.2z" /><path fill="#ff3a44" d="M16.3 15.2 13.1 12l-9.5 9.7c.4.4.9.4 1.6.1z" /><path fill="#00f076" d="M16.3 8.8 5.2 2.2c-.7-.4-1.2-.3-1.6.1l9.5 9.7z" /></svg>
+            <span><small>Get it on</small>Google Play</span>
+          </a>
+        </div>
       </div>
       <div>
         <h3>Connect with us</h3>
@@ -54,7 +69,6 @@ const small = [
     <div class="ftr__copy">© 2026 <Brand /> Mexican Grill · <a href="#top">Back to top ↑</a></div>
     <div class="ftr__legal">
       <a :href="site.accessibility">Accessibility Statement</a>
-      <span>Consuming raw or undercooked meats, poultry, seafood, shellfish or eggs may increase your risk of foodborne illness.</span>
     </div>
   </footer>
 </template>
@@ -74,8 +88,9 @@ ul { list-style: none; margin: 0; padding: 0; }
 .ftr__kicker { font: 800 15px/1 var(--f-display); font-stretch: 80%; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-text); margin-top: 6px; }
 .ftr__promo b { font: 900 clamp(34px, 3.4vw, 46px)/1 var(--f-display); font-stretch: 72%; text-transform: uppercase; }
 .ftr__lead { font-size: 13px; color: var(--ink-muted); max-width: 30ch; }
-.ftr__order { margin-top: 10px; background: var(--guac); color: #fff; padding: 13px 34px; border-radius: 3px; text-decoration: none; font: 900 17px/1 var(--f-display); font-stretch: 80%; text-transform: uppercase; letter-spacing: 0.05em; }
-.ftr__order:hover { background: var(--guac-dark); }
+.ftr__join { margin-top: 10px; background: var(--guac); color: #fff; padding: 13px 34px; border-radius: 3px; text-decoration: none; font: 900 17px/1 var(--f-display); font-stretch: 80%; text-transform: uppercase; letter-spacing: 0.05em; }
+.ftr__join:hover { background: var(--guac-dark); }
+.ftr__brand { font: 900 14px/1 var(--f-display); font-stretch: 80%; text-transform: uppercase; letter-spacing: 0.06em; color: var(--guac); }
 .ftr__learn { font: 800 12px/1 var(--f-display); font-stretch: 80%; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-text); margin-top: 8px; }
 .ftr__mid { display: grid; gap: 28px; padding: 40px clamp(20px, 4vw, 64px) 0; }
 @media (min-width: 900px) { .ftr__mid { grid-template-columns: 1.1fr 1fr 1fr; } .ftr__mid > :nth-child(2) { grid-column: 2; } }
@@ -83,6 +98,12 @@ h3 { margin: 0 0 12px; font: 900 15px/1 var(--f-display); font-stretch: 80%; tex
 .copy { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; background: transparent; border: 0; padding: 0; color: var(--ink); font: 600 14px var(--f-body); cursor: pointer; overflow-wrap: anywhere; text-align: left; }
 .copy:hover { color: var(--accent-text); }
 .copy svg { width: 15px; height: 15px; flex: none; }
+.stores { display: flex; flex-wrap: wrap; gap: 10px; }
+.store { display: inline-flex; align-items: center; gap: 9px; min-width: 150px; height: 48px; padding: 0 16px 0 12px; background: #000; color: #fff; border-radius: 9px; text-decoration: none; }
+.store:hover { background: var(--ink); }
+.store svg { width: 24px; height: 24px; fill: currentColor; flex: none; }
+.store span { display: grid; font: 600 18px/1.05 var(--f-body); letter-spacing: -0.01em; }
+.store small { font-size: 10.5px; font-weight: 500; letter-spacing: 0.02em; }
 .social { display: flex; gap: 10px; }
 .social a { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: #fff; }
 .social a:hover { background: var(--guac); }
