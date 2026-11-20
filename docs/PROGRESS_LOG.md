@@ -11,7 +11,7 @@ Newest entries last. Update this file at the end of every working session.
 | Component library (ui / layout / builder / sections) | Done |
 | Home page (all 9 sections, BRAND.md §8) | Done |
 | `/menu`, `/catering`, `/locations` routes | Done |
-| Unit + smoke tests (25) | Passing |
+| Unit + smoke tests (93) | Passing |
 | Production build | Passing |
 | **Visual / browser QA of GSAP motion** | **Not done** (see Open items) |
 | Vector logo, real food photos | Blocked on owner |
@@ -149,3 +149,19 @@ Owner asked to move from the brand-focused dark site to a layout built for conve
 - `LoopVideo.vue` attaches the source only near the viewport, pauses off screen, shows the poster for reduced-motion guests.
 - Checked in Chrome (puppeteer): each video loads and plays, preview times match each step, no console errors, no horizontal overflow at 390px.
 - `public/media/bowl-build.mp4` (13.7 MB) is now only the source file; move it out of `public/` before deploying.
+
+## 2026-11-20 — Session 10: menu grid reorder, wax paper, jobs card
+
+Owner's menu-card edits (from the edited-files folder, `Menu Base`).
+
+- **Taco Salad Bowl card added** to the "Find your flavor" grid (`CategoryGrid.vue`, shown on Home and `/menu`). Image: the owner's `Taco salad bowl.png` (4636x6000, 5 MB), trimmed and resized to `public/media/menu/taco-salad-bowl.webp` (547x540, 63 KB). It opens the order flow with the Taco Salad base preselected (`go: build:taco-salad`). The subtitle ("Crispy shell, fresh toppings, your protein") is placeholder copy: confirm with the owner.
+- **New tile order (14 tiles, rows of three):** Burrito, Burrito Bowl, Birria Tacos / Taco Salad Bowl, Quesadilla, Loaded Plates / Salad Bowl, Crunchwrap, Family Kit / Kids Meal, Sides, Tostada Special / Desserts + Drinks centred on the last row. (Taco Salad took Quesadilla's slot, Quesadilla took Tostada's, Tostada took Desserts', Desserts moved down beside Drinks.)
+- **Wax-paper background at 12%:** the overlay over `wax-background.jpg` is now 88% opaque (was 76%; Values was 90%) on the Featured band, the Catering "Popular builds" band and the Values page.
+- **"See open jobs" card** uses the light green `#d9ebb4` (same as the catering card); the franchise card is unchanged.
+- Tests updated (14 tiles, new order): 93 passing. Checked in Chrome at 1440px: tile positions, centred last row and card colour as intended. Not checked on a phone width.
+
+### Open items
+1. **Docs are behind the code.** This log has no entry for the `/order` pickup flow (`src/order/`), `/values`, the location picker or the catering form, and `ARCHITECTURE.md` still describes the old brand build. README test count (31) is out of date.
+2. `public/Mobile View/` holds planning docs for a Next.js/Stripe build that does not match this Vue app, and it deploys as public files. Decide whether to keep it, move it out of `public/`, or delete it.
+3. `public/` is about 45 MB; move unused media (`bowl-build.mp4` 14 MB, `.jfif` files, old clips) out before deploying.
+4. Phone-width QA of the new grid row and the green jobs card.
