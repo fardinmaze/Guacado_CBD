@@ -40,6 +40,8 @@ import BaseButton from '@/components/ui/BaseButton.vue'
   border-radius: var(--r-lg);
   border: 1.5px solid var(--line);
 }
+/* Light green card, same #d9ebb4 as the catering card on the home page. */
+#jobs { background: #d9ebb4; border-color: transparent; }
 .card > div { display: grid; gap: 6px; max-width: 40ch; }
 h2 { font-size: clamp(28px, 3vw, 38px); }
 p { color: var(--ink-muted); font-size: 15px; }

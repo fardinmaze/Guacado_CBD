@@ -130,8 +130,8 @@ onBeforeUnmount(() => window.removeEventListener('resize', measure))
 <style scoped>
 .feat {
   background-color: #f6f1e6;
-  /* Owner's Guacado wax-paper pattern (public/media/wax-background.jpg), shown faintly. */
-  background-image: linear-gradient(rgba(250, 247, 238, 0.76), rgba(250, 247, 238, 0.76)), url('/media/wax-background.jpg');
+  /* Owner's Guacado wax-paper pattern (public/media/wax-background.jpg), shown at 12% opacity. */
+  background-image: linear-gradient(rgba(250, 247, 238, 0.88), rgba(250, 247, 238, 0.88)), url('/media/wax-background.jpg');
   background-size: auto, auto 170px;
   background-repeat: no-repeat, repeat;
   background-position: center, top left;

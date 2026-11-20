@@ -16,19 +16,20 @@ const props = defineProps({
 // Tiles without `img` are placeholders and show the Guacado badge until a photo arrives.
 const img = (name) => `/media/menu/${name}.webp`
 // Order set by the owner: rows of three (… Salad Bowl, Crunchwrap, Family Kit / Kids Meal, Sides,
-// Desserts), then Drinks on its own, centred, on the last row.
+// Tostada Special), then Desserts and Drinks together, centred, on the last row.
 const cats = [
   { id: 'burrito', name: 'Burrito', sub: 'Wrapped your way', img: img('burrito'), go: 'build:burrito' },
   { id: 'bowl', name: 'Burrito Bowl', sub: 'Your favorite flavors, all in one bowl', img: img('burrito-bowl'), badge: 'Fan favorite', go: 'build:bowl' },
   { id: 'birria', name: 'Birria Tacos', sub: 'Chicken or beef', img: img('birria-tacos'), badge: 'Signature', go: 'item:birria-tacos' },
+  { id: 'taco-salad', name: 'Taco Salad Bowl', sub: 'Crispy shell, fresh toppings, your protein', img: img('taco-salad-bowl'), go: 'build:taco-salad' },
   { id: 'quesadilla', name: 'Quesadilla', sub: 'Golden, grilled and melty', img: img('quesadilla'), go: 'build:quesadilla' },
-  { id: 'tostada', name: 'Tostada Special', sub: 'Crunch into something good', img: img('tostada-special'), go: 'item:tostada' },
   { id: 'plates', name: 'Loaded Plates', sub: 'Piled high with your favorites', img: img('loaded-nachos'), go: 'build:nachos' },
   { id: 'salad', name: 'Salad Bowl', sub: 'Fresh greens, bold toppings', img: img('salad-bowl'), go: 'build:salad' },
   { id: 'crunchwrap', name: 'Crunchwrap', sub: 'Crispy, folded and loaded', img: img('crunchwrap'), go: 'build:crunch-wrap' },
   { id: 'family', name: 'Family Kit', sub: 'Tacos, nachos or fajitas for the whole table', img: '/media/family-kit.webp', photo: true, badge: 'Feeds 4–6', go: 'family' },
   { id: 'kids', name: 'Kids Meal', sub: 'Little appetites, big flavor', img: img('kids-meal'), go: 'kids' },
   { id: 'sides', name: 'Sides', sub: 'Fries, chips and dips to share', img: img('loaded-fries'), go: 'cat:sides' },
+  { id: 'tostada', name: 'Tostada Special', sub: 'Crunch into something good', img: img('tostada-special'), go: 'item:tostada' },
   { id: 'desserts', name: 'Desserts', sub: 'Churros, tres leches and plantains', img: '/media/build/dessert-churros.webp', go: 'cat:desserts' },
   { id: 'drinks', name: 'Drinks', sub: 'Jarritos, Tractor organics and more', img: '/media/build/drink-jarritos.webp', go: 'cat:beverages' },
 ]
@@ -67,10 +68,11 @@ const cats = [
 .cats__intro { max-width: 58ch; color: var(--ink-muted); font-size: 15px; line-height: 1.5; }
 .cats__title { margin: 0; text-align: center; font: 900 clamp(34px, 4vw, 48px)/1 var(--f-display); font-stretch: 72%; text-transform: uppercase; }
 .cats { padding: clamp(28px, 4vw, 56px) 16px clamp(24px, 4vw, 48px); }
-/* Three per row on a 6-column track (each tile spans 2), so the lone last tile can be centred. */
+/* Three per row on a 6-column track (each tile spans 2), so the last row's two tiles can be centred. */
 .cats__grid { list-style: none; margin: 0 auto; padding: 0; max-width: 1100px; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 28px 8px; }
 .cats__grid > li { grid-column: span 2; }
-.cats__grid > li:nth-child(13) { grid-column: 3 / span 2; }
+.cats__grid > li:nth-child(13) { grid-column: 2 / span 2; }
+.cats__grid > li:nth-child(14) { grid-column: 4 / span 2; }
 @media (min-width: 720px) { .cats__grid { gap: 64px 56px; } }
 @media (max-width: 519px) {
   .cat { padding: 8px 2px 10px; }

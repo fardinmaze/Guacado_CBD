@@ -35,8 +35,8 @@ describe('App smoke test', () => {
     expect(ids).toEqual(['menu', 'join'])
     expect(wrapper.find('h1').text()).toContain('Big Mexican Flavors')
     expect(wrapper.findAll('.cat .cat__name').map((n) => n.text())).toEqual([
-      'Burrito', 'Burrito Bowl', 'Birria Tacos', 'Quesadilla', 'Tostada Special', 'Loaded Plates',
-      'Salad Bowl', 'Crunchwrap', 'Family Kit', 'Kids Meal', 'Sides', 'Desserts', 'Drinks',
+      'Burrito', 'Burrito Bowl', 'Birria Tacos', 'Taco Salad Bowl', 'Quesadilla', 'Loaded Plates',
+      'Salad Bowl', 'Crunchwrap', 'Family Kit', 'Kids Meal', 'Sides', 'Tostada Special', 'Desserts', 'Drinks',
     ])
     // Featured: Chipotle-style carousel of tall cards with cal | price and an order button
     expect(wrapper.find('#feat-title').text()).toBe('Featured')
@@ -168,11 +168,11 @@ describe('App smoke test', () => {
     wrapper.unmount()
   })
 
-  it('menu page is the Chipotle-style grid: 13 tiles into the order flow, no tile prices, no food advisory', async () => {
+  it('menu page is the Chipotle-style grid: 14 tiles into the order flow, no tile prices, no food advisory', async () => {
     const { wrapper } = await mountAt('/menu')
     expect(wrapper.find('h1').text()).toContain('Something delicious')
     const tiles = wrapper.findAll('.cat')
-    expect(tiles).toHaveLength(13)
+    expect(tiles).toHaveLength(14)
     tiles.forEach((t) => expect(t.attributes('href')).toMatch(/^\/order\?go=/))
     expect(wrapper.find('.cats').text()).not.toMatch(/\$\d/)
     expect(wrapper.find('.sides').exists()).toBe(true)

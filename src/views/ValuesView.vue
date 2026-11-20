@@ -104,7 +104,7 @@ const FACTS = [
   --paper: #f3ede3;
   --brown: #3b2a1e;
   background-color: var(--paper);
-  background-image: linear-gradient(rgba(243, 237, 227, 0.9), rgba(243, 237, 227, 0.9)), url('/media/wax-background.jpg');
+  background-image: linear-gradient(rgba(243, 237, 227, 0.88), rgba(243, 237, 227, 0.88)), url('/media/wax-background.jpg');
   background-size: auto, auto 200px;
   color: var(--brown);
   overflow: hidden;

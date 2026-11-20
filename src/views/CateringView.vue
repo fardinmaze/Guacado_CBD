@@ -184,7 +184,7 @@ h1, h2 { font-stretch: 72%; text-transform: uppercase; }
 /* Same wax-paper pattern as the landing page's Featured band (public/media/wax-background.jpg). */
 .pop {
   background-color: #f6f1e6;
-  background-image: linear-gradient(rgba(250, 247, 238, 0.76), rgba(250, 247, 238, 0.76)), url('/media/wax-background.jpg');
+  background-image: linear-gradient(rgba(250, 247, 238, 0.88), rgba(250, 247, 238, 0.88)), url('/media/wax-background.jpg');
   background-size: auto, auto 170px;
   background-repeat: no-repeat, repeat;
   background-position: center, top left;
