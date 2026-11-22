@@ -75,6 +75,9 @@ const cats = [
 .cats__grid > li:nth-child(14) { grid-column: 4 / span 2; }
 @media (min-width: 720px) { .cats__grid { gap: 64px 56px; } }
 @media (max-width: 519px) {
+  /* phones: two per row (three left ~108px tiles, too narrow for names like "Crunchwrap") */
+  .cats__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 10px; }
+  .cats__grid > li, .cats__grid > li:nth-child(13), .cats__grid > li:nth-child(14) { grid-column: auto; }
   .cat { padding: 8px 2px 10px; }
   .cat__img { width: 100%; }
   .cat__name { font-size: 18px; }

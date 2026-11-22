@@ -339,7 +339,7 @@ const HEAD_CLOSE = [
 .v-copy p { font-size: clamp(17px, 1.6vw, 21px); line-height: 1.45; }
 .v-copy b { font-weight: 800; }
 
-.v-quote { position: relative; max-width: 1300px; margin: 0 auto; padding: clamp(20px, 4vw, 40px) 16px clamp(48px, 7vw, 96px); display: grid; justify-items: center; }
+.v-quote { position: relative; max-width: 1300px; margin: 0 auto; padding: clamp(20px, 4vw, 40px) 16px clamp(64px, 7vw, 96px); display: grid; justify-items: center; }
 /* the burrito sits on top of the lettering, which tucks up under it: reads as the burrito lying on the words */
 .v-quote img { position: relative; z-index: 2; width: min(96%, 900px); height: auto; justify-self: end; transform: rotate(-8deg); filter: drop-shadow(0 30px 26px rgba(59, 42, 30, 0.38)) drop-shadow(0 6px 6px rgba(59, 42, 30, 0.25)); }
 .lettered--quote { position: relative; z-index: 1; margin-top: clamp(-130px, -9vw, -36px); transform: rotate(-4deg); }
@@ -449,6 +449,8 @@ const HEAD_CLOSE = [
 /* --bowl-h follows the photo's 1600 x 647 shape. The pin is exactly the bowl's height, so when
    the track ends the bowl stops just above "Made to order." */
 .v-stick { --p: 0.5; --bowl-w: min(48vw, 760px); --bowl-h: calc(var(--bowl-w) * 0.405); position: relative; padding-bottom: clamp(48px, 6vw, 96px); }
+/* phones: the team note card sits at the end of that section, so leave a gap before the bowl */
+.v-people + .v-stick { padding-top: 40px; }
 .v-stick__track { position: relative; }
 .v-stick__pin { position: sticky; top: calc(var(--header-h) + 3svh); z-index: 2; height: var(--bowl-h); display: grid; place-items: center; pointer-events: none; }
 .v-stick__pin img {
@@ -483,9 +485,12 @@ const HEAD_CLOSE = [
 @keyframes v-wobble { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
 @keyframes v-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
 @media (max-width: 760px) {
-  .v-stick { --bowl-w: 84vw; }
-  /* notes cross the bowl here, so leave the bowl its own space at the end to land in */
-  .v-stick__flow { row-gap: 7svh; padding-bottom: calc(var(--bowl-h) + 7svh); }
+  /* phones: a smaller bowl pinned just under the header stays on top; the notes scroll up
+     underneath it, so they're read mid-screen and the bowl is never hidden */
+  .v-stick { --bowl-w: 70vw; }
+  .v-stick__pin { top: calc(var(--header-h) + 8px); }
+  .v-note-wrap { z-index: 1; }
+  .v-stick__flow { row-gap: 7svh; padding-bottom: 14svh; }
   .v-word { white-space: normal; text-align: center; justify-self: center; }
   /* on phones the notes cross the bowl, so they get a paper card */
   .v-note-wrap { width: 100%; }

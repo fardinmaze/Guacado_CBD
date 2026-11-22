@@ -222,7 +222,7 @@ h1, h2 { font-stretch: 72%; text-transform: uppercase; }
 .cd__price { font-weight: 800; font-size: 16px; }
 /* Orbit: items sit on a dashed circle (radius 38% of the box) and the whole track turns once a
    minute; each image turns the other way at the same speed, so it stays upright. */
-.orbit { --r: 38%; --size: 18%; --ry: calc(-38 / 18 * 100%); /* radius in item widths */ --spin: 60s; position: relative; justify-self: center; width: min(100%, 400px); aspect-ratio: 1; }
+.orbit { --r: 38%; --size: 18%; --ry: calc(-38 / 18 * 100%); /* radius in item widths */ --spin: 60s; position: relative; justify-self: center; width: min(100%, 400px); aspect-ratio: 1; overflow: clip; } /* the spinning square's corners stuck out; the photos stay inside the circle */
 .orbit__ring { position: absolute; inset: calc(50% - var(--r)); border: 2px dashed rgba(0, 109, 68, 0.35); border-radius: 50%; }
 .orbit__logo { position: absolute; top: 50%; left: 50%; width: 34%; height: auto; transform: translate(-50%, -50%); filter: drop-shadow(0 10px 18px rgba(20, 35, 27, 0.25)); }
 .orbit__track { position: absolute; inset: 0; animation: orbit-spin var(--spin) linear infinite; }

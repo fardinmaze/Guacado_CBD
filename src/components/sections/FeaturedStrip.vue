@@ -137,6 +137,10 @@ onBeforeUnmount(() => window.removeEventListener('resize', measure))
   background-position: center, top left;
   padding: clamp(40px, 5vw, 64px) 16px clamp(36px, 5vw, 56px);
   display: grid;
+  /* minmax(0, 1fr): without it the column grows to fit every card in the rail and the page
+     scrolls sideways on phones */
+  grid-template-columns: minmax(0, 1fr);
+  overflow-x: clip; /* the rail's scrolled-away cards must never widen the page */
   justify-items: center;
   gap: 10px;
 }
