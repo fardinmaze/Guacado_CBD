@@ -155,7 +155,7 @@ const HEAD_CLOSE = [
 
     <!-- 2. Fresh -->
     <section class="v-row v-row--food" aria-labelledby="v-fresh">
-      <img :src="IMG.bowl" alt="A Fresh Guacado salad bowl with grilled steak, romaine, pico de gallo and queso" width="1600" height="1372" loading="lazy" />
+      <img :src="IMG.bowl" alt="A Fresh Guacado burrito bowl with grilled chicken, guacamole, corn, pico de gallo, red onion and cilantro" width="1367" height="1600" loading="lazy" />
       <div class="v-copy">
         <h2 id="v-fresh" class="v-h">We do it by keeping it <span class="brand__fresh">fresh</span></h2>
         <p>
@@ -325,10 +325,12 @@ const HEAD_CLOSE = [
 @media (min-width: 860px) { .v-row { grid-template-columns: 1.1fr 1fr; gap: 56px; } .v-row--flip > :first-child { order: 2; } }
 .v-row > img { width: 100%; height: auto; filter: drop-shadow(0 24px 30px rgba(59, 42, 30, 0.25)); }
 /* the bowl row runs wider, with the bowl taking most of it */
-.v-row--food { max-width: 1400px; }
+.v-row--food { max-width: 1300px; }
+.v-row--food > img { max-height: 70svh; width: auto; max-width: 100%; justify-self: center; }
 @media (min-width: 860px) {
   .v-row--food { grid-template-columns: 1.6fr 1fr; gap: 40px; }
-  .v-row--food > img { width: 112%; margin-left: -8%; }
+  /* tall top-down bowl: capped at most of the screen height, centred in its column */
+  .v-row--food > img { width: auto; max-width: 100%; max-height: 74svh; justify-self: center; transform: rotate(-6deg); }
 }
 .v-row > img.v-photo { filter: none; border-radius: 4px; box-shadow: 0 24px 40px -24px rgba(59, 42, 30, 0.5); }
 .v-copy { display: grid; gap: 16px; justify-items: start; }
