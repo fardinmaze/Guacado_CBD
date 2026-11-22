@@ -29,8 +29,9 @@ function quick(item) {
   order.quickAdd(item.slug)
   toast.show(`${item.name} added`)
 }
-// Drinks have their own photo page; the Beverages chip and "See all drinks" go there.
-const OWN_PAGE = { beverages: 'drinks' }
+// Drinks, sides, dips and desserts have their own photo pages; their chips and "See all" links go there.
+const OWN_PAGE = { beverages: 'drinks', sides: 'sides', dips: 'sides', desserts: 'desserts' }
+const SEE_ALL = { drinks: 'See all drinks', sides: 'See sides & dips', desserts: 'See all desserts' }
 function jump(slug) {
   if (OWN_PAGE[slug]) return router.push(base(`/${OWN_PAGE[slug]}`))
   document.getElementById(`cat-${slug}`)?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' })
@@ -60,7 +61,7 @@ function jump(slug) {
     <section v-for="c in categories" :id="`cat-${c.slug}`" :key="c.slug" class="sec" :aria-labelledby="`h-${c.slug}`">
       <div class="sec__top">
         <h2 :id="`h-${c.slug}`" class="sec__h">{{ c.name }}</h2>
-        <RouterLink v-if="OWN_PAGE[c.slug]" :to="base(`/${OWN_PAGE[c.slug]}`)" class="sec__all">See all drinks <span aria-hidden="true">→</span></RouterLink>
+        <RouterLink v-if="OWN_PAGE[c.slug]" :to="base(`/${OWN_PAGE[c.slug]}`)" class="sec__all">{{ SEE_ALL[OWN_PAGE[c.slug]] }} <span aria-hidden="true">→</span></RouterLink>
       </div>
       <ul class="items">
         <li v-for="i in c.items" :key="i.slug" class="item">

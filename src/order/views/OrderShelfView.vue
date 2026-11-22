@@ -1,5 +1,5 @@
 <script setup>
-import { reactive } from 'vue'
+import { computed, reactive, watch } from 'vue'
 import { categories, findItem } from '@/order/lib/catalog'
 import { cents } from '@/order/lib/pricing'
 import { useOrder } from '@/order/useOrder'
@@ -9,19 +9,47 @@ import badge from '@/assets/logos/guacado-badge.webp'
 import StickyBar from '@/order/components/StickyBar.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 
-// /order/:store/drinks — every drink on one page, dressed like the Kids / Family Kit pickers:
-// photo banner, then a photo card per drink with its price and ADD TO BAG. Drinks with a choice
-// (Jarritos flavor, Coke or Sprite, shake flavor) show it as chips on the card; one must be picked
-// before adding. Guests stay on the page so they can add several; VIEW BAG sits at the bottom.
-defineProps({ store: { type: String, required: true } })
+// /order/:store/drinks | sides | desserts — a whole menu shelf on one page, dressed like the
+// Kids / Family Kit pickers: photo banner, then a photo card per item with its price and ADD TO BAG.
+// Items with a choice (Jarritos flavor, Coke or Sprite, dip size) show it as chips on the card;
+// a default choice (4 oz) starts picked, otherwise one must be picked before adding. Sized dips
+// swap the card photo to the picked size. Guests stay on the page so they can add several.
+const props = defineProps({
+  store: { type: String, required: true },
+  kind: { type: String, default: 'drinks' },
+})
 const order = useOrder()
 const toast = useToast()
 const { show: showBag } = useBagSheet()
 
-const drinks = categories.find((c) => c.slug === 'beverages').items.map((i) => findItem(i.slug))
-const HERO = ['bottle-drink', 'mexican-soda', 'organic-tractor-strawberry-dragon-fruit', 'red-bull']
-  .map((s) => drinks.find((d) => d.slug === s)?.image)
-  .filter(Boolean)
+const itemsOf = (slug) => categories.find((c) => c.slug === slug).items.map((i) => findItem(i.slug))
+const PAGES = {
+  drinks: {
+    title: 'Drinks',
+    text: 'Jarritos and glass-bottle Coke or Sprite, can soda, organic Tractor drinks, Red Bull, organic milk, shakes and water.',
+    sections: [{ title: '', items: itemsOf('beverages') }],
+    hero: ['bottle-drink', 'mexican-soda', 'organic-tractor-strawberry-dragon-fruit', 'red-bull'],
+    kidsMilk: true,
+  },
+  sides: {
+    title: 'Sides & dips',
+    text: 'Chips, fries, rice and beans, cups of chicken or beef, and guac, queso or salsa to dip in.',
+    sections: [
+      { title: 'Sides', items: itemsOf('sides') },
+      { title: 'Dips & chips', items: itemsOf('dips') },
+    ],
+    hero: ['chips-guac', 'nacho-cheese-fries', 'queso'],
+  },
+  desserts: {
+    title: 'Desserts',
+    text: 'Cinnamon-sugar churros, Oreo churros, tres leches cake and sweet fried plantains.',
+    sections: [{ title: '', items: itemsOf('desserts') }],
+    hero: ['churros', 'tres-leches-cake'],
+  },
+}
+const page = computed(() => PAGES[props.kind] ?? PAGES.drinks)
+const all = computed(() => page.value.sections.flatMap((x) => x.items))
+const HERO = computed(() => page.value.hero.map((s) => all.value.find((d) => d.slug === s)?.image).filter(Boolean))
 
 // Kids milk comes only with a kids meal, so its card points there instead of adding it alone.
 const KIDS_MILK = { name: 'Organic Milk Kids', image: '/media/build/drink-kids-milk.webp' }
@@ -29,10 +57,26 @@ const KIDS_MILK = { name: 'Organic Milk Kids', image: '/media/build/drink-kids-m
 const choiceGroup = (d) => d.groups.find((g) => g.minSelect > 0) ?? null
 const picked = reactive({}) // slug -> option name
 const missing = reactive({}) // slug -> true when ADD was pressed without a choice
-const blurb = (d) => d.description ?? (choiceGroup(d) ? `${choiceGroup(d).options.length} flavors to choose from.` : '')
+watch(all, (items) => items.forEach((d) => {
+  const def = choiceGroup(d)?.options.find((o) => o.isDefault)
+  if (def && !picked[d.slug]) picked[d.slug] = def.name
+}), { immediate: true })
+const pickedOption = (d) => choiceGroup(d)?.options.find((o) => o.name === picked[d.slug]) ?? null
+const imageOf = (d) => pickedOption(d)?.image ?? d.image
+// Sized dips are priced by the size: show the picked size's price (or "From" the cheapest).
+const priceOf = (d) => {
+  const g = choiceGroup(d)
+  if (!g?.setsPrice) return cents(d.basePriceCents)
+  const o = pickedOption(d)
+  return o ? cents(o.priceCents) : `From ${cents(Math.min(...g.options.map((x) => x.priceCents)))}`
+}
+const chipPrice = (g, o) => (g.setsPrice ? '' : o.priceCents ? ` +${cents(o.priceCents)}` : '')
+const blurb = (d) => d.description ?? (choiceGroup(d) && !choiceGroup(d).setsPrice ? `${choiceGroup(d).options.length} flavors to choose from.` : '')
 
 function choose(d, name) {
-  picked[d.slug] = picked[d.slug] === name ? undefined : name
+  const g = choiceGroup(d)
+  // a choice with a default (size) can't be cleared, only switched
+  picked[d.slug] = picked[d.slug] === name && !g.options.some((o) => o.isDefault) ? undefined : name
   missing[d.slug] = false
 }
 function add(d) {
@@ -52,26 +96,28 @@ function add(d) {
     <RouterLink :to="`/order/${store}`" class="back"><span aria-hidden="true">‹</span> Return to menu</RouterLink>
 
     <header class="hero">
-      <div class="hero__img" aria-hidden="true">
+      <div class="hero__img" :class="`hero__img--${kind}`" aria-hidden="true">
         <img v-for="(src, i) in HERO" :key="src" :src="src" alt="" width="360" height="360" :style="{ '--i': i }" />
       </div>
       <div class="hero__copy">
         <p class="hero__pre">Pick your</p>
-        <h1 class="hero__t">Drinks</h1>
-        <p class="hero__d">Jarritos and glass-bottle Coke or Sprite, can soda, organic Tractor drinks, Red Bull, organic milk, shakes and water.</p>
+        <h1 class="hero__t">{{ page.title }}</h1>
+        <p class="hero__d">{{ page.text }}</p>
       </div>
     </header>
 
+    <section v-for="sec in page.sections" :key="sec.title" class="shelf" :aria-label="sec.title || page.title">
+    <h2 v-if="sec.title" class="shelf__t">{{ sec.title }}</h2>
     <ul class="grid">
-      <li v-for="d in drinks" :key="d.slug">
+      <li v-for="d in sec.items" :key="d.slug">
         <article class="dc" :class="{ 'is-missing': missing[d.slug] }">
           <span class="dc__img" :class="{ 'is-empty': !d.image }">
-            <img :src="d.image || badge" alt="" width="360" height="360" loading="lazy" decoding="async" />
+            <img :src="imageOf(d) || badge" alt="" width="360" height="360" loading="lazy" decoding="async" />
           </span>
           <div class="dc__body">
             <span class="dc__tag-slot"><span v-if="d.tag" class="dc__tag">{{ d.tag }}</span></span>
-            <h2 class="dc__name">{{ d.name }}</h2>
-            <p class="dc__price">{{ cents(d.basePriceCents) }}</p>
+            <h3 class="dc__name">{{ d.name }}</h3>
+            <p class="dc__price">{{ priceOf(d) }}</p>
             <p v-if="blurb(d)" class="dc__text">{{ blurb(d) }}</p>
 
             <fieldset v-if="choiceGroup(d)" class="dc__pick">
@@ -83,7 +129,7 @@ function add(d) {
                 class="chip"
                 :aria-pressed="picked[d.slug] === o.name"
                 @click="choose(d, o.name)"
-              >{{ o.name }}<template v-if="o.priceCents"> +{{ cents(o.priceCents) }}</template></button>
+              >{{ o.name }}{{ chipPrice(choiceGroup(d), o) }}</button>
             </fieldset>
             <p v-if="missing[d.slug]" class="dc__err" role="alert">Choose one first.</p>
 
@@ -91,12 +137,12 @@ function add(d) {
           </div>
         </article>
       </li>
-      <li>
+      <li v-if="page.kidsMilk && sec === page.sections.at(-1)">
         <article class="dc">
           <span class="dc__img"><img :src="KIDS_MILK.image" alt="" width="360" height="360" loading="lazy" decoding="async" /></span>
           <div class="dc__body">
             <span class="dc__tag-slot"><span class="dc__tag dc__tag--kids">Kids meal only</span></span>
-            <h2 class="dc__name">{{ KIDS_MILK.name }}</h2>
+            <h3 class="dc__name">{{ KIDS_MILK.name }}</h3>
             <p class="dc__price">Included</p>
             <p class="dc__text">Comes with every kids meal, or swap it for water.</p>
             <RouterLink :to="`/order/${store}/kids`" class="dc__add dc__add--alt">See kids meals</RouterLink>
@@ -104,6 +150,7 @@ function add(d) {
         </article>
       </li>
     </ul>
+    </section>
 
     <StickyBar v-if="order.count.value" :caption="`${order.count.value} in your bag`">
       <BaseButton variant="lime" @click="showBag">VIEW BAG</BaseButton>
@@ -123,11 +170,16 @@ function add(d) {
 .hero__img { display: flex; align-items: center; justify-content: center; aspect-ratio: 3 / 2; padding: 4% 0; background: var(--surface); overflow: hidden; }
 /* the photos are square with side padding, so they overlap a little to sit as one group */
 .hero__img img { flex: none; height: 76%; width: auto; aspect-ratio: 1; margin: 0 -12%; object-fit: contain; filter: drop-shadow(0 14px 18px rgba(20, 35, 27, 0.22)); }
-.hero__img img:nth-child(n + 3) { height: 62%; margin: 0 -13%; }
+.hero__img--drinks img:nth-child(n + 3) { height: 62%; margin: 0 -13%; }
+/* food cut-outs are wide, not tall: a smaller, tighter overlapping row */
+.hero__img--sides img { height: 64%; margin: 0 -6%; }
+.hero__img--desserts img { height: 86%; margin: 0 -7%; }
+.hero__img--sides img:nth-child(2), .hero__img--desserts img:nth-child(2) { position: relative; z-index: 1; transform: translateY(14%); }
 .hero__pre { font: 500 18px/1 var(--f-display); font-stretch: 85%; text-transform: uppercase; letter-spacing: 0.02em; color: var(--ink-muted); }
 .hero__t { margin: 6px 0 14px; font: 900 clamp(40px, 6.5vw, 60px)/0.92 var(--f-display); font-stretch: 72%; text-transform: uppercase; }
 .hero__d { max-width: 46ch; font-size: 15px; line-height: 1.55; }
 
+.shelf__t { margin: 40px 0 -12px; font: 900 clamp(26px, 4vw, 32px)/1 var(--f-display); font-stretch: 74%; text-transform: uppercase; }
 .grid { list-style: none; margin: 32px 0 0; padding: 0; display: grid; gap: 24px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (min-width: 760px) { .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 @media (max-width: 519px) { .grid { gap: 12px; } }

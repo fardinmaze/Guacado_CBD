@@ -219,6 +219,7 @@ async function confirmName(name) {
             :key="o.name"
             :name="o.name"
             :image="o.image"
+            :tag="o.tag"
             :picked="isPicked(g.key, o.name)"
             :disabled="atCap(g)"
             @pick="order.pick(g.key, o.name)"

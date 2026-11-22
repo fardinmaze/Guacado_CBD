@@ -21,6 +21,14 @@
         "price": 13.95
       },
       {
+        "name": "Jerk Chicken",
+        "price": 13.95
+      },
+      {
+        "name": "Shredded Chicken",
+        "price": 12.95
+      },
+      {
         "name": "Grilled Steak",
         "price": 13.95
       },
@@ -290,6 +298,10 @@
     {
       "name": "Churros",
       "price": 3.95
+    },
+    {
+      "name": "Oreo Churros",
+      "price": 4.45
     },
     {
       "name": "Tres Leches Cake",

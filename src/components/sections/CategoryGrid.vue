@@ -28,9 +28,9 @@ const cats = [
   { id: 'crunchwrap', name: 'Crunchwrap', sub: 'Crispy, folded and loaded', img: img('crunchwrap'), go: 'build:crunch-wrap' },
   { id: 'family', name: 'Family Kit', sub: 'Tacos, nachos or fajitas for the whole table', img: '/media/family-kit.webp', photo: true, badge: 'Feeds 4–6', go: 'family' },
   { id: 'kids', name: 'Kids Meal', sub: 'Little appetites, big flavor', img: img('kids-meal'), go: 'kids' },
-  { id: 'sides', name: 'Sides', sub: 'Fries, chips and dips to share', img: img('loaded-fries'), go: 'cat:sides' },
+  { id: 'sides', name: 'Sides', sub: 'Fries, chips and dips to share', img: img('loaded-fries'), go: 'sides' },
   { id: 'tostada', name: 'Tostada Special', sub: 'Crunch into something good', img: img('tostada-special'), go: 'item:tostada' },
-  { id: 'desserts', name: 'Desserts', sub: 'Churros, tres leches and plantains', img: '/media/build/dessert-churros.webp', go: 'cat:desserts' },
+  { id: 'desserts', name: 'Desserts', sub: 'Churros, Oreo churros, tres leches and plantains', img: '/media/desserts/churros.webp', go: 'desserts' },
   { id: 'drinks', name: 'Drinks', sub: 'Jarritos, Mexican Coke, Tractor organics and more', img: '/media/build/drink-jarritos.webp', go: 'drinks' },
 ]
 </script>

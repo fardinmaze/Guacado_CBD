@@ -97,6 +97,7 @@ async function finish(name) {
           :key="o.name"
           :name="o.label ?? o.name"
           :image="o.image ?? ''"
+          :tag="o.tag"
           :price="priceOf(g, o)"
           :picked="isPicked(g.key, o.name)"
           :disabled="atCap(g)"

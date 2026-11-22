@@ -716,6 +716,26 @@ describe('ordering flow in the app', () => {
     wrapper.unmount()
   })
 
+  it('sides & desserts pages: dips start at 4 oz, the size sets price and photo; Oreo churros add straight away', async () => {
+    const { wrapper } = await mountAt('/order/brooklyn-5119-a-avenue-u/sides')
+    expect(wrapper.find('.hero__t').text()).toBe('Sides & dips')
+    expect(wrapper.findAll('.shelf__t').map((h) => h.text())).toEqual(['Sides', 'Dips & chips'])
+    const card = (name) => wrapper.findAll('.dc').find((c) => c.find('.dc__name').text() === name)
+    expect(card('Chips & Queso').find('.dc__price').text()).toBe('$6.45')
+    await card('Chips & Queso').findAll('.chip').find((c) => c.text() === '8 oz').trigger('click')
+    expect(card('Chips & Queso').find('.dc__price').text()).toBe('$8.95')
+    expect(card('Chips & Queso').find('img').attributes('src')).toBe('/media/sides/chips-queso-8oz.webp')
+    await card('Chips & Queso').find('.dc__add').trigger('click')
+    expect(useOrder().state.lines[0]).toMatchObject({ itemSlug: 'chips-queso', selections: { size: pick('8 oz') } })
+    wrapper.unmount()
+
+    const d = await mountAt('/order/brooklyn-5119-a-avenue-u/desserts')
+    expect(d.wrapper.findAll('.dc__name').map((n) => n.text())).toEqual(['Churros', 'Oreo Churros', 'Tres Leches Cake', 'Plantains'])
+    await d.wrapper.findAll('.dc__add')[1].trigger('click')
+    expect(useOrder().state.lines.at(-1)).toMatchObject({ itemSlug: 'oreo-churros', qty: 1 })
+    d.wrapper.unmount()
+  })
+
   it('family meals: deep link go=family and the order menu send kits to the family pages', async () => {
     useOrder().chooseStore('brooklyn-5119-a-avenue-u')
     const a = await mountAt('/order?go=family')

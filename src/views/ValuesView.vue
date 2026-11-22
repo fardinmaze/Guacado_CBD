@@ -37,8 +37,6 @@ const stats = locationStats(locationList)
 const IMG = {
   bowl: '/media/values/bowl.webp',
   burrito: '/media/values/burrito.webp',
-  salad: '/media/values/salad.webp',
-  nachos: '/media/values/nachos.webp',
   team: '/media/values/team.webp',
 }
 const FACTS = [
@@ -114,7 +112,7 @@ const HEAD_CLOSE = [
 
     <!-- 2. Fresh -->
     <section class="v-row v-row--food" aria-labelledby="v-fresh">
-      <img :src="IMG.bowl" alt="A Fresh Guacado bowl with grilled chicken, guacamole, corn, pico de gallo and sour cream" width="1600" height="1075" loading="lazy" />
+      <img :src="IMG.bowl" alt="A Fresh Guacado salad bowl with grilled steak, romaine, pico de gallo and queso" width="1600" height="1372" loading="lazy" />
       <div class="v-copy">
         <h2 id="v-fresh" class="v-h">We do it by keeping it <span class="brand__fresh">fresh</span></h2>
         <p>
@@ -161,10 +159,6 @@ const HEAD_CLOSE = [
       <ul>
         <li v-for="f in FACTS" :key="f.small"><b>{{ f.big }}</b><span>{{ f.small }}</span></li>
       </ul>
-      <div class="v-facts__food" aria-hidden="true">
-        <img :src="IMG.salad" alt="" width="900" height="773" loading="lazy" />
-        <img :src="IMG.nachos" alt="" width="900" height="368" loading="lazy" />
-      </div>
     </section>
     <div class="v-ticker" aria-label="Some of our ingredients" role="region">
       <div v-for="(row, r) in TICKER" :key="r" class="v-ticker__row">
@@ -273,8 +267,9 @@ const HEAD_CLOSE = [
 .v-copy b { font-weight: 800; }
 
 .v-quote { position: relative; max-width: 1300px; margin: 0 auto; padding: clamp(20px, 4vw, 40px) 16px clamp(48px, 7vw, 96px); display: grid; justify-items: center; }
-.v-quote img { width: min(96%, 900px); height: auto; justify-self: end; transform: rotate(-8deg); filter: drop-shadow(0 24px 30px rgba(59, 42, 30, 0.3)); }
-.lettered--quote { margin-top: clamp(-120px, -10vw, -40px); transform: rotate(-4deg); }
+/* the burrito sits on top of the lettering, which tucks up under it: reads as the burrito lying on the words */
+.v-quote img { position: relative; z-index: 2; width: min(96%, 900px); height: auto; justify-self: end; transform: rotate(-8deg); filter: drop-shadow(0 30px 26px rgba(59, 42, 30, 0.38)) drop-shadow(0 6px 6px rgba(59, 42, 30, 0.25)); }
+.lettered--quote { position: relative; z-index: 1; margin-top: clamp(-260px, -19vw, -70px); transform: rotate(-4deg); }
 
 .v-facts { padding: clamp(40px, 6vw, 80px) 16px; background: rgba(0, 109, 68, 0.06); }
 .v-facts ul { list-style: none; margin: 32px auto 0; padding: 0; max-width: 1000px; display: grid; gap: 24px; grid-template-columns: repeat(2, 1fr); }
@@ -282,8 +277,6 @@ const HEAD_CLOSE = [
 .v-facts li { display: grid; justify-items: center; gap: 6px; text-align: center; }
 .v-facts b { font: 900 clamp(56px, 7vw, 96px)/0.9 var(--f-doodle); font-stretch: 70%; color: var(--guac); }
 .v-facts li span { font: 800 16px/1.15 var(--f-display); font-stretch: 85%; text-transform: uppercase; letter-spacing: 0.05em; }
-.v-facts__food { display: flex; justify-content: center; align-items: center; gap: clamp(16px, 4vw, 48px); margin-top: 32px; }
-.v-facts__food img { width: min(36%, 320px); height: auto; filter: drop-shadow(0 18px 22px rgba(59, 42, 30, 0.25)); }
 
 .v-facts .lettered { margin-bottom: 8px; }
 

@@ -35,7 +35,7 @@ const SECTIONS = [
   { key: 'sauce', label: 'Sauce', groups: ['sauce'], title: 'Homemade sauce', sub: 'Choose up to two.' },
   { key: 'sides', label: 'Side cups', groups: [], extras: ['side-cup-chicken', 'side-cup-beef'], title: 'Cups of chicken or beef', sub: 'Added to your bag on their own.' },
   { key: 'drinks', label: 'Drinks', groups: [], extras: ['bottle-drink', 'mexican-soda', 'can-soda', 'organic-tractor-tea', 'organic-lemonade', 'organic-tractor-mango-peach', 'organic-tractor-strawberry-dragon-fruit', 'red-bull', 'organic-milk-chocolate', 'water'], title: 'Drinks', sub: '' },
-  { key: 'desserts', label: 'Desserts', groups: [], extras: ['churros', 'tres-leches-cake', 'plantains'], title: 'Desserts', sub: '' },
+  { key: 'desserts', label: 'Desserts', groups: [], extras: ['churros', 'oreo-churros', 'tres-leches-cake', 'plantains'], title: 'Desserts', sub: '' },
 ]
 const PORTIONS = SECTIONS.filter((s) => s.groups.length)
 const EXTRAS = SECTIONS.filter((s) => s.extras)
@@ -282,6 +282,7 @@ async function confirmName(name) {
               :key="o.name"
               :name="o.name"
               :image="o.image"
+              :tag="o.tag"
               :note="o.note"
               :cal="o.cal"
               :price="priceOf(k, o)"
