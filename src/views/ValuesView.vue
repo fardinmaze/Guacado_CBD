@@ -4,6 +4,7 @@ import { links, site } from '@/data/site'
 import locationList from '@/data/locations.json'
 import { locationStats } from '@/utils/locations'
 import { useLocationPicker } from '@/composables/useLocationPicker'
+import DoodleHeadline from '@/components/ui/DoodleHeadline.vue'
 const picker = useLocationPicker()
 
 // Our Values, laid out like chipotle.com/values: warm paper background, big lettered headlines,
@@ -26,18 +27,31 @@ const FACTS = [
   { big: String(stats.open), small: `restaurants in ${stats.states} states` },
   { big: '7', small: 'days a week, 10:30am–3am' },
 ]
+
+// Hand-lettered headlines (DoodleHeadline): same copy as before, now drawn on when scrolled to.
+const HEAD_INTRO = [
+  { text: 'We believe that', size: 'sm', under: 'double' },
+  { text: 'good food', size: 'xl' },
+  { text: 'brings people', size: 'md', under: 'wave' },
+  { text: 'together.', size: 'lg', tone: 'guac', burst: true },
+]
+const HEAD_QUOTE = [
+  { text: "This isn't just", size: 'sm' },
+  { text: 'a meal,', size: 'lg', tone: 'guac', under: 'wave' },
+  { text: "it's", size: 'sm' },
+  { text: 'your meal.', size: 'xl', burst: true },
+]
+const HEAD_CLOSE = [
+  { text: "It's our way of making", size: 'sm', under: 'double' },
+  { text: 'every meal count.', size: 'lg', under: 'dots' },
+]
 </script>
 
 <template>
   <div class="val">
     <!-- 1. The belief -->
     <section class="v-intro" aria-labelledby="v-title">
-      <h1 id="v-title" class="lettered">
-        <span class="l-sm">We believe that</span>
-        <span class="l-xl">good food</span>
-        <span class="l-md">brings people</span>
-        <span class="l-lg">together.</span>
-      </h1>
+      <DoodleHeadline id="v-title" tag="h1" class="lettered" :lines="HEAD_INTRO" />
     </section>
 
     <!-- 2. Fresh -->
@@ -56,12 +70,7 @@ const FACTS = [
     <!-- 3. Lettered statement with the burrito -->
     <section class="v-quote" aria-label="Your meal, your way">
       <img :src="IMG.burrito" alt="" width="900" height="678" loading="lazy" />
-      <p class="lettered lettered--quote">
-        <span class="l-sm">This isn't just</span>
-        <span class="l-lg">a meal,</span>
-        <span class="l-sm">it's</span>
-        <span class="l-xl">your meal.</span>
-      </p>
+      <DoodleHeadline tag="p" class="lettered lettered--quote" :lines="HEAD_QUOTE" />
     </section>
 
     <!-- 4. Facts -->
@@ -88,10 +97,7 @@ const FACTS = [
 
     <!-- 6. Close -->
     <section class="v-close" aria-labelledby="v-close-t">
-      <h2 id="v-close-t" class="lettered lettered--close">
-        <span class="l-sm">It's our way of making</span>
-        <span class="l-lg">every meal count.</span>
-      </h2>
+      <DoodleHeadline id="v-close-t" tag="h2" class="lettered" :lines="HEAD_CLOSE" />
       <p>One bowl might not change the world, but the way we make it might change your day.</p>
       <button type="button" class="v-btn" @click="picker.show()">Order now</button>
     </section>
@@ -109,12 +115,8 @@ const FACTS = [
   color: var(--brown);
   overflow: hidden;
 }
-.lettered { display: grid; justify-items: center; text-align: center; font-family: var(--f-display); text-transform: uppercase; line-height: 0.86; color: var(--brown); }
-.lettered span { display: block; }
-.l-sm { font: 800 clamp(22px, 3vw, 40px)/1 var(--f-display); font-stretch: 80%; letter-spacing: 0.04em; }
-.l-md { font-weight: 900; font-size: clamp(40px, 6vw, 84px); font-stretch: 78%; }
-.l-lg { font-weight: 900; font-size: clamp(52px, 8vw, 116px); font-stretch: 72%; color: var(--guac); }
-.l-xl { font-weight: 900; font-size: clamp(68px, 11vw, 160px); font-stretch: 70%; }
+/* Lettered headlines are DoodleHeadline components; sizes and the draw-on live there. */
+.lettered { color: var(--brown); }
 
 .v-intro { padding: clamp(56px, 9vw, 120px) 16px clamp(32px, 5vw, 64px); }
 .v-intro .lettered { transform: rotate(-3deg); }
@@ -144,7 +146,6 @@ const FACTS = [
 
 .v-close { padding: clamp(56px, 8vw, 110px) 16px; display: grid; justify-items: center; gap: 20px; text-align: center; }
 .v-close p { max-width: 46ch; font-size: 18px; }
-.lettered--close .l-lg { color: var(--brown); }
 
 .v-btn { border: 0; cursor: pointer; display: inline-flex; align-items: center; min-height: 50px; padding: 0 30px; border-radius: 3px; background: var(--guac); color: #fff; text-decoration: none; font: 900 18px/1 var(--f-display); font-stretch: 80%; text-transform: uppercase; letter-spacing: 0.04em; }
 .v-btn:hover { background: var(--guac-dark); }
