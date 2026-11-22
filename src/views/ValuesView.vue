@@ -6,7 +6,7 @@ import { locationStats } from '@/utils/locations'
 import { useLocationPicker } from '@/composables/useLocationPicker'
 import DoodleHeadline from '@/components/ui/DoodleHeadline.vue'
 import LoopVideo from '@/components/ui/LoopVideo.vue'
-import { onBeforeUnmount, onMounted } from 'vue'
+import { onBeforeUnmount, onMounted, ref } from 'vue'
 const picker = useLocationPicker()
 
 // .v-reveal blocks unroll top to bottom once they scroll into view (CSS does the motion).
@@ -27,6 +27,29 @@ onMounted(() => {
 })
 onBeforeUnmount(() => revealIo?.disconnect())
 
+// Sticky bowl (chipotle.com/values): the bowl stays pinned while the words scroll past behind it.
+// Scroll progress through the section (0 → 1) goes to --p, which turns and grows the bowl a little.
+const stick = ref(null)
+let stickRaf = 0
+function stickProgress() {
+  stickRaf = 0
+  const el = stick.value
+  if (!el) return
+  const r = el.getBoundingClientRect()
+  const p = Math.min(1, Math.max(0, -r.top / Math.max(1, r.height - innerHeight)))
+  el.style.setProperty('--p', p.toFixed(3))
+}
+const onStickScroll = () => { if (!stickRaf) stickRaf = requestAnimationFrame(stickProgress) }
+onMounted(() => {
+  if (typeof matchMedia !== 'function' || matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  addEventListener('scroll', onStickScroll, { passive: true })
+  stickProgress()
+})
+onBeforeUnmount(() => {
+  removeEventListener('scroll', onStickScroll)
+  cancelAnimationFrame(stickRaf)
+})
+
 // Our Values, laid out like chipotle.com/values: warm paper background, big lettered headlines,
 // food cut-outs alternating with copy, a strip of facts, our people, and a closing order button.
 // Copy only states what the site already says (guac mashed in-house, homemade sauces, fresh
@@ -37,6 +60,7 @@ const stats = locationStats(locationList)
 const IMG = {
   bowl: '/media/values/bowl.webp',
   burrito: '/media/values/burrito.webp',
+  bowlGuac: '/media/values/bowl-guac.webp',
   team: '/media/values/team.webp',
 }
 const FACTS = [
@@ -94,6 +118,25 @@ const HEAD_PEOPLE = [
   { text: 'art of', size: 'lg' },
   { text: 'hospitality.', size: 'xl', tone: 'guac', under: 'wave' },
 ]
+// Sticky bowl section: big words (behind the bowl) and doodle notes (beside it). Note copy is
+// from the owner's brochure (Contents/Contents-5.pdf), guest-facing lines only.
+const STICK = [
+  { word: 'Fresh.', side: 'l' },
+  { side: 'r', icon: 'avocado', title: 'No freezers. No microwaves.', text: 'Just real, fresh, whole ingredients, prepared every day.' },
+  { side: 'l', icon: 'knife', title: 'Prepped fresh daily', text: 'A menu free from preservatives and pre-packaged foods.' },
+  { word: 'Bold.', side: 'r' },
+  { side: 'l', icon: 'chili', title: 'Globally inspired', text: 'Mexican-inspired dishes taken to the next level with fresh, globally influenced ingredients and new, craveable flavors.' },
+  { side: 'r', icon: 'flame', title: 'Chef-driven', text: 'Every dish is crafted to order, for the highest quality and flavor in every bite.' },
+  { side: 'l', icon: 'heart', title: 'Great people', text: 'Great food, great people and a great culture, where guests and team members both feel valued.' },
+]
+// Hand-drawn icons (viewBox 64): each path draws on in turn when its note scrolls in.
+const ICONS = {
+  avocado: ['M32 6 C22 8 18 20 16 30 C12 46 20 58 32 58 C44 58 52 46 48 30 C46 20 42 8 32 6 Z', 'M32 30 C26 30 23 36 24 41 C25 47 30 49 33 48 C38 47 41 42 40 37 C39 33 36 30 32 30 Z', 'M30 6 C30 3 33 2 35 4'],
+  knife: ['M8 44 L40 12 C44 8 50 10 50 14 L22 50 Z', 'M22 50 L30 58 L36 52 L28 44', 'M44 26 L48 30', 'M48 46 C52 46 56 50 56 54 M54 40 C58 42 60 46 60 50'],
+  chili: ['M46 14 C56 18 56 32 48 42 C40 52 24 58 8 54 C8 46 16 44 22 42 C30 38 34 30 36 22 C38 15 41 12 46 14 Z', 'M44 12 C44 8 46 5 50 4', 'M42 12 C46 8 52 9 54 12'],
+  flame: ['M32 6 C36 16 46 22 46 36 C46 46 40 52 32 52 C24 52 18 46 18 36 C18 28 24 24 26 16 C30 22 30 26 32 28 C34 22 34 14 32 6 Z', 'M32 52 C28 52 26 48 27 44 C28 40 32 38 32 34 C35 38 38 41 37 46 C36 50 34 52 32 52 Z', 'M12 58 L52 58', 'M16 62 L48 62'],
+  heart: ['M32 54 C22 46 8 38 8 24 C8 14 16 8 24 10 C28 11 31 14 32 18 C33 14 36 11 40 10 C48 8 56 14 56 24 C56 38 42 46 32 54 Z', 'M20 20 C18 22 17 25 18 28', 'M50 6 L54 2 M56 12 L61 11 M52 9 L58 5'],
+}
 const HEAD_CLOSE = [
   { text: 'Our motto is simple', size: 'sm', under: 'double' },
   { text: 'Grill. Eat.', size: 'xl' },
@@ -208,7 +251,35 @@ const HEAD_CLOSE = [
       </div>
     </section>
 
-    <!-- 6. Close -->
+    <!-- 8. Sticky bowl: pinned while the words scroll by behind it (chipotle.com/values) -->
+    <section ref="stick" class="v-stick" aria-labelledby="v-stick-t">
+      <h2 id="v-stick-t" class="sr-only">Fresh, bold, made to order</h2>
+      <!-- the bowl is pinned only inside this track, so it comes to rest right on top of the last line -->
+      <div class="v-stick__track">
+      <div class="v-stick__pin" aria-hidden="true">
+        <img :src="IMG.bowlGuac" alt="" width="1600" height="647" loading="lazy" decoding="async" />
+      </div>
+      <!-- scrolls past the pinned bowl: big words behind it, doodle notes beside it -->
+      <div class="v-stick__flow">
+        <template v-for="(b, i) in STICK" :key="i">
+          <p v-if="b.word" class="v-word" :class="`v-word--${b.side}`" aria-hidden="true">{{ b.word }}</p>
+          <div v-else class="v-note-wrap" :class="`v-note-wrap--${b.side}`">
+            <div class="v-note v-reveal">
+              <svg class="v-icon" :class="`v-icon--${b.icon}`" viewBox="0 0 64 64" aria-hidden="true">
+                <path v-for="(d, k) in ICONS[b.icon]" :key="k" :d="d" pathLength="1" :style="{ transitionDelay: `${200 + k * 110}ms` }" />
+              </svg>
+              <h3 class="v-note__t">{{ b.title }}</h3>
+              <svg class="v-note__line" viewBox="0 0 300 12" preserveAspectRatio="none" aria-hidden="true"><path d="M3 7 C60 2 110 11 160 6 S250 3 297 7" pathLength="1" /></svg>
+              <p>{{ b.text }}</p>
+            </div>
+          </div>
+        </template>
+      </div>
+      </div>
+      <p class="v-word v-word--end" aria-hidden="true">Made to order.</p>
+    </section>
+
+    <!-- 9. Close -->
     <section class="v-close" aria-labelledby="v-close-t">
       <DoodleHeadline id="v-close-t" tag="h2" class="lettered" :lines="HEAD_CLOSE" />
       <p>Bold flavors, fresh ingredients and a high-energy experience, right in your neighborhood.</p>
@@ -269,7 +340,7 @@ const HEAD_CLOSE = [
 .v-quote { position: relative; max-width: 1300px; margin: 0 auto; padding: clamp(20px, 4vw, 40px) 16px clamp(48px, 7vw, 96px); display: grid; justify-items: center; }
 /* the burrito sits on top of the lettering, which tucks up under it: reads as the burrito lying on the words */
 .v-quote img { position: relative; z-index: 2; width: min(96%, 900px); height: auto; justify-self: end; transform: rotate(-8deg); filter: drop-shadow(0 30px 26px rgba(59, 42, 30, 0.38)) drop-shadow(0 6px 6px rgba(59, 42, 30, 0.25)); }
-.lettered--quote { position: relative; z-index: 1; margin-top: clamp(-260px, -19vw, -70px); transform: rotate(-4deg); }
+.lettered--quote { position: relative; z-index: 1; margin-top: clamp(-130px, -9vw, -36px); transform: rotate(-4deg); }
 
 .v-facts { padding: clamp(40px, 6vw, 80px) 16px; background: rgba(0, 109, 68, 0.06); }
 .v-facts ul { list-style: none; margin: 32px auto 0; padding: 0; max-width: 1000px; display: grid; gap: 24px; grid-template-columns: repeat(2, 1fr); }
@@ -352,7 +423,7 @@ const HEAD_CLOSE = [
   .v-people .lettered { position: relative; z-index: 1; }
   /* bottom-right of the photo, hanging over into the closing section (like the lettering hangs over the top) */
   .v-people__note { position: absolute; z-index: 2; right: clamp(16px, 5vw, 96px); bottom: calc(-1 * clamp(70px, 8vw, 140px)); }
-  .v-people + .v-close { padding-top: calc(clamp(56px, 8vw, 110px) + clamp(70px, 8vw, 140px)); }
+  .v-people + .v-stick { padding-top: clamp(70px, 8vw, 140px); } /* room for the note card hanging over */
 }
 .v-people .lettered { transform: rotate(-4deg); }
 .v-people__copy { display: grid; gap: 14px; justify-items: start; font-size: clamp(17px, 1.5vw, 20px); line-height: 1.45; }
@@ -367,7 +438,61 @@ const HEAD_CLOSE = [
 /* note card unrolls from top to bottom when it scrolls into view */
 .v-reveal { clip-path: inset(0 0 100% 0); transition: clip-path 0.9s cubic-bezier(0.6, 0.05, 0.3, 1) 0.4s; }
 .v-reveal.is-in { clip-path: inset(-20px -20px -40px -20px); }
+.v-note.v-reveal { transition-duration: 0.45s; transition-delay: 0s; }
 @media (prefers-reduced-motion: reduce) { .v-reveal { clip-path: none; transition: none; } }
+
+/* ---------- Sticky bowl ---------- */
+/* The section is several screens tall; the pin sticks to the top for all of it while the
+   words (absolutely placed down the full height, behind the bowl) scroll up past it. */
+/* --bowl-h follows the photo's 1600 x 647 shape. The pin is exactly the bowl's height, so when
+   the track ends the bowl stops just above "Made to order." */
+.v-stick { --p: 0.5; --bowl-w: min(48vw, 760px); --bowl-h: calc(var(--bowl-w) * 0.405); position: relative; padding-bottom: clamp(48px, 6vw, 96px); }
+.v-stick__track { position: relative; }
+.v-stick__pin { position: sticky; top: calc(var(--header-h) + 3svh); z-index: 2; height: var(--bowl-h); display: grid; place-items: center; pointer-events: none; }
+.v-stick__pin img {
+  width: var(--bowl-w); height: auto;
+  transform: rotate(calc(-6deg + var(--p) * 10deg)) scale(calc(0.92 + var(--p) * 0.1));
+  filter: drop-shadow(0 36px 34px rgba(59, 42, 30, 0.35)) drop-shadow(0 8px 8px rgba(59, 42, 30, 0.2));
+  will-change: transform;
+}
+/* starts level with the bowl (behind it) and sets the track's height */
+.v-stick__flow { position: relative; margin-top: calc(-1 * var(--bowl-h)); display: grid; row-gap: 9svh; padding: calc(var(--bowl-h) * 0.7) clamp(16px, 5vw, 96px) 4svh; }
+.v-word { position: relative; z-index: 1; margin: 0; font: 900 clamp(84px, 17vw, 260px)/0.85 var(--f-doodle); font-stretch: 70%; text-transform: uppercase; color: var(--brown); white-space: nowrap; }
+.v-word--l { justify-self: start; transform: rotate(-5deg); color: var(--guac); }
+.v-word--r { justify-self: end; transform: rotate(4deg); }
+.v-word--end { margin-top: 2svh; text-align: center; font-size: clamp(56px, 12vw, 190px); transform: rotate(-3deg); color: var(--guac); }
+/* notes sit beside the bowl and in front of it */
+.v-note-wrap { position: relative; z-index: 3; width: min(30vw, 400px); }
+.v-note-wrap--l { justify-self: start; }
+.v-note-wrap--r { justify-self: end; }
+.v-note { display: grid; gap: 8px; justify-items: start; }
+.v-note-wrap--l .v-note { transform: rotate(-1.5deg); }
+.v-note-wrap--r .v-note { transform: rotate(1.5deg); }
+.v-note__t { margin: 6px 0 0; font: 400 clamp(22px, 2vw, 30px)/1.1 var(--f-doodle-sm); color: var(--brown); }
+.v-note p { margin: 0; font-size: clamp(16px, 1.3vw, 19px); line-height: 1.5; }
+.v-note__line { width: min(260px, 80%); height: 12px; overflow: visible; }
+.v-note__line path, .v-icon path { fill: none; stroke: var(--guac); stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke; stroke-dasharray: 1 2; stroke-dashoffset: 1; transition: stroke-dashoffset 0.45s cubic-bezier(0.6, 0.05, 0.3, 1); }
+.v-note__line path { transition-delay: 0.5s; stroke: var(--brown); stroke-width: 2.5; }
+.is-in .v-note__line path, .is-in .v-icon path { stroke-dashoffset: 0; }
+/* icons draw on, then keep a small hand-drawn wobble going */
+.v-icon { width: clamp(64px, 6vw, 88px); height: auto; aspect-ratio: 1; overflow: visible; }
+.is-in .v-icon { animation: v-wobble 2.6s ease-in-out 1.1s infinite; }
+.is-in .v-icon--flame, .is-in .v-icon--heart { animation-name: v-pulse; animation-duration: 1.6s; }
+@keyframes v-wobble { 0%, 100% { transform: rotate(-6deg); } 50% { transform: rotate(6deg); } }
+@keyframes v-pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
+@media (max-width: 760px) {
+  .v-stick { --bowl-w: 84vw; }
+  /* notes cross the bowl here, so leave the bowl its own space at the end to land in */
+  .v-stick__flow { row-gap: 7svh; padding-bottom: calc(var(--bowl-h) + 7svh); }
+  .v-word { white-space: normal; text-align: center; justify-self: center; }
+  /* on phones the notes cross the bowl, so they get a paper card */
+  .v-note-wrap { width: 100%; }
+  .v-note { background: rgba(243, 237, 227, 0.94); padding: 16px 18px 18px; border-radius: 4px; box-shadow: 0 16px 30px -18px rgba(59, 42, 30, 0.45); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .is-in .v-icon { animation: none; }
+  .v-note__line path, .v-icon path { transition: none; }
+}
 
 .v-close { padding: clamp(56px, 8vw, 110px) 16px; display: grid; justify-items: center; gap: 20px; text-align: center; }
 .v-close p { max-width: 46ch; font-size: 18px; }

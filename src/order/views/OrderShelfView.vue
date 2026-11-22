@@ -93,7 +93,7 @@ function add(d) {
 
 <template>
   <div class="dk">
-    <RouterLink :to="`/order/${store}`" class="back"><span aria-hidden="true">‹</span> Return to menu</RouterLink>
+    <RouterLink to="/menu" class="back"><span aria-hidden="true">‹</span> Return to menu</RouterLink>
 
     <header class="hero">
       <div class="hero__img" :class="`hero__img--${kind}`" aria-hidden="true">

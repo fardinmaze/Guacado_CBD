@@ -736,6 +736,15 @@ describe('ordering flow in the app', () => {
     d.wrapper.unmount()
   })
 
+  it('every item page: "Return to menu" lands on the menu page', async () => {
+    const st = '/order/brooklyn-5119-a-avenue-u'
+    for (const path of [`${st}/build`, `${st}/item/bottle-drink`, `${st}/kids`, `${st}/kids/kids-create-your-own`, `${st}/family`, `${st}/drinks`, `${st}/sides`, `${st}/desserts`]) {
+      const { wrapper } = await mountAt(path)
+      expect(wrapper.find('.back').attributes('href'), path).toBe('/menu')
+      wrapper.unmount()
+    }
+  })
+
   it('family meals: deep link go=family and the order menu send kits to the family pages', async () => {
     useOrder().chooseStore('brooklyn-5119-a-avenue-u')
     const a = await mountAt('/order?go=family')

@@ -29,7 +29,8 @@ const rowsCount = computed(() => groups.value.reduce((n, g) => n + g.rows.length
 
 function choose(s) {
   if (!order.chooseStore(s.slug)) return
-  router.push(goPath(s.slug, route.query.go)) // keeps the dish the guest clicked on the website
+  // replace: Back from the dish returns to the page the guest came from, not to this picker
+  router.replace(goPath(s.slug, route.query.go)) // keeps the dish the guest clicked on the website
 }
 </script>
 

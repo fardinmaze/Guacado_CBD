@@ -71,7 +71,7 @@ async function finish(name) {
 
 <template>
   <div v-if="item && draft" class="iv">
-    <RouterLink :to="`/order/${store}`" class="back"><span aria-hidden="true">‹</span> Back to menu</RouterLink>
+    <RouterLink to="/menu" class="back"><span aria-hidden="true">‹</span> Return to menu</RouterLink>
 
     <header class="hero" :class="{ 'no-img': !item.image }">
       <div v-if="item.image" class="hero__img"><img :src="item.image" :alt="item.name" width="360" height="360" /></div>

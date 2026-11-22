@@ -31,7 +31,8 @@ export const routes = [
         // A remembered, orderable store skips the picker (LOC-03). "?change" forces it.
         beforeEnter: (to) => {
           const slug = useOrder().state.storeSlug
-          if (slug && !to.query.change) return { ...goPath(slug, to.query.go), replace: true }
+          // no replace: the redirect takes the place of /order?go=..., so Back returns to the page the guest came from
+          if (slug && !to.query.change) return goPath(slug, to.query.go)
         },
       },
       { path: 'checkout', name: 'order-checkout', component: () => import('@/order/views/OrderCheckoutView.vue'), meta: { title: `Checkout · ${BRAND}` } },
