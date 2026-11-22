@@ -31,7 +31,7 @@ const cats = [
   { id: 'sides', name: 'Sides', sub: 'Fries, chips and dips to share', img: img('loaded-fries'), go: 'cat:sides' },
   { id: 'tostada', name: 'Tostada Special', sub: 'Crunch into something good', img: img('tostada-special'), go: 'item:tostada' },
   { id: 'desserts', name: 'Desserts', sub: 'Churros, tres leches and plantains', img: '/media/build/dessert-churros.webp', go: 'cat:desserts' },
-  { id: 'drinks', name: 'Drinks', sub: 'Jarritos, Tractor organics and more', img: '/media/build/drink-jarritos.webp', go: 'cat:beverages' },
+  { id: 'drinks', name: 'Drinks', sub: 'Jarritos, Mexican Coke, Tractor organics and more', img: '/media/build/drink-jarritos.webp', go: 'cat:beverages' },
 ]
 </script>
 

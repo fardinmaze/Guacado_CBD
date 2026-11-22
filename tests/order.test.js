@@ -414,7 +414,7 @@ describe('ordering flow in the app', () => {
     const { wrapper } = await mountAt(`${B}?base=bowl`)
     const drinks = wrapper.find('#sec-drinks')
     const tags = drinks.findAll('.bc').filter((c) => c.find('.bc__tag').exists()).map((c) => c.find('.bc__name').text())
-    expect(tags).toEqual(['Organic Tractor Tea', 'Organic Lemonade', 'Organic Tractor Mango Peach'])
+    expect(tags).toEqual(['Organic Tractor Tea', 'Organic Lemonade', 'Organic Tractor Mango Peach', 'Organic Tractor Strawberry Dragon Fruit'])
     expect(drinks.find('.bc__tag').text()).toBe('Only at Guacado')
     await click(wrapper, 'Grill Chicken', '.bc__btn')
     await click(wrapper, 'Jarritos', '.bc__btn')

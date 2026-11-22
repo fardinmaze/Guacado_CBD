@@ -34,7 +34,7 @@ const SECTIONS = [
   { key: 'toppings', label: 'Toppings', groups: ['addons', 'toppings'], title: 'Top things off', sub: '' },
   { key: 'sauce', label: 'Sauce', groups: ['sauce'], title: 'Homemade sauce', sub: 'Choose up to two.' },
   { key: 'sides', label: 'Side cups', groups: [], extras: ['side-cup-chicken', 'side-cup-beef'], title: 'Cups of chicken or beef', sub: 'Added to your bag on their own.' },
-  { key: 'drinks', label: 'Drinks', groups: [], extras: ['bottle-drink', 'organic-tractor-tea', 'organic-lemonade', 'organic-tractor-mango-peach', 'water'], title: 'Drinks', sub: '' },
+  { key: 'drinks', label: 'Drinks', groups: [], extras: ['bottle-drink', 'mexican-soda', 'organic-tractor-tea', 'organic-lemonade', 'organic-tractor-mango-peach', 'organic-tractor-strawberry-dragon-fruit', 'red-bull', 'water'], title: 'Drinks', sub: '' },
   { key: 'desserts', label: 'Desserts', groups: [], extras: ['churros', 'tres-leches-cake', 'plantains'], title: 'Desserts', sub: '' },
 ]
 const PORTIONS = SECTIONS.filter((s) => s.groups.length)

@@ -21,6 +21,9 @@
       "Add Queso Blanco price (sample $1.95)",
       "Side Cup of Chicken / Beef: price (sample $2.95) and calories",
       "Organic Tractor Mango Peach price (sample $4.95)",
+      "Mexican Soda (Coke / Sprite glass bottle) price (sample $3.45)",
+      "Red Bull price (sample $3.95)",
+      "Organic Tractor Strawberry Dragon Fruit price (sample $4.95)",
       "Family kits: rice/beans choice (Mexican or white rice, black or pinto beans) and the default proteins (Grill Chicken + Grilled Steak)",
       "Kids Create Your Own quick-add meal (Grill Chicken, rice, shredded cheese, soft tortillas, organic milk)",
       "Catering: every package, what it includes, per-person prices and minimums are SAMPLES (Guacado has not published a catering menu)"
@@ -1474,12 +1477,46 @@
           "note": "Board item 'Bottle Drink' ($2.95); flavors from the owner"
         },
         {
+          "slug": "mexican-soda",
+          "name": "Mexican Soda",
+          "kind": "FIXED",
+          "basePriceCents": 345,
+          "groups": [
+            {
+              "key": "flavor",
+              "name": "Choose your soda",
+              "minSelect": 1,
+              "maxSelect": 1,
+              "allowLevels": false,
+              "setsPrice": false,
+              "sort": 0,
+              "options": [
+                {
+                  "name": "Coca-Cola",
+                  "priceCents": 0,
+                  "sort": 0
+                },
+                {
+                  "name": "Sprite",
+                  "priceCents": 0,
+                  "sort": 1
+                }
+              ],
+              "autoPick": false
+            }
+          ],
+          "image": "/media/build/drink-mexican-soda.webp",
+          "description": "Coke or Sprite in a glass bottle, made with cane sugar.",
+          "note": "SAMPLE price: not on the boards (.45)",
+          "sort": 1
+        },
+        {
           "slug": "water",
           "name": "Water",
           "kind": "FIXED",
           "basePriceCents": 195,
           "groups": [],
-          "sort": 1,
+          "sort": 2,
           "image": "/media/build/drink-water.webp"
         },
         {
@@ -1488,7 +1525,7 @@
           "kind": "FIXED",
           "basePriceCents": 495,
           "groups": [],
-          "sort": 2,
+          "sort": 3,
           "image": "/media/build/drink-tea.webp",
           "tag": "Only at Guacado"
         },
@@ -1498,7 +1535,7 @@
           "kind": "FIXED",
           "basePriceCents": 495,
           "groups": [],
-          "sort": 3,
+          "sort": 4,
           "image": "/media/build/drink-lemonade.webp",
           "tag": "Only at Guacado"
         },
@@ -1510,8 +1547,29 @@
           "image": "/media/build/drink-tractor-mango.webp",
           "tag": "Only at Guacado",
           "groups": [],
-          "sort": 4,
+          "sort": 5,
           "note": "SAMPLE price: not on the boards; priced like the other Tractor drinks ($4.95)"
+        },
+        {
+          "slug": "organic-tractor-strawberry-dragon-fruit",
+          "name": "Organic Tractor Strawberry Dragon Fruit",
+          "kind": "FIXED",
+          "basePriceCents": 495,
+          "groups": [],
+          "image": "/media/build/drink-tractor-strawberry.webp",
+          "tag": "Only at Guacado",
+          "note": "SAMPLE price: not on the boards; priced like the other Tractor drinks ($4.95)",
+          "sort": 6
+        },
+        {
+          "slug": "red-bull",
+          "name": "Red Bull",
+          "kind": "FIXED",
+          "basePriceCents": 395,
+          "groups": [],
+          "image": "/media/build/drink-redbull.webp",
+          "note": "SAMPLE price: not on the boards (.95)",
+          "sort": 7
         },
         {
           "slug": "shake",
@@ -1555,7 +1613,7 @@
               "setsPrice": false
             }
           ],
-          "sort": 5
+          "sort": 8
         }
       ],
       "sort": 6
