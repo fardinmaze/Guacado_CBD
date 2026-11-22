@@ -28,7 +28,7 @@ describe('sales catalog', () => {
     expect(addOns.map((a) => [a.name, a.price])).toEqual([
       ['Chips & Guac', 6.45],
       ['Churros', 3.95],
-      ['Organic Lemonade', 4.95],
+      ['Tractor Lemonade', 4.95],
       ['Shake', 4.95],
     ])
   })

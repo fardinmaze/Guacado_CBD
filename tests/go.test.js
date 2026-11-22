@@ -21,7 +21,8 @@ describe('goPath: where a website flavor tile lands in the order flow', () => {
   })
   it('categories scroll the menu to that section', () => {
     expect(goPath(s, 'cat:kids')).toEqual({ path: `/order/${s}`, hash: '#cat-kids' })
-    expect(goPath(s, 'cat:beverages')).toEqual({ path: `/order/${s}`, hash: '#cat-beverages' })
+    expect(goPath(s, 'cat:beverages')).toEqual({ path: `/order/${s}/drinks` })
+    expect(goPath(s, 'drinks')).toEqual({ path: `/order/${s}/drinks` })
   })
   it('unknown or missing targets land on the store menu', () => {
     for (const bad of [undefined, '', 'item:nope', 'cat:nope', '//evil.com', 'javascript:1', ['build']]) {

@@ -102,7 +102,7 @@ const pick = (list, name) => {
 export const addOns = [
   { ...pick(menu.dips.items, 'Chips & Guac'), note: '4oz' },
   { ...pick(menu.desserts, 'Churros') },
-  { ...pick(menu.beverages, 'Organic Lemonade') },
+  { ...pick(menu.beverages, 'Tractor Lemonade') },
   { ...pick(menu.beverages, 'Shake'), note: byName(menu.beverages, 'Shake').flavors.join(', ') },
 ]
 

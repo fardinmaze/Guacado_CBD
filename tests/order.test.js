@@ -414,7 +414,7 @@ describe('ordering flow in the app', () => {
     const { wrapper } = await mountAt(`${B}?base=bowl`)
     const drinks = wrapper.find('#sec-drinks')
     const tags = drinks.findAll('.bc').filter((c) => c.find('.bc__tag').exists()).map((c) => c.find('.bc__name').text())
-    expect(tags).toEqual(['Organic Tractor Tea', 'Organic Lemonade', 'Organic Tractor Mango Peach', 'Organic Tractor Strawberry Dragon Fruit'])
+    expect(tags).toEqual(['Tractor Tea', 'Tractor Lemonade', 'Tractor Mango', 'Tractor Strawberry Dragon Fruit'])
     expect(drinks.find('.bc__tag').text()).toBe('Only at Guacado')
     await click(wrapper, 'Grill Chicken', '.bc__btn')
     await click(wrapper, 'Jarritos', '.bc__btn')
@@ -693,6 +693,26 @@ describe('ordering flow in the app', () => {
     await click(wrapper, 'Add to bag', '.mbar__add') // drinks skip the name step
     await vi.waitFor(() => expect(router.currentRoute.value.path).toBe('/order/brooklyn-5119-a-avenue-u'))
     expect(useOrder().state.lines[0]).toMatchObject({ itemSlug: 'bottle-drink', selections: { flavor: pick('Mango') } })
+    wrapper.unmount()
+  })
+
+  it('drinks page: every drink as a card; choice drinks need a pick, the rest add straight away', async () => {
+    const { wrapper, router } = await mountAt('/order/brooklyn-5119-a-avenue-u/drinks')
+    expect(wrapper.find('.hero__t').text()).toBe('Drinks')
+    const names = wrapper.findAll('.dc__name').map((n) => n.text())
+    expect(names).toEqual(expect.arrayContaining(['Jarritos', 'Mexican Soda', 'Red Bull', 'Tractor Strawberry Dragon Fruit', 'Can Soda', 'Organic Milk Chocolate', 'Water']))
+    const card = (name) => wrapper.findAll('.dc').find((c) => c.find('.dc__name').text() === name)
+    await card('Mexican Soda').find('.dc__add').trigger('click')
+    expect(card('Mexican Soda').find('.dc__err').exists()).toBe(true)
+    expect(useOrder().state.lines).toHaveLength(0)
+    await card('Mexican Soda').findAll('.chip').find((c) => c.text() === 'Sprite').trigger('click')
+    await card('Mexican Soda').find('.dc__add').trigger('click')
+    await card('Red Bull').find('.dc__add').trigger('click')
+    expect(useOrder().state.lines).toMatchObject([
+      { itemSlug: 'mexican-soda', selections: { flavor: pick('Sprite') } },
+      { itemSlug: 'red-bull', qty: 1 },
+    ])
+    expect(router.currentRoute.value.path).toBe('/order/brooklyn-5119-a-avenue-u/drinks') // stays to add more
     wrapper.unmount()
   })
 

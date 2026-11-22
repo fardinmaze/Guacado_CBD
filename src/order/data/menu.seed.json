@@ -23,6 +23,8 @@
       "Organic Tractor Mango Peach price (sample $4.95)",
       "Mexican Soda (Coke / Sprite glass bottle) price (sample $3.45)",
       "Red Bull price (sample $3.95)",
+      "Can Soda price and flavors (sample $1.95, Coca-Cola)",
+      "Organic Milk Chocolate price (sample $2.45)",
       "Organic Tractor Strawberry Dragon Fruit price (sample $4.95)",
       "Family kits: rice/beans choice (Mexican or white rice, black or pinto beans) and the default proteins (Grill Chicken + Grilled Steak)",
       "Kids Create Your Own quick-add meal (Grill Chicken, rice, shredded cheese, soft tortillas, organic milk)",
@@ -1511,55 +1513,65 @@
           "sort": 1
         },
         {
-          "slug": "water",
-          "name": "Water",
+          "slug": "can-soda",
+          "name": "Can Soda",
           "kind": "FIXED",
           "basePriceCents": 195,
           "groups": [],
-          "sort": 2,
-          "image": "/media/build/drink-water.webp"
+          "image": "/media/build/drink-can-soda.webp",
+          "description": "Ice-cold Coca-Cola in a can.",
+          "note": "SAMPLE price: not on the boards ($1.95)",
+          "sort": 2
         },
         {
           "slug": "organic-tractor-tea",
-          "name": "Organic Tractor Tea",
+          "name": "Tractor Tea",
           "kind": "FIXED",
           "basePriceCents": 495,
           "groups": [],
           "sort": 3,
           "image": "/media/build/drink-tea.webp",
-          "tag": "Only at Guacado"
+          "tag": "Only at Guacado",
+          "boardName": "Organic Tractor Tea",
+          "description": "Certified organic, non-carbonated."
         },
         {
           "slug": "organic-lemonade",
-          "name": "Organic Lemonade",
+          "name": "Tractor Lemonade",
           "kind": "FIXED",
           "basePriceCents": 495,
           "groups": [],
           "sort": 4,
           "image": "/media/build/drink-lemonade.webp",
-          "tag": "Only at Guacado"
+          "tag": "Only at Guacado",
+          "boardName": "Organic Lemonade",
+          "description": "Certified organic, non-carbonated."
         },
         {
           "slug": "organic-tractor-mango-peach",
-          "name": "Organic Tractor Mango Peach",
+          "name": "Tractor Mango",
           "kind": "FIXED",
           "basePriceCents": 495,
           "image": "/media/build/drink-tractor-mango.webp",
           "tag": "Only at Guacado",
           "groups": [],
           "sort": 5,
-          "note": "SAMPLE price: not on the boards; priced like the other Tractor drinks ($4.95)"
+          "note": "SAMPLE price: not on the boards; priced like the other Tractor drinks ($4.95)",
+          "boardName": "Organic Tractor Mango Peach",
+          "description": "Certified organic, non-carbonated."
         },
         {
           "slug": "organic-tractor-strawberry-dragon-fruit",
-          "name": "Organic Tractor Strawberry Dragon Fruit",
+          "name": "Tractor Strawberry Dragon Fruit",
           "kind": "FIXED",
           "basePriceCents": 495,
           "groups": [],
           "image": "/media/build/drink-tractor-strawberry.webp",
           "tag": "Only at Guacado",
           "note": "SAMPLE price: not on the boards; priced like the other Tractor drinks ($4.95)",
-          "sort": 6
+          "sort": 6,
+          "boardName": "Organic Tractor Strawberry Dragon Fruit",
+          "description": "Certified organic, non-carbonated."
         },
         {
           "slug": "red-bull",
@@ -1570,6 +1582,26 @@
           "image": "/media/build/drink-redbull.webp",
           "note": "SAMPLE price: not on the boards (.95)",
           "sort": 7
+        },
+        {
+          "slug": "organic-milk-chocolate",
+          "name": "Organic Milk Chocolate",
+          "kind": "FIXED",
+          "basePriceCents": 245,
+          "groups": [],
+          "image": "/media/build/drink-chocolate-milk.webp",
+          "description": "Horizon organic chocolate lowfat milk.",
+          "note": "SAMPLE price: not on the boards ($2.45)",
+          "sort": 8
+        },
+        {
+          "slug": "water",
+          "name": "Water",
+          "kind": "FIXED",
+          "basePriceCents": 195,
+          "groups": [],
+          "sort": 9,
+          "image": "/media/build/drink-water.webp"
         },
         {
           "slug": "shake",
@@ -1613,7 +1645,7 @@
               "setsPrice": false
             }
           ],
-          "sort": 8
+          "sort": 10
         }
       ],
       "sort": 6

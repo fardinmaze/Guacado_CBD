@@ -29,7 +29,10 @@ function quick(item) {
   order.quickAdd(item.slug)
   toast.show(`${item.name} added`)
 }
+// Drinks have their own photo page; the Beverages chip and "See all drinks" go there.
+const OWN_PAGE = { beverages: 'drinks' }
 function jump(slug) {
+  if (OWN_PAGE[slug]) return router.push(base(`/${OWN_PAGE[slug]}`))
   document.getElementById(`cat-${slug}`)?.scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' })
 }
 </script>
@@ -48,14 +51,17 @@ function jump(slug) {
 
     <nav class="cats" aria-label="Menu categories">
       <h2 class="sr-only">Categories</h2>
-      <a v-for="c in categories" :key="c.slug" :href="`#cat-${c.slug}`" class="cat" @click.prevent="jump(c.slug)">
+      <a v-for="c in categories" :key="c.slug" :href="OWN_PAGE[c.slug] ? base(`/${OWN_PAGE[c.slug]}`) : `#cat-${c.slug}`" class="cat" @click.prevent="jump(c.slug)">
         <img :src="art[c.slug]" alt="" width="56" height="56" loading="lazy" />
         <span class="cat__n">{{ c.name }}</span>
       </a>
     </nav>
 
     <section v-for="c in categories" :id="`cat-${c.slug}`" :key="c.slug" class="sec" :aria-labelledby="`h-${c.slug}`">
-      <h2 :id="`h-${c.slug}`" class="sec__h">{{ c.name }}</h2>
+      <div class="sec__top">
+        <h2 :id="`h-${c.slug}`" class="sec__h">{{ c.name }}</h2>
+        <RouterLink v-if="OWN_PAGE[c.slug]" :to="base(`/${OWN_PAGE[c.slug]}`)" class="sec__all">See all drinks <span aria-hidden="true">→</span></RouterLink>
+      </div>
       <ul class="items">
         <li v-for="i in c.items" :key="i.slug" class="item">
           <component :is="isQuickAdd(i) ? 'div' : 'RouterLink'" class="item__main" v-bind="isQuickAdd(i) ? {} : { to: itemPath(i) }">
@@ -99,7 +105,9 @@ function jump(slug) {
 .cat__f { font: 400 16px/1 var(--f-cond); letter-spacing: 1px; color: var(--lime); }
 
 .sec { margin-top: 32px; scroll-margin-top: 80px; }
-.sec__h { font: 400 26px/1 var(--f-display); text-transform: uppercase; margin-bottom: 12px; }
+.sec__top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.sec__h { font: 400 26px/1 var(--f-display); text-transform: uppercase; }
+.sec__all { display: inline-flex; align-items: center; min-height: 44px; color: var(--accent-text); font-weight: 800; font-size: 14px; text-decoration: underline; text-underline-offset: 3px; }
 .items { list-style: none; margin: 0; padding: 0; border-radius: var(--r-md); border: 1.5px solid var(--line); background: var(--surface); overflow: hidden; }
 .item { display: flex; align-items: stretch; border-top: 1px solid var(--line); }
 .item:first-child { border-top: 0; }

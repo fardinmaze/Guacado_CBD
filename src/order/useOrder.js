@@ -118,10 +118,10 @@ export function useOrder() {
   }
   // Add an item as-is (its default choices plus any `preset` picks), e.g. a family kit or kids meal
   // from a picker card; leaves any draft alone.
-  const addLine = (itemSlug, label = '', { qty, event } = {}) => {
+  const addLine = (itemSlug, label = '', { qty, event, selections } = {}) => {
     const item = findItem(itemSlug)
     const preset = Object.fromEntries(Object.entries(item.preset ?? {}).map(([k, names]) => [k, names.map((name) => ({ name, level: 'regular' }))]))
-    const line = { id: uid(), itemSlug, qty: qty ?? item.minPeople ?? 1, label, selections: { ...defaultSelection(item), ...preset }, ...(event ? { event: { ...event } } : {}) }
+    const line = { id: uid(), itemSlug, qty: qty ?? item.minPeople ?? 1, label, selections: { ...defaultSelection(item), ...preset, ...(selections ?? {}) }, ...(event ? { event: { ...event } } : {}) }
     state.lines.push(line)
     return line
   }

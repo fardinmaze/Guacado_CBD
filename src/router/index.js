@@ -41,6 +41,7 @@ export const routes = [
       { path: ':store/family/:slug', name: 'order-family-kit', component: () => import('@/order/views/OrderFamilyView.vue'), props: true, meta: { title: `Build your family meal · ${BRAND}`, wide: true } },
       { path: ':store/kids', name: 'order-kids', component: () => import('@/order/views/OrderKidsView.vue'), props: true, meta: { title: `Kids meal · ${BRAND}`, wide: true } },
       { path: ':store/kids/:slug', name: 'order-kids-item', component: () => import('@/order/views/OrderKidsView.vue'), props: true, meta: { title: `Build your kids meal · ${BRAND}`, wide: true } },
+      { path: ':store/drinks', name: 'order-drinks', component: () => import('@/order/views/OrderDrinksView.vue'), props: true, meta: { title: `Drinks · ${BRAND}`, wide: true } },
       { path: ':store/catering/:slug', name: 'order-catering', component: () => import('@/order/views/OrderCateringView.vue'), props: true, meta: { title: `Catering order · ${BRAND}`, wide: true } },
       { path: ':store/item/:slug', name: 'order-item', component: () => import('@/order/views/OrderItemView.vue'), props: true, meta: { title: `Order · ${BRAND}` } },
     ],
