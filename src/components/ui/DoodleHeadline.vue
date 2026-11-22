@@ -13,6 +13,9 @@ const props = defineProps({
   lines: { type: Array, required: true },
   letterMs: { type: Number, default: 46 }, // gap between letters
   pause: { type: Number, default: 160 }, // pen lift between lines
+  // > 0: grow (up to this many times the normal size) to fill the parent box, width and height.
+  // The parent must have a set height. Used by the Values hero so the headline fills the screen.
+  fit: { type: Number, default: 0 },
 })
 
 const label = computed(() => props.lines.map((l) => l.text).join(' '))
@@ -63,9 +66,34 @@ const RAYS = [-50, -25, 0, 25, 50].map((deg, k) => {
 })
 
 const root = ref(null)
+const art = ref(null)
 const drawn = ref(false)
 let io = null
+let ro = null
+
+// Measure the lettering at normal size, then scale it to the parent's free space.
+function fitToBox() {
+  const box = root.value?.parentElement
+  if (!box || !art.value) return
+  root.value.style.setProperty('--doodle-scale', '1')
+  const w = art.value.offsetWidth
+  const h = art.value.offsetHeight
+  const cs = getComputedStyle(box)
+  const bw = box.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight)
+  const bh = box.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom)
+  if (!w || !h || !bw || !bh) return root.value.style.removeProperty('--doodle-scale')
+  // 0.92 of the width leaves room for the rays and the slight rotation
+  const s = Math.max(0.6, Math.min(props.fit, (bw * 0.92) / w, (bh * 0.94) / h))
+  root.value.style.setProperty('--doodle-scale', s.toFixed(3))
+}
+
 onMounted(() => {
+  if (props.fit > 0 && typeof ResizeObserver === 'function') {
+    fitToBox()
+    ro = new ResizeObserver(() => fitToBox())
+    ro.observe(root.value.parentElement)
+    document.fonts?.ready.then(fitToBox)
+  }
   if (prefersReducedMotion() || typeof IntersectionObserver !== 'function') {
     drawn.value = true
     return
@@ -81,18 +109,27 @@ onMounted(() => {
   )
   io.observe(root.value)
 })
-onBeforeUnmount(() => io && io.disconnect())
+onBeforeUnmount(() => {
+  if (io) io.disconnect()
+  if (ro) ro.disconnect()
+})
 </script>
 
 <template>
-  <component :is="tag" ref="root" class="doodle" :class="{ 'is-drawn': drawn }">
+  <component
+    :is="tag"
+    ref="root"
+    class="doodle"
+    :class="{ 'is-drawn': drawn }"
+  >
     <span class="sr-only">{{ label }}</span>
-    <span class="doodle__art" aria-hidden="true">
+    <span ref="art" class="doodle__art" aria-hidden="true">
       <span
         v-for="(line, li) in plan"
         :key="li"
         class="doodle__line"
         :class="[`d-${line.size || 'md'}`, line.tone && `d-tone-${line.tone}`, line.under && 'has-under']"
+        :style="{ '--chars': line.text.length }"
       >
         <span class="doodle__word">
           <span
@@ -157,13 +194,16 @@ onBeforeUnmount(() => io && io.disconnect())
 .doodle__line { position: relative; display: block; padding-bottom: 0.06em; }
 .doodle__word { position: relative; display: inline-block; white-space: nowrap; }
 
-/* sizes match the original lettered headline scale */
-.d-sm { font: 800 clamp(22px, 3vw, 40px)/1 var(--f-display); font-stretch: 80%; letter-spacing: 0.04em; }
-.d-md { font-weight: 900; font-size: clamp(40px, 6vw, 84px); font-stretch: 78%; }
-.d-lg { font-weight: 900; font-size: clamp(52px, 8vw, 116px); font-stretch: 72%; }
-.d-xl { font-weight: 900; font-size: clamp(68px, 11vw, 160px); font-stretch: 70%; }
+/* sizes match the original lettered headline scale; set --doodle-scale on the headline to enlarge */
+/* A page can set --f-doodle (big words) and --f-doodle-sm (small lines) for hand-drawn fonts. */
+.doodle { font-family: var(--f-doodle, var(--f-display)); }
+.d-sm { font: 800 min(calc(clamp(22px, 3vw, 40px) * var(--doodle-scale, 1) * var(--doodle-sm-k, 1)), var(--cap))/1.05 var(--f-doodle-sm, var(--f-display)); font-stretch: 80%; letter-spacing: 0.04em; text-transform: var(--doodle-sm-case, uppercase); }
+.d-md { font-weight: 900; font-size: min(calc(clamp(40px, 6vw, 84px) * var(--doodle-scale, 1)), var(--cap)); font-stretch: 78%; }
+.d-lg { font-weight: 900; font-size: min(calc(clamp(52px, 8vw, 116px) * var(--doodle-scale, 1)), var(--cap)); font-stretch: 72%; }
+.d-xl { font-weight: 900; font-size: min(calc(clamp(68px, 11vw, 160px) * var(--doodle-scale, 1)), var(--cap)); font-stretch: 70%; }
 .d-tone-guac { color: var(--guac); }
-@media (max-width: 520px) { .doodle__word { white-space: normal; } }
+/* a line never wraps; on narrow screens long lines shrink to fit instead */
+.doodle__line { --cap: calc((100vw - 64px) / (var(--chars, 10) * 0.56)); }
 
 /* ---------- letters: each wipes open like a pen stroke ---------- */
 .ch {
@@ -195,11 +235,12 @@ onBeforeUnmount(() => io && io.disconnect())
 .burst--r { left: 100%; transform: translate(0.04em, -50%); }
 .burst--l { right: 100%; transform: translate(-0.04em, -50%) scaleX(-1); }
 .burst .ink { stroke-width: 3.5; }
-/* phones: the word fills the width, so the fans sit on its top corners pointing up and out */
+/* phones: the word fills the width, so the fans sit under its bottom corners pointing down and out
+   (above would clash with the previous line's underline) */
 @media (max-width: 600px) {
-  .burst { top: 0; width: 0.42em; height: 0.42em; }
-  .burst--r { left: auto; right: -0.12em; transform: translateY(-70%) rotate(-55deg); }
-  .burst--l { right: auto; left: -0.12em; transform: translateY(-70%) scaleX(-1) rotate(-55deg); }
+  .burst { top: auto; bottom: 0; width: 0.42em; height: 0.42em; }
+  .burst--r { left: auto; right: -0.12em; transform: translateY(65%) rotate(55deg); }
+  .burst--l { right: auto; left: -0.12em; transform: translateY(65%) scaleX(-1) rotate(55deg); }
 }
 .burst .draw { transition-duration: 200ms; }
 
